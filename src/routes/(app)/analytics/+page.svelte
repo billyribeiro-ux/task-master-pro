@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { PageShell } from '$lib/components/ui/index.js';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	let { data }: { data: PageData } = $props();
 
@@ -32,14 +34,9 @@
 	<title>Analytics — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="p-6">
-	<div class="mb-6">
-		<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Analytics</h1>
-		<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Insights across all your projects</p>
-	</div>
-
+<PageShell title="Analytics" description="Insights across all your projects">
 	<!-- Summary cards -->
-	<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+	<div class="mb-6 grid {bp.phone ? 'grid-cols-1' : 'grid-cols-3'} {bp.gridGap}">
 		<div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 			<p class="text-xs text-gray-500 dark:text-gray-400">Total Tasks</p>
 			<p class="text-3xl font-bold text-gray-900 dark:text-white">{totalTasks}</p>
@@ -54,7 +51,7 @@
 		</div>
 	</div>
 
-	<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+	<div class="grid {bp.laptopUp ? 'grid-cols-2' : 'grid-cols-1'} {bp.gridGap}">
 		<!-- Tasks by Status -->
 		<div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 			<h2 class="mb-4 text-sm font-semibold text-gray-900 dark:text-white">Tasks by Status</h2>
@@ -149,4 +146,4 @@
 			{/if}
 		</div>
 	</div>
-</div>
+</PageShell>

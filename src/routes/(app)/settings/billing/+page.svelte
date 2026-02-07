@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
 	import { page } from '$app/state';
+	import { PageShell } from '$lib/components/ui/index.js';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	let { data }: { data: PageData } = $props();
 
@@ -23,8 +25,7 @@
 	<title>Billing — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl p-6">
-	<h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Billing & Plan</h1>
+<PageShell title="Billing & Plan">
 
 	{#if successMessage}
 		<div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400" role="alert">
@@ -90,7 +91,7 @@
 
 	<!-- Plan comparison -->
 	<h2 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Compare Plans</h2>
-	<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+	<div class="grid {bp.phone ? 'grid-cols-1' : 'grid-cols-3'} {bp.gridGap}">
 		{#each Object.entries(planDetails) as [key, plan] (key)}
 			<div class="rounded-xl border p-5 {key === data.user.plan ? 'border-brand-500 bg-brand-50 dark:border-brand-700 dark:bg-brand-950' : 'border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900'}">
 				<p class="text-sm font-semibold text-gray-900 dark:text-white">{plan.name}</p>
@@ -106,4 +107,4 @@
 			</div>
 		{/each}
 	</div>
-</div>
+</PageShell>

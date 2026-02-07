@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { PageShell } from '$lib/components/ui/index.js';
 
 	let { data }: { data: PageData } = $props();
 
@@ -39,8 +40,7 @@
 	<title>Settings — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl p-6">
-	<h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+<PageShell title="Settings">
 
 	{#if saveMessage}
 		<div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400" role="alert">
@@ -107,4 +107,4 @@
 			Delete Account
 		</button>
 	</div>
-</div>
+</PageShell>

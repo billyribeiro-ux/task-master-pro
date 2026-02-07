@@ -1,5 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { PageShell } from '$lib/components/ui/index.js';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	let { data }: { data: PageData } = $props();
 </script>
@@ -8,18 +10,9 @@
 	<title>Dashboard — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="p-6">
-	<div class="mb-8">
-		<h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-			Welcome back, {data.user.name}
-		</h1>
-		<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-			Here's what's happening across your projects.
-		</p>
-	</div>
-
+<PageShell title="Welcome back, {data.user.name}" description="Here's what's happening across your projects.">
 	<!-- Stats grid -->
-	<div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+	<div class="mb-6 grid {bp.phone ? 'grid-cols-1' : bp.tablet ? 'grid-cols-2' : 'grid-cols-4'} {bp.gridGap}">
 		<div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
 			<div class="flex items-center gap-3">
 				<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950">
@@ -96,7 +89,7 @@
 				{#each data.recentProjects as project (project.id)}
 					<a
 						href="/projects/{project.id}/board"
-						class="flex items-center justify-between px-5 py-3 transition hover:bg-gray-50 dark:hover:bg-gray-800/50"
+						class="flex min-h-[2.75rem] items-center justify-between px-4 py-3 transition hover:bg-gray-50 active:bg-gray-100 md:px-5 dark:hover:bg-gray-800/50 dark:active:bg-gray-800"
 					>
 						<div>
 							<p class="text-sm font-medium text-gray-900 dark:text-white">{project.name}</p>
@@ -112,4 +105,4 @@
 			</div>
 		{/if}
 	</div>
-</div>
+</PageShell>

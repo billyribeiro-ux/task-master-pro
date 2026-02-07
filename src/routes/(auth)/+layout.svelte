@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	interface Props {
 		children: Snippet;
@@ -8,7 +9,7 @@
 	let { children }: Props = $props();
 </script>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-950">
+<div class="flex min-h-screen items-center justify-center bg-gray-50 {bp.phone ? 'px-4 py-8' : 'px-6 py-12'} dark:bg-gray-950">
 	<div class="w-full max-w-md">
 		<div class="mb-8 flex flex-col items-center">
 			<a href="/" class="flex items-center gap-2">

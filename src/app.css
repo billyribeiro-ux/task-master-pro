@@ -13,8 +13,39 @@
 	--color-brand-900: #312e81;
 	--color-brand-950: #1e1b4b;
 
-	--font-sans: 'Inter', system-ui, sans-serif;
-	--font-mono: 'JetBrains Mono', monospace;
+	--font-sans: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Inter', 'Helvetica Neue',
+		'Arial', 'Noto Sans', sans-serif;
+	--font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', 'JetBrains Mono', 'Consolas',
+		monospace;
 
-	--breakpoint-xs: 475px;
+	/* ─── Universal Responsive Breakpoints (Feb 2026) ───────────────────
+	 * Covers all major device classes across Apple, Android, Windows, etc.
+	 *
+	 * xs  (0–479):     Phones portrait — iPhone SE–17 (375–440), Pixel, Galaxy (360–412)
+	 * sm  (480–767):   Phones landscape, small tablets, compact split views
+	 * md  (768–1023):  Tablets — iPad mini/Air 11" (744–834), Galaxy Tab, Surface Go
+	 * lg  (1024–1279): Large tablets — iPad Pro 13" (1024), Surface Pro, Stage Manager
+	 * xl  (1280–1535): Small laptops — MacBook Air 13" (1280), Surface Laptop, Chromebooks
+	 * 2xl (1536–1919): Large laptops — MacBook Pro 14–16" (1512–1728), Dell XPS, ThinkPad
+	 * 3xl (1920+):     Desktops — iMac, external monitors, ultrawide displays
+	 * ──────────────────────────────────────────────────────────────────── */
+	--breakpoint-xs: 480px;
+	--breakpoint-sm: 480px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
+	--breakpoint-xl: 1280px;
+	--breakpoint-2xl: 1536px;
+	--breakpoint-3xl: 1920px;
+}
+
+@layer base {
+	html {
+		-webkit-text-size-adjust: 100%;
+		text-size-adjust: 100%;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-rendering: optimizeLegibility;
+		padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+			env(safe-area-inset-left);
+	}
 }

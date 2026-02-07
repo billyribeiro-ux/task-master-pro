@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { PageShell } from '$lib/components/ui/index.js';
 
 	let { data }: { data: PageData } = $props();
 
@@ -59,11 +60,7 @@
 	<title>Time Tracking — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="p-6">
-	<div class="mb-6">
-		<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Time Tracking</h1>
-		<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Track time spent on tasks</p>
-	</div>
+<PageShell title="Time Tracking" description="Track time spent on tasks">
 
 	<!-- Active timer -->
 	{#if activeTimer}
@@ -126,4 +123,4 @@
 			</div>
 		{/if}
 	</div>
-</div>
+</PageShell>

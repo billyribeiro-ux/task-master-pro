@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
 	import { invalidateAll } from '$app/navigation';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	let { data }: { data: PageData } = $props();
 
@@ -157,11 +158,11 @@
 	</div>
 
 	<!-- Board columns -->
-	<div class="flex flex-1 gap-4 overflow-x-auto p-4">
+	<div class="flex flex-1 {bp.phone ? 'gap-3 p-3' : 'gap-4 p-4'} overflow-x-auto">
 		{#each data.columns as column (column.id)}
 			{@const colTasks = tasksByColumn.get(column.id) ?? []}
 			<div
-				class="flex w-72 shrink-0 flex-col rounded-xl bg-gray-100 dark:bg-gray-900"
+				class="flex {bp.phone ? 'w-[17rem]' : 'w-72'} shrink-0 flex-col rounded-xl bg-gray-100 dark:bg-gray-900"
 				role="group"
 				aria-label="{column.name} column"
 				ondragover={(e) => handleDragOver(e, column.id, colTasks.length)}

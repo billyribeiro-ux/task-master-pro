@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData, ActionData } from './$types.js';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -24,7 +25,7 @@
 	<title>Settings — {data.project.name} — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl overflow-y-auto p-6">
+<div class="{bp.pagePadding} mx-auto max-w-3xl overflow-y-auto">
 	{#if form?.error}
 		<div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400" role="alert">
 			{form.error}
@@ -144,7 +145,7 @@
 					await update();
 				};
 			}}
-			class="flex items-end gap-3"
+			class="flex {bp.phone ? 'flex-col' : 'items-end'} gap-3"
 		>
 			<div class="flex-1">
 				<label for="invite-email" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Invite by email</label>

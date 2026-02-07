@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import type { LayoutData } from './$types.js';
 	import { page } from '$app/state';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	interface Props {
 		children: Snippet;
@@ -25,8 +26,8 @@
 
 <div class="flex h-full flex-col">
 	<!-- Project header -->
-	<div class="border-b border-gray-200 bg-white px-6 pt-4 dark:border-gray-800 dark:bg-gray-900">
-		<div class="mb-3 flex items-center justify-between">
+	<div class="border-b border-gray-200 bg-white {bp.phone ? 'px-4 pt-3' : 'px-6 pt-4'} dark:border-gray-800 dark:bg-gray-900">
+		<div class="mb-3 flex {bp.phone ? 'flex-col gap-2' : 'items-center justify-between'}">
 			<div>
 				<h1 class="text-lg font-bold text-gray-900 dark:text-white">{data.project.name}</h1>
 				{#if data.project.description}
@@ -63,11 +64,11 @@
 		</div>
 
 		<!-- Tabs -->
-		<nav class="-mb-px flex gap-4" aria-label="Project tabs">
+		<nav class="-mb-px flex {bp.phone ? 'gap-3' : 'gap-4'}" aria-label="Project tabs">
 			{#each tabs as tab (tab.id)}
 				<a
 					href={tab.href}
-					class="border-b-2 px-1 pb-2 text-sm font-medium transition {currentTab() === tab.id
+					class="border-b-2 px-1 pb-2 text-sm font-medium transition min-h-[2.75rem] flex items-center {currentTab() === tab.id
 						? 'border-brand-600 text-brand-600 dark:border-brand-400 dark:text-brand-400'
 						: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
 				>

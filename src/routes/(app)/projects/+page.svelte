@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { PageData, ActionData } from './$types.js';
+	import { PageShell } from '$lib/components/ui/index.js';
+	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
@@ -14,22 +16,18 @@
 	<title>Projects — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="p-6">
-	<div class="mb-6 flex items-center justify-between">
-		<div>
-			<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Projects</h1>
-			<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage your projects and boards</p>
-		</div>
+<PageShell title="Projects" description="Manage your projects and boards">
+	{#snippet actions()}
 		<button
 			onclick={() => (showCreateModal = true)}
-			class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
+			class="inline-flex min-h-[2.75rem] items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 active:bg-brand-800"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 				<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
 			</svg>
 			New Project
 		</button>
-	</div>
+	{/snippet}
 
 	{#if form?.error}
 		<div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400" role="alert">
@@ -52,7 +50,7 @@
 			</button>
 		</div>
 	{:else}
-		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid {bp.phone ? 'grid-cols-1' : bp.tablet ? 'grid-cols-2' : 'grid-cols-3'} {bp.gridGap}">
 			{#each data.projects as project (project.id)}
 				<a
 					href="/projects/{project.id}/board"
@@ -78,7 +76,7 @@
 			{/each}
 		</div>
 	{/if}
-</div>
+</PageShell>
 
 <!-- Create Project Modal -->
 {#if showCreateModal}

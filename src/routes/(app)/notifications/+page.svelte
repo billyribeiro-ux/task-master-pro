@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { PageShell } from '$lib/components/ui/index.js';
 
 	let { data }: { data: PageData } = $props();
 
@@ -21,9 +22,8 @@
 	<title>Notifications — TaskMaster Pro</title>
 </svelte:head>
 
-<div class="mx-auto max-w-3xl p-6">
-	<div class="mb-6 flex items-center justify-between">
-		<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Notifications</h1>
+<PageShell title="Notifications">
+	{#snippet actions()}
 		{#if data.notifications.some((n) => !n.isRead)}
 			<button
 				onclick={markAllRead}
@@ -32,7 +32,7 @@
 				Mark all as read
 			</button>
 		{/if}
-	</div>
+	{/snippet}
 
 	{#if data.notifications.length === 0}
 		<div class="flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-white py-16 dark:border-gray-800 dark:bg-gray-900">
@@ -69,4 +69,4 @@
 			{/each}
 		</div>
 	{/if}
-</div>
+</PageShell>
