@@ -3,8 +3,13 @@
 
 	let { data }: { data: PageData } = $props();
 
-	let name = $state(data.user.name);
-	let email = $state(data.user.email);
+	let name = $state('');
+	let email = $state('');
+
+	$effect(() => {
+		name = data.user.name;
+		email = data.user.email;
+	});
 	let isSaving = $state(false);
 	let saveMessage = $state<string | null>(null);
 
@@ -70,7 +75,7 @@
 			</div>
 
 			<div>
-				<label class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Plan</label>
+				<span class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Plan</span>
 				<div class="flex items-center gap-2">
 					<span class="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-semibold text-brand-700 dark:bg-brand-900 dark:text-brand-300">
 						{data.user.plan}

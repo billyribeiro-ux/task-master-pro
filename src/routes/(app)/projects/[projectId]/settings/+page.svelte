@@ -4,10 +4,16 @@
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 
-	let projectName = $state(data.project.name);
-	let projectDescription = $state(data.project.description ?? '');
-	let projectVisibility = $state(data.project.visibility);
+	let projectName = $state('');
+	let projectDescription = $state('');
+	let projectVisibility = $state('private');
 	let isSaving = $state(false);
+
+	$effect(() => {
+		projectName = data.project.name;
+		projectDescription = data.project.description ?? '';
+		projectVisibility = data.project.visibility;
+	});
 
 	let inviteEmail = $state('');
 	let inviteRole = $state('member');

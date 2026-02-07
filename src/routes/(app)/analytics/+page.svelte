@@ -21,6 +21,11 @@
 	};
 
 	let totalTasks = $derived(data.tasksByStatus.reduce((sum, s) => sum + s.total, 0));
+	let maxCompletionVal = $derived(
+		data.completionTrend.length > 0
+			? Math.max(...data.completionTrend.map((d) => d.total))
+			: 0
+	);
 </script>
 
 <svelte:head>
@@ -107,11 +112,10 @@
 				<p class="text-sm text-gray-500 dark:text-gray-400">No completions in the last 30 days</p>
 			{:else}
 				<div class="flex items-end gap-1" style="height: 120px">
-					{@const maxVal = Math.max(...data.completionTrend.map((d) => d.total))}
 					{#each data.completionTrend as day (day.date)}
 						<div
 							class="flex-1 rounded-t bg-brand-500 transition-all hover:bg-brand-600"
-							style="height: {maxVal > 0 ? (day.total / maxVal) * 100 : 0}%"
+							style="height: {maxCompletionVal > 0 ? (day.total / maxCompletionVal) * 100 : 0}%"
 							title="{day.date}: {day.total} completed"
 						></div>
 					{/each}

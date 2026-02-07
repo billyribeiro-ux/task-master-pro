@@ -162,6 +162,8 @@
 			{@const colTasks = tasksByColumn.get(column.id) ?? []}
 			<div
 				class="flex w-72 shrink-0 flex-col rounded-xl bg-gray-100 dark:bg-gray-900"
+				role="group"
+				aria-label="{column.name} column"
 				ondragover={(e) => handleDragOver(e, column.id, colTasks.length)}
 				ondragleave={handleDragLeave}
 				ondrop={(e) => handleDrop(e, column.id, colTasks.length)}

@@ -11,7 +11,7 @@ function socketIODevPlugin() {
 
 			import('./src/lib/server/realtime/ws-server.js').then((mod) => {
 				if (server.httpServer) {
-					mod.attachSocketIO(server.httpServer);
+					mod.attachSocketIO(server.httpServer as never);
 				}
 			}).catch(() => {
 				console.log('[socket.io] Real-time server not yet available — will be set up later.');
@@ -26,10 +26,5 @@ export default defineConfig({
 		fs: {
 			allow: ['.']
 		}
-	},
-	test: {
-		include: ['src/**/*.{test,spec}.{js,ts}'],
-		environment: 'jsdom',
-		globals: true
 	}
 });

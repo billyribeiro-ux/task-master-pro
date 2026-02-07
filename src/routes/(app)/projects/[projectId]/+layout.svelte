@@ -17,10 +17,10 @@
 		return 'board';
 	});
 
-	const tabs = [
+	let tabs = $derived([
 		{ id: 'board', label: 'Board', href: `/projects/${data.project.id}/board` },
 		{ id: 'settings', label: 'Settings', href: `/projects/${data.project.id}/settings` }
-	] as const;
+	] as const);
 </script>
 
 <div class="flex h-full flex-col">
