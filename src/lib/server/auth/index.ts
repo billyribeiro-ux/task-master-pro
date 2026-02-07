@@ -1,5 +1,4 @@
-import { sha256 } from 'oslo/crypto';
-import { encodeHexLowerCase } from 'oslo/encoding';
+import { createHash } from 'node:crypto';
 import { db } from '$lib/server/db/index.js';
 import { sessions, users } from '$lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
@@ -36,14 +35,12 @@ export function generateSessionToken(): string {
 		.replace(/=/g, '');
 }
 
-async function hashToken(token: string): Promise<string> {
-	const encoded = new TextEncoder().encode(token);
-	const hashBuffer = await sha256(encoded);
-	return encodeHexLowerCase(new Uint8Array(hashBuffer));
+function hashToken(token: string): string {
+	return createHash('sha256').update(token).digest('hex');
 }
 
 export async function createSession(token: string, userId: string): Promise<Session> {
-	const sessionId = await hashToken(token);
+	const sessionId = hashToken(token);
 	const expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
 
 	await db.insert(sessions).values({
@@ -56,7 +53,7 @@ export async function createSession(token: string, userId: string): Promise<Sess
 }
 
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
-	const sessionId = await hashToken(token);
+	const sessionId = hashToken(token);
 
 	const result = await db
 		.select({
