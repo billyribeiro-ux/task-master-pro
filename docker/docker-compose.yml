@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    ports:
+      - '5173:5173'
+    volumes:
+      - ..:/app
+      - /app/node_modules
+    environment:
+      - DATABASE_URL=file:./local.db
+      - REDIS_URL=redis://redis:6379
+      - S3_ENDPOINT=http://minio:9000
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - S3_BUCKET=taskmaster-files
+      - ORIGIN=http://localhost:5173
+    depends_on:
+      - redis
+      - minio
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      mc alias set local http://minio:9000 minioadmin minioadmin;
+      mc mb local/taskmaster-files --ignore-existing;
+      mc anonymous set download local/taskmaster-files;
+      exit 0;
+      "
+
+  stripe-cli:
+    image: stripe/stripe-cli:latest
+    command: listen --forward-to http://app:5173/api/v1/webhooks/stripe
+    environment:
+      - STRIPE_API_KEY=${STRIPE_SECRET_KEY:-sk_test_placeholder}
+
+volumes:
+  redis-data:
+  minio-data:
