@@ -1,10 +1,12 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
-import { tasks, activityLog, columns } from '$lib/server/db/schema.js';
-import { eq, and, count } from 'drizzle-orm';
+import { client } from '$lib/server/db/index.js';
+import { tasks, activityLog, columns, projectCounters } from '$lib/server/db/schema.js';
+import { eq, and, gt } from 'drizzle-orm';
 import { z } from 'zod';
 import { requireProjectAccess } from '$lib/server/auth/guards.js';
+import { checkFeatureLimit } from '$lib/server/payments/guards.js';
 import { generateKeyBetween } from '$lib/utils/fractional-index.js';
 
 const createTaskSchema = z.object({
@@ -31,6 +33,12 @@ export const POST: RequestHandler = async (event) => {
 	const data = result.data;
 	await requireProjectAccess(event, data.projectId);
 
+	// Check plan limits before creating task
+	const planCheck = await checkFeatureLimit(event.locals.user.id, 'tasks');
+	if (!planCheck.allowed) {
+		throw error(403, `Plan limit reached: maximum ${planCheck.limit} tasks allowed on your current plan`);
+	}
+
 	const col = await db
 		.select()
 		.from(columns)
@@ -41,12 +49,18 @@ export const POST: RequestHandler = async (event) => {
 		throw error(400, 'Invalid column');
 	}
 
-	const [taskCountResult] = await db
-		.select({ total: count() })
-		.from(tasks)
-		.where(eq(tasks.projectId, data.projectId));
+	// Atomic counter increment for race-safe displayId generation
+	// Use upsert: insert counter if not exists, then increment atomically
+	await db.insert(projectCounters)
+		.values({ projectId: data.projectId, taskCounter: 0 })
+		.onConflictDoNothing();
 
-	const taskNumber = (taskCountResult?.total ?? 0) + 1;
+	const counterResult = await client.execute({
+		sql: 'UPDATE project_counters SET task_counter = task_counter + 1 WHERE project_id = ? RETURNING task_counter',
+		args: [data.projectId]
+	});
+
+	const taskNumber = Number(counterResult.rows[0].task_counter);
 	const displayId = `TM-${taskNumber}`;
 
 	const existingTasks = await db
@@ -99,11 +113,25 @@ export const GET: RequestHandler = async (event) => {
 
 	await requireProjectAccess(event, projectId);
 
+	const limit = Math.min(Number(event.url.searchParams.get('limit')) || 50, 100);
+	const cursor = event.url.searchParams.get('cursor');
+
 	const projectTasks = await db
 		.select()
 		.from(tasks)
-		.where(eq(tasks.projectId, projectId))
-		.orderBy(tasks.position);
+		.where(
+			cursor
+				? and(eq(tasks.projectId, projectId), gt(tasks.id, cursor))
+				: eq(tasks.projectId, projectId)
+		)
+		.orderBy(tasks.position)
+		.limit(limit + 1);
 
-	return json(projectTasks);
+	const hasMore = projectTasks.length > limit;
+	if (hasMore) projectTasks.pop();
+
+	return json({
+		data: projectTasks,
+		nextCursor: hasMore ? projectTasks[projectTasks.length - 1]?.id : null
+	});
 };

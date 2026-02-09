@@ -191,7 +191,7 @@ async function testAuthRegister() {
 	);
 
 	const body4 = await res4.text();
-	const isFailure4 = res4.status === 400 || body4.includes('"failure"') || body4.includes('already exists');
+	const isFailure4 = res4.status === 400 || body4.includes('"failure"') || body4.includes('already exists') || body4.includes('Unable to create account');
 	const noCookie4 = !extractCookies(res4.headers).includes('session=');
 	if (isFailure4 && noCookie4) {
 		record('Auth', 'Register duplicate email (validation)', 'PASS', `Correctly rejected duplicate email`, dur4, res4.status);
@@ -603,11 +603,12 @@ async function testTasks() {
 			headers: { Cookie: sessionCookie }
 		})
 	);
-	const allTasks = await res3.json();
+	const allTasksRes = await res3.json();
+	const allTasks = allTasksRes.data ?? allTasksRes;
 	if (res3.ok && Array.isArray(allTasks) && allTasks.length >= 2) {
-		record('Tasks', 'GET /api/v1/tasks (list)', 'PASS', `${allTasks.length} tasks returned`, dur3, res3.status);
+		record('Tasks', 'GET /api/v1/tasks (list)', 'PASS', `${allTasks.length} tasks returned${allTasksRes.nextCursor ? ', has nextCursor' : ''}`, dur3, res3.status);
 	} else {
-		record('Tasks', 'GET /api/v1/tasks (list)', 'FAIL', `Expected array with >=2 tasks, got ${JSON.stringify(allTasks).substring(0, 200)}`, dur3, res3.status);
+		record('Tasks', 'GET /api/v1/tasks (list)', 'FAIL', `Expected array with >=2 tasks, got ${JSON.stringify(allTasksRes).substring(0, 200)}`, dur3, res3.status);
 	}
 
 	// GET /api/v1/tasks/:taskId
@@ -732,7 +733,8 @@ async function testTasks() {
 				headers: { Cookie: sessionCookie2 }
 			})
 		);
-		const u2Tasks = await res9.json();
+		const u2TasksRes = await res9.json();
+		const u2Tasks = u2TasksRes.data ?? u2TasksRes;
 		if (res9.ok && Array.isArray(u2Tasks)) {
 			record('Tasks', 'GET /api/v1/tasks (User 2, invited member)', 'PASS', `${u2Tasks.length} tasks visible to invited user`, dur9, res9.status);
 		} else {
@@ -868,11 +870,12 @@ async function testComments() {
 			headers: { Cookie: sessionCookie }
 		})
 	);
-	const allComments = await res3.json();
+	const allCommentsRes = await res3.json();
+	const allComments = allCommentsRes.data ?? allCommentsRes;
 	if (res3.ok && Array.isArray(allComments) && allComments.length >= 2) {
-		record('Comments', 'GET /api/v1/comments (list)', 'PASS', `${allComments.length} comments returned`, dur3, res3.status);
+		record('Comments', 'GET /api/v1/comments (list)', 'PASS', `${allComments.length} comments returned${allCommentsRes.nextCursor ? ', has nextCursor' : ''}`, dur3, res3.status);
 	} else {
-		record('Comments', 'GET /api/v1/comments (list)', 'FAIL', JSON.stringify(allComments).substring(0, 200), dur3, res3.status);
+		record('Comments', 'GET /api/v1/comments (list)', 'FAIL', JSON.stringify(allCommentsRes).substring(0, 200), dur3, res3.status);
 	}
 
 	// Validation: empty body
@@ -924,10 +927,10 @@ async function testTimeEntries() {
 			body: JSON.stringify({ taskId, note: 'Should fail' })
 		})
 	);
-	if (res2.status === 400) {
-		record('Time', 'POST /api/v1/time-entries (duplicate timer)', 'PASS', `400 — already running`, dur2, res2.status);
+	if (res2.status === 400 || res2.status === 409) {
+		record('Time', 'POST /api/v1/time-entries (duplicate timer)', 'PASS', `${res2.status} — already running`, dur2, res2.status);
 	} else {
-		record('Time', 'POST /api/v1/time-entries (duplicate timer)', 'FAIL', `Expected 400, got ${res2.status}`, dur2, res2.status);
+		record('Time', 'POST /api/v1/time-entries (duplicate timer)', 'FAIL', `Expected 400/409, got ${res2.status}`, dur2, res2.status);
 	}
 
 	// Wait a moment then PATCH — stop timer
@@ -967,11 +970,12 @@ async function testTimeEntries() {
 			headers: { Cookie: sessionCookie }
 		})
 	);
-	const entries = await res5.json();
+	const entriesRes = await res5.json();
+	const entries = entriesRes.data ?? entriesRes;
 	if (res5.ok && Array.isArray(entries) && entries.length >= 1) {
 		record('Time', 'GET /api/v1/time-entries (list)', 'PASS', `${entries.length} entries returned`, dur5, res5.status);
 	} else {
-		record('Time', 'GET /api/v1/time-entries (list)', 'FAIL', JSON.stringify(entries).substring(0, 200), dur5, res5.status);
+		record('Time', 'GET /api/v1/time-entries (list)', 'FAIL', JSON.stringify(entriesRes).substring(0, 200), dur5, res5.status);
 	}
 
 	// GET with taskId filter
@@ -980,7 +984,8 @@ async function testTimeEntries() {
 			headers: { Cookie: sessionCookie }
 		})
 	);
-	const filtered = await res6.json();
+	const filteredRes = await res6.json();
+	const filtered = filteredRes.data ?? filteredRes;
 	if (res6.ok && Array.isArray(filtered)) {
 		record('Time', 'GET /api/v1/time-entries?taskId (filtered)', 'PASS', `${filtered.length} entries for task`, dur6, res6.status);
 	} else {
@@ -1319,6 +1324,22 @@ async function testSecurity() {
 		record('Security', 'Permissions-Policy restrictive', 'PASS', permissionsPolicy.substring(0, 100), 0);
 	} else {
 		record('Security', 'Permissions-Policy restrictive', 'FAIL', `Got: ${permissionsPolicy}`, 0);
+	}
+
+	// Check Content-Security-Policy
+	const csp = res1.headers.get('content-security-policy');
+	if (csp && csp.includes("default-src 'self'") && csp.includes("frame-ancestors 'none'")) {
+		record('Security', 'Content-Security-Policy', 'PASS', csp.substring(0, 120), 0);
+	} else {
+		record('Security', 'Content-Security-Policy', 'FAIL', `Got: ${csp}`, 0);
+	}
+
+	// Check Strict-Transport-Security
+	const hsts = res1.headers.get('strict-transport-security');
+	if (hsts && hsts.includes('max-age=')) {
+		record('Security', 'Strict-Transport-Security (HSTS)', 'PASS', hsts, 0);
+	} else {
+		record('Security', 'Strict-Transport-Security (HSTS)', 'FAIL', `Got: ${hsts}`, 0);
 	}
 }
 

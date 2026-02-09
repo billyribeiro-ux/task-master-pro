@@ -30,33 +30,48 @@ export async function getPresignedUploadUrl(
 	contentType: string,
 	maxSize: number = 10 * 1024 * 1024
 ): Promise<string> {
-	const command = new PutObjectCommand({
-		Bucket: getBucket(),
-		Key: key,
-		ContentType: contentType,
-		ContentLength: maxSize
-	});
+	try {
+		const command = new PutObjectCommand({
+			Bucket: getBucket(),
+			Key: key,
+			ContentType: contentType,
+			ContentLength: maxSize
+		});
 
-	return await getSignedUrl(getClient(), command, { expiresIn: 3600 });
+		return await getSignedUrl(getClient(), command, { expiresIn: 3600 });
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Unknown S3 error';
+		throw new Error(`S3 operation failed: ${message}`);
+	}
 }
 
 export async function getPresignedDownloadUrl(
 	key: string,
 	expiresIn: number = 3600
 ): Promise<string> {
-	const command = new GetObjectCommand({
-		Bucket: getBucket(),
-		Key: key
-	});
+	try {
+		const command = new GetObjectCommand({
+			Bucket: getBucket(),
+			Key: key
+		});
 
-	return await getSignedUrl(getClient(), command, { expiresIn });
+		return await getSignedUrl(getClient(), command, { expiresIn });
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Unknown S3 error';
+		throw new Error(`S3 operation failed: ${message}`);
+	}
 }
 
 export async function deleteObject(key: string): Promise<void> {
-	const command = new DeleteObjectCommand({
-		Bucket: getBucket(),
-		Key: key
-	});
+	try {
+		const command = new DeleteObjectCommand({
+			Bucket: getBucket(),
+			Key: key
+		});
 
-	await getClient().send(command);
+		await getClient().send(command);
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Unknown S3 error';
+		throw new Error(`S3 operation failed: ${message}`);
+	}
 }

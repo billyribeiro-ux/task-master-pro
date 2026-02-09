@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { projects, tasks, projectMembers, timeEntries } from '$lib/server/db/schema.js';
-import { eq, or, count, and, gte, inArray } from 'drizzle-orm';
+import { eq, or, count, and, gte, inArray, sql } from 'drizzle-orm';
 import { subDays } from 'date-fns';
 
 export const load: PageServerLoad = async ({ parent }) => {
@@ -47,8 +47,10 @@ export const load: PageServerLoad = async ({ parent }) => {
 			);
 		completedThisWeek = completedResult?.total ?? 0;
 
-		const timeResult = await db
-			.select({ duration: timeEntries.durationSeconds })
+		const [timeResult] = await db
+			.select({
+				totalSeconds: sql<number>`coalesce(sum(${timeEntries.durationSeconds}), 0)`
+			})
 			.from(timeEntries)
 			.where(
 				and(
@@ -56,7 +58,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 					gte(timeEntries.startedAt, weekAgo)
 				)
 			);
-		const totalSeconds = timeResult.reduce((sum, t) => sum + (t.duration ?? 0), 0);
+		const totalSeconds = timeResult?.totalSeconds ?? 0;
 		hoursLoggedThisWeek = Math.round((totalSeconds / 3600) * 10) / 10;
 	}
 

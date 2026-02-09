@@ -63,26 +63,24 @@ export const load: PageServerLoad = async ({ parent }) => {
 
 	const totalHoursLogged = Math.round(((timeResult[0]?.total ?? 0) / 3600) * 10) / 10;
 
-	const projectStats = await Promise.all(
-		userProjects.map(async (project) => {
-			const [taskCount] = await db
-				.select({ total: count() })
-				.from(tasks)
-				.where(eq(tasks.projectId, project.id));
-
-			const [doneCount] = await db
-				.select({ total: count() })
-				.from(tasks)
-				.where(and(eq(tasks.projectId, project.id), eq(tasks.status, 'done')));
-
-			return {
-				id: project.id,
-				name: project.name,
-				totalTasks: taskCount?.total ?? 0,
-				completedTasks: doneCount?.total ?? 0
-			};
+	const taskStats = await db
+		.select({
+			projectId: tasks.projectId,
+			total: count(),
+			completed: sql<number>`sum(case when ${tasks.status} = 'done' then 1 else 0 end)`.as('completed')
 		})
-	);
+		.from(tasks)
+		.where(inArray(tasks.projectId, projectIds))
+		.groupBy(tasks.projectId);
+
+	const statsMap = new Map(taskStats.map(s => [s.projectId, { total: s.total, completed: s.completed ?? 0 }]));
+
+	const projectStats = userProjects.map(project => ({
+		id: project.id,
+		name: project.name,
+		totalTasks: statsMap.get(project.id)?.total ?? 0,
+		completedTasks: statsMap.get(project.id)?.completed ?? 0
+	}));
 
 	return {
 		tasksByStatus,

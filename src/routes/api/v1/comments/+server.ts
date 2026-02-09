@@ -2,7 +2,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { comments, tasks, activityLog } from '$lib/server/db/schema.js';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and, lt } from 'drizzle-orm';
 import { z } from 'zod';
 import { requireProjectAccess } from '$lib/server/auth/guards.js';
 
@@ -58,11 +58,25 @@ export const GET: RequestHandler = async (event) => {
 
 	await requireProjectAccess(event, task.projectId);
 
+	const limit = Math.min(Number(event.url.searchParams.get('limit')) || 50, 100);
+	const cursor = event.url.searchParams.get('cursor');
+
 	const taskComments = await db
 		.select()
 		.from(comments)
-		.where(eq(comments.taskId, taskId))
-		.orderBy(desc(comments.createdAt));
+		.where(
+			cursor
+				? and(eq(comments.taskId, taskId), lt(comments.id, cursor))
+				: eq(comments.taskId, taskId)
+		)
+		.orderBy(desc(comments.createdAt))
+		.limit(limit + 1);
 
-	return json(taskComments);
+	const hasMore = taskComments.length > limit;
+	if (hasMore) taskComments.pop();
+
+	return json({
+		data: taskComments,
+		nextCursor: hasMore ? taskComments[taskComments.length - 1]?.id : null
+	});
 };

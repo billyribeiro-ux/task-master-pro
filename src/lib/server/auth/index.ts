@@ -7,6 +7,33 @@ import { hash, verify } from '@node-rs/argon2';
 const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 const SESSION_REFRESH_THRESHOLD_MS = 15 * 24 * 60 * 60 * 1000; // 15 days
 
+// Simple session cache to reduce DB hits (5-second TTL)
+const sessionCache = new Map<string, { session: Session; user: SessionUser; expiresAt: number }>();
+const SESSION_CACHE_TTL = 5_000; // 5 seconds
+const SESSION_CACHE_MAX = 1000;
+
+function getCachedSession(tokenHash: string) {
+	const cached = sessionCache.get(tokenHash);
+	if (cached && Date.now() < cached.expiresAt) {
+		return { session: cached.session, user: cached.user };
+	}
+	if (cached) sessionCache.delete(tokenHash);
+	return null;
+}
+
+function setCachedSession(tokenHash: string, session: Session, user: SessionUser) {
+	// Evict oldest entries if cache is full
+	if (sessionCache.size >= SESSION_CACHE_MAX) {
+		const firstKey = sessionCache.keys().next().value;
+		if (firstKey) sessionCache.delete(firstKey);
+	}
+	sessionCache.set(tokenHash, { session, user, expiresAt: Date.now() + SESSION_CACHE_TTL });
+}
+
+function invalidateCachedSession(sessionId: string) {
+	sessionCache.delete(sessionId);
+}
+
 export interface SessionUser {
 	id: string;
 	email: string;
@@ -55,6 +82,9 @@ export async function createSession(token: string, userId: string): Promise<Sess
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
 	const sessionId = hashToken(token);
 
+	const cached = getCachedSession(sessionId);
+	if (cached) return cached;
+
 	const result = await db
 		.select({
 			session: sessions,
@@ -99,10 +129,13 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 			.where(eq(sessions.id, session.id));
 	}
 
-	return { session, user: user as SessionUser };
+	const sessionUser = user as SessionUser;
+	setCachedSession(sessionId, session, sessionUser);
+	return { session, user: sessionUser };
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
+	invalidateCachedSession(sessionId);
 	await db.delete(sessions).where(eq(sessions.id, sessionId));
 }
 

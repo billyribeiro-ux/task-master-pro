@@ -1,9 +1,9 @@
 # TaskMaster Pro — End-to-End Agent Test Report
 
-**Generated:** 2026-02-09T06:50:13.235Z
+**Generated:** 2026-02-09T10:09:56.324Z
 **Server:** http://localhost:4173
-**Total Tests:** 73
-**Passed:** 73 ✅
+**Total Tests:** 75
+**Passed:** 75 ✅
 **Failed:** 0 ❌
 **Skipped:** 0 ⏭️
 **Pass Rate:** 100.0%
@@ -28,7 +28,7 @@
 | Billing | 3 | 0 | 0 | 3 |
 | Webhooks | 2 | 0 | 0 | 2 |
 | Pages | 8 | 0 | 0 | 8 |
-| Security | 5 | 0 | 0 | 5 |
+| Security | 7 | 0 | 0 | 7 |
 | Delete | 2 | 0 | 0 | 2 |
 
 ---
@@ -37,119 +37,119 @@
 
 ### Health
 
-- ✅ **GET /api/health** [HTTP 200] (94ms)
-  - status=ok, version=0.1.0, timestamp=2026-02-09T06:50:05.910Z
+- ✅ **GET /api/health** [HTTP 200] (92ms)
+  - status=ok, version=0.1.0, timestamp=2026-02-09T10:09:49.000Z
 
 ### Auth
 
-- ✅ **Register User 1 (Alice)** [HTTP 200] (248ms)
+- ✅ **Register User 1 (Alice)** [HTTP 200] (247ms)
   - Session cookie set, redirect to /dashboard
-- ✅ **Register User 2 (Bob)** [HTTP 200] (58ms)
+- ✅ **Register User 2 (Bob)** [HTTP 200] (48ms)
   - Session cookie set, redirect to /dashboard
-- ✅ **Register with weak password (validation)** [HTTP 200] (6ms)
+- ✅ **Register with weak password (validation)** [HTTP 200] (5ms)
   - Correctly rejected, no session cookie set
 - ✅ **Register duplicate email (validation)** [HTTP 200] (5ms)
   - Correctly rejected duplicate email
-- ✅ **Login with wrong credentials** [HTTP 200] (27ms)
+- ✅ **Login with wrong credentials** [HTTP 200] (29ms)
   - Correctly rejected
-- ✅ **Logout User 1** [HTTP 303] (34ms)
+- ✅ **Logout User 1** [HTTP 303] (37ms)
   - Redirected to /login, session cleared
-- ✅ **Old session rejected after logout** [HTTP 401] (20ms)
+- ✅ **Old session rejected after logout** [HTTP 401] (28ms)
   - 401 Unauthorized as expected
-- ✅ **Re-register fresh User 1 session** [HTTP 200] (68ms)
+- ✅ **Re-register fresh User 1 session** [HTTP 200] (55ms)
   - status=200
 
 ### Users
 
 - ✅ **GET /api/v1/users/me** [HTTP 200] (5ms)
-  - id=frbjg6xtru1mfnze4sqmeo3e, name=Alice Tester Re, email=alice-relogin-1770619806324@test.com, role=user, plan=free
-- ✅ **PATCH /api/v1/users/me (update name)** [HTTP 200] (12ms)
+  - id=angg1sr51n0nkwkxoe2udct0, name=Alice Tester Re, email=alice-relogin-1770631789415@test.com, role=user, plan=free
+- ✅ **PATCH /api/v1/users/me (update name)** [HTTP 200] (8ms)
   - name updated to Alice Wonderland
 - ✅ **GET /api/v1/users/me (no auth)** [HTTP 401] (2ms)
   - 401 as expected
 - ✅ **GET /api/v1/users/me (User 2)** [HTTP 200] (3ms)
-  - id=hrwm4zme5b6r8wo19oxk61a6, name=Bob Developer
+  - id=evq803cc818giyvmbq832fle, name=Bob Developer
 
 ### Projects
 
-- ✅ **Create project (form action)** [HTTP 200] (99ms)
-  - projectId=e904rhr54zjaus1826j8740j, redirect=/projects/e904rhr54zjaus1826j8740j/board
-- ✅ **GET /projects (list page)** [HTTP 200] (31ms)
+- ✅ **Create project (form action)** [HTTP 200] (84ms)
+  - projectId=lardhbva80py8h0rfrke2dfg, redirect=/projects/lardhbva80py8h0rfrke2dfg/board
+- ✅ **GET /projects (list page)** [HTTP 200] (24ms)
   - Project appears in list
-- ✅ **GET /projects/:id/board** [HTTP 200] (62ms)
+- ✅ **GET /projects/:id/board** [HTTP 200] (61ms)
   - Board page renders with columns
-- ✅ **Update project settings** [HTTP 200] (33ms)
+- ✅ **Update project settings** [HTTP 200] (31ms)
   - Project name and visibility updated
-- ✅ **Invite User 2 to project** [HTTP 200] (15ms)
-  - User bob-1770619806171@test.com invited as member
+- ✅ **Invite User 2 to project** [HTTP 200] (8ms)
+  - User bob-1770631789260@test.com invited as member
 
 ### Columns
 
-- ✅ **Verify 5 default Kanban columns exist** [HTTP 200] (11ms)
+- ✅ **Verify 5 default Kanban columns exist** [HTTP 200] (7ms)
   - All columns present: Backlog, To Do, In Progress, In Review, Done
 - ✅ **Extract column IDs from DB** (0ms)
-  - Found 5 columns: Backlog=g0gtitlioo5tzryjruanf2t3, To Do=qizs00lhgh10v0dzhmtvj37e, In Progress=yvtrofewdg5n2a42d6m5649k, In Review=tyn32zj87ohy5x3jd098vup0, Done=dnp17
+  - Found 5 columns: Backlog=zkk0das3hkk430xpgl2wep84, To Do=ixcxofyhtp81r2wlg0n7m090, In Progress=wvgatp3p1mhi3ac67ritxfqv, In Review=a18bhh0wdcz0ir687h5d7s0n, Done=s5o3w
 
 ### Tasks
 
-- ✅ **POST /api/v1/tasks (create task 1)** [HTTP 201] (50ms)
-  - id=b5r15a4n712j3wcocz3ws9s8, displayId=TM-1, title="E2E Test Task — Bug Fix", priority=high
-- ✅ **POST /api/v1/tasks (create task 2)** [HTTP 201] (23ms)
-  - id=c9s0sfiqykihkmbmt7jh2afu, displayId=TM-2
-- ✅ **POST /api/v1/tasks (create task 3 minimal)** [HTTP 201] (33ms)
-  - id=zrty05ix9we1otfneloq8rz2, no description
+- ✅ **POST /api/v1/tasks (create task 1)** [HTTP 201] (44ms)
+  - id=puh9s4i6714o5vz82z9fopf3, displayId=TM-1, title="E2E Test Task — Bug Fix", priority=high
+- ✅ **POST /api/v1/tasks (create task 2)** [HTTP 201] (16ms)
+  - id=c9t3n4p74ev1wv6xhhz5mktc, displayId=TM-2
+- ✅ **POST /api/v1/tasks (create task 3 minimal)** [HTTP 201] (14ms)
+  - id=rxh09fqwq72xetv7dvn37rhp, no description
 - ✅ **GET /api/v1/tasks (list)** [HTTP 200] (4ms)
   - 3 tasks returned
-- ✅ **GET /api/v1/tasks/:id (single)** [HTTP 200] (24ms)
+- ✅ **GET /api/v1/tasks/:id (single)** [HTTP 200] (22ms)
   - title="E2E Test Task — Bug Fix", status=todo
-- ✅ **PATCH /api/v1/tasks/:id (update)** [HTTP 200] (19ms)
-  - status=in_progress, priority=urgent, assigneeId=frbjg6xtru1mfnze4sqmeo3e
-- ✅ **PATCH /api/v1/tasks/:id (mark done)** [HTTP 200] (17ms)
-  - completedAt=2026-02-09T06:50:07.604Z
-- ✅ **PATCH /api/v1/tasks/:id (reopen from done)** [HTTP 200] (18ms)
+- ✅ **PATCH /api/v1/tasks/:id (update)** [HTTP 200] (13ms)
+  - status=in_progress, priority=urgent, assigneeId=angg1sr51n0nkwkxoe2udct0
+- ✅ **PATCH /api/v1/tasks/:id (mark done)** [HTTP 200] (10ms)
+  - completedAt=2026-02-09T10:09:50.570Z
+- ✅ **PATCH /api/v1/tasks/:id (reopen from done)** [HTTP 200] (10ms)
   - completedAt cleared, status=in_review
-- ✅ **PATCH /api/v1/tasks/:id/move** [HTTP 200] (38ms)
-  - Moved to column qizs00lhgh10v0dzhmtvj37e
+- ✅ **PATCH /api/v1/tasks/:id/move** [HTTP 200] (31ms)
+  - Moved to column ixcxofyhtp81r2wlg0n7m090
 - ✅ **POST /api/v1/tasks (validation — no title)** [HTTP 400] (3ms)
   - 400 as expected
-- ✅ **GET /api/v1/tasks (no auth)** [HTTP 401] (1ms)
+- ✅ **GET /api/v1/tasks (no auth)** [HTTP 401] (2ms)
   - 401 as expected
-- ✅ **GET /api/v1/tasks (User 2, invited member)** [HTTP 200] (4ms)
+- ✅ **GET /api/v1/tasks (User 2, invited member)** [HTTP 200] (3ms)
   - 3 tasks visible to invited user
 
 ### Labels
 
-- ✅ **POST /api/v1/labels (create "bug")** [HTTP 201] (27ms)
-  - id=awwrkpiq5hjooso2eolq9j7t, name=bug, color=#ef4444
-- ✅ **POST /api/v1/labels (create "feature")** [HTTP 201] (11ms)
+- ✅ **POST /api/v1/labels (create "bug")** [HTTP 201] (30ms)
+  - id=co0les6dozi3ubcb27lhb3m8, name=bug, color=#ef4444
+- ✅ **POST /api/v1/labels (create "feature")** [HTTP 201] (8ms)
   - Label created
-- ✅ **POST /api/v1/labels (create "urgent")** [HTTP 201] (10ms)
+- ✅ **POST /api/v1/labels (create "urgent")** [HTTP 201] (6ms)
   - Label created
-- ✅ **GET /api/v1/labels (list)** [HTTP 200] (4ms)
+- ✅ **GET /api/v1/labels (list)** [HTTP 200] (20ms)
   - 3 labels returned
-- ✅ **POST /api/v1/labels (invalid color)** [HTTP 400] (7ms)
+- ✅ **POST /api/v1/labels (invalid color)** [HTTP 400] (3ms)
   - 400 validation error
 
 ### Comments
 
-- ✅ **POST /api/v1/comments (Alice)** [HTTP 201] (36ms)
-  - id=ior60ml7sbsj4w8w4qoyylk5, authorId=frbjg6xtru1mfnze4sqmeo3e
-- ✅ **POST /api/v1/comments (Bob)** [HTTP 201] (17ms)
+- ✅ **POST /api/v1/comments (Alice)** [HTTP 201] (30ms)
+  - id=u7db5xa7i9ggwjuq04nff4lm, authorId=angg1sr51n0nkwkxoe2udct0
+- ✅ **POST /api/v1/comments (Bob)** [HTTP 201] (9ms)
   - Cross-user comment created
-- ✅ **GET /api/v1/comments (list)** [HTTP 200] (4ms)
+- ✅ **GET /api/v1/comments (list)** [HTTP 200] (3ms)
   - 2 comments returned
 - ✅ **POST /api/v1/comments (empty body)** [HTTP 400] (3ms)
   - 400 validation
 
 ### Time
 
-- ✅ **POST /api/v1/time-entries (start timer)** [HTTP 201] (29ms)
-  - id=k367xn7vkpdapi9ojj69kn11, startedAt=2026-02-09T06:50:07.826Z
-- ✅ **POST /api/v1/time-entries (duplicate timer)** [HTTP 400] (5ms)
-  - 400 — already running
-- ✅ **PATCH /api/v1/time-entries (stop timer)** [HTTP 200] (13ms)
-  - durationSeconds=1, stoppedAt=2026-02-09T06:50:09.344Z
-- ✅ **PATCH /api/v1/time-entries (already stopped)** [HTTP 400] (4ms)
+- ✅ **POST /api/v1/time-entries (start timer)** [HTTP 201] (25ms)
+  - id=kud6v14vj5oq36ii169xj2ze, startedAt=2026-02-09T10:09:50.764Z
+- ✅ **POST /api/v1/time-entries (duplicate timer)** [HTTP 409] (6ms)
+  - 409 — already running
+- ✅ **PATCH /api/v1/time-entries (stop timer)** [HTTP 200] (11ms)
+  - durationSeconds=1, stoppedAt=2026-02-09T10:09:52.281Z
+- ✅ **PATCH /api/v1/time-entries (already stopped)** [HTTP 400] (3ms)
   - 400 as expected
 - ✅ **GET /api/v1/time-entries (list)** [HTTP 200] (3ms)
   - 1 entries returned
@@ -158,7 +158,7 @@
 
 ### Notifications
 
-- ✅ **POST /api/v1/notifications/read-all** [HTTP 200] (19ms)
+- ✅ **POST /api/v1/notifications/read-all** [HTTP 200] (22ms)
   - success=true
 - ✅ **POST /api/v1/notifications/:id/read (no-op)** [HTTP 200] (19ms)
   - success=true (no-op for nonexistent)
@@ -169,44 +169,44 @@
 
 ### Files
 
-- ✅ **POST /api/v1/files/presign** [HTTP 201] (812ms)
-  - uploadUrl received, attachment id=mii764q0l1eowkkpgmcl7mcp
-- ✅ **POST /api/v1/files/presign (file too large)** [HTTP 400] (4ms)
+- ✅ **POST /api/v1/files/presign** [HTTP 201] (909ms)
+  - uploadUrl received, attachment id=k08jfdiu4foixyw06e5ocp7o
+- ✅ **POST /api/v1/files/presign (file too large)** [HTTP 400] (3ms)
   - 400 validation for 200MB file
 
 ### Billing
 
-- ✅ **POST /api/v1/billing/checkout (Stripe placeholder)** [HTTP 500] (1305ms)
+- ✅ **POST /api/v1/billing/checkout (Stripe placeholder)** [HTTP 500] (1327ms)
   - 500 expected — Stripe key is placeholder (auth validated)
-- ✅ **POST /api/v1/billing/portal (no subscription)** [HTTP 400] (9ms)
+- ✅ **POST /api/v1/billing/portal (no subscription)** [HTTP 400] (14ms)
   - 400 — no billing account as expected
 - ✅ **POST /api/v1/billing/checkout (no auth)** [HTTP 401] (2ms)
   - 401 as expected
 
 ### Webhooks
 
-- ✅ **POST /api/v1/webhooks/stripe (no signature)** [HTTP 400] (20ms)
+- ✅ **POST /api/v1/webhooks/stripe (no signature)** [HTTP 400] (21ms)
   - 400 — missing stripe-signature
-- ✅ **POST /api/v1/webhooks/stripe (fake signature)** [HTTP 400] (4ms)
+- ✅ **POST /api/v1/webhooks/stripe (fake signature)** [HTTP 400] (5ms)
   - 400 — invalid signature
 
 ### Pages
 
-- ✅ **GET /dashboard** [HTTP 200] (1502ms)
+- ✅ **GET /dashboard** [HTTP 200] (1539ms)
   - Dashboard rendered
-- ✅ **GET /analytics** [HTTP 200] (35ms)
+- ✅ **GET /analytics** [HTTP 200] (33ms)
   - Analytics page loaded
-- ✅ **GET /time-tracking** [HTTP 200] (41ms)
+- ✅ **GET /time-tracking** [HTTP 200] (40ms)
   - Time tracking page loaded
 - ✅ **GET /settings/billing** [HTTP 200] (13ms)
   - Billing page loaded
-- ✅ **GET /login (public)** [HTTP 200] (10ms)
+- ✅ **GET /login (public)** [HTTP 200] (11ms)
   - Login form rendered
 - ✅ **GET /register (public)** [HTTP 200] (6ms)
   - Register form rendered
 - ✅ **GET /dashboard (no auth, redirect)** [HTTP 303] (2ms)
   - Redirected to login (303)
-- ✅ **GET /projects/:id/settings** [HTTP 200] (12ms)
+- ✅ **GET /projects/:id/settings** [HTTP 200] (10ms)
   - Settings page loaded
 
 ### Security
@@ -218,15 +218,19 @@
 - ✅ **Referrer-Policy** (0ms)
   - strict-origin-when-cross-origin
 - ✅ **X-Request-Id header present** (0ms)
-  - requestId=wYqnoMO3ObibalqRdRD1n
+  - requestId=aj4vpYQuo7GqCmey15sgE
 - ✅ **Permissions-Policy restrictive** (0ms)
-  - camera=(), microphone=(), geolocation=(), payment=(self)
+  - camera=(), microphone=(), geolocation=()
+- ✅ **Content-Security-Policy** (0ms)
+  - default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; con
+- ✅ **Strict-Transport-Security (HSTS)** (0ms)
+  - max-age=31536000; includeSubDomains
 
 ### Delete
 
-- ✅ **DELETE /api/v1/tasks/:id** [HTTP 200] (19ms)
-  - Task c9s0sfiqykihkmbmt7jh2afu deleted
-- ✅ **GET deleted task (404)** [HTTP 404] (3ms)
+- ✅ **DELETE /api/v1/tasks/:id** [HTTP 200] (11ms)
+  - Task c9t3n4p74ev1wv6xhhz5mktc deleted
+- ✅ **GET deleted task (404)** [HTTP 404] (2ms)
   - 404 as expected
 
 ---

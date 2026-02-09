@@ -4,7 +4,7 @@ import { db } from '$lib/server/db/index.js';
 import { tasks, activityLog } from '$lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { requireProjectAccess } from '$lib/server/auth/guards.js';
+import { requireProjectAccess, requireProjectRole } from '$lib/server/auth/guards.js';
 
 const updateTaskSchema = z.object({
 	title: z.string().min(1).max(500).optional(),
@@ -91,7 +91,7 @@ export const DELETE: RequestHandler = async (event) => {
 
 	if (!existing) throw error(404, 'Task not found');
 
-	await requireProjectAccess(event, existing.projectId);
+	await requireProjectRole(event, existing.projectId, ['member', 'admin', 'owner']);
 
 	await db.delete(tasks).where(eq(tasks.id, taskId));
 
