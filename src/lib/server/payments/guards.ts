@@ -10,19 +10,76 @@ const PLAN_LIMITS = {
 		maxProjects: 3,
 		maxMembersPerProject: 5,
 		maxFileUploadMB: 10,
-		maxStorageMB: 100
+		maxStorageMB: 100,
+		// Future features
+		maxCustomFieldsPerProject: 3,
+		maxAutomationRulesPerProject: 2,
+		maxRecurringTasksPerProject: 3,
+		maxWebhookEndpointsPerProject: 1,
+		maxApiKeys: 1,
+		maxGoals: 5,
+		maxTemplates: 2,
+		aiSuggestionsPerDay: 10,
+		aiChatMessagesPerDay: 20,
+		totpEnabled: false,
+		customFieldsEnabled: true,
+		automationsEnabled: false,
+		recurringTasksEnabled: true,
+		dependenciesEnabled: true,
+		goalsEnabled: false,
+		templatesEnabled: true,
+		apiKeysEnabled: false,
+		webhooksEnabled: false
 	},
 	pro: {
 		maxProjects: 50,
 		maxMembersPerProject: 50,
 		maxFileUploadMB: 100,
-		maxStorageMB: 10_000
+		maxStorageMB: 10_000,
+		// Future features
+		maxCustomFieldsPerProject: 25,
+		maxAutomationRulesPerProject: 25,
+		maxRecurringTasksPerProject: 50,
+		maxWebhookEndpointsPerProject: 10,
+		maxApiKeys: 10,
+		maxGoals: 100,
+		maxTemplates: 25,
+		aiSuggestionsPerDay: 100,
+		aiChatMessagesPerDay: 200,
+		totpEnabled: true,
+		customFieldsEnabled: true,
+		automationsEnabled: true,
+		recurringTasksEnabled: true,
+		dependenciesEnabled: true,
+		goalsEnabled: true,
+		templatesEnabled: true,
+		apiKeysEnabled: true,
+		webhooksEnabled: true
 	},
 	enterprise: {
 		maxProjects: Infinity,
 		maxMembersPerProject: Infinity,
 		maxFileUploadMB: 500,
-		maxStorageMB: 100_000
+		maxStorageMB: 100_000,
+		// Future features
+		maxCustomFieldsPerProject: Infinity,
+		maxAutomationRulesPerProject: Infinity,
+		maxRecurringTasksPerProject: Infinity,
+		maxWebhookEndpointsPerProject: Infinity,
+		maxApiKeys: Infinity,
+		maxGoals: Infinity,
+		maxTemplates: Infinity,
+		aiSuggestionsPerDay: Infinity,
+		aiChatMessagesPerDay: Infinity,
+		totpEnabled: true,
+		customFieldsEnabled: true,
+		automationsEnabled: true,
+		recurringTasksEnabled: true,
+		dependenciesEnabled: true,
+		goalsEnabled: true,
+		templatesEnabled: true,
+		apiKeysEnabled: true,
+		webhooksEnabled: true
 	}
 } as const;
 
@@ -81,4 +138,44 @@ export async function checkFeatureLimit(
 		default:
 			return { allowed: true, limit: Infinity, current: 0 };
 	}
+}
+
+export type FeatureFlag =
+	| 'totpEnabled'
+	| 'customFieldsEnabled'
+	| 'automationsEnabled'
+	| 'recurringTasksEnabled'
+	| 'dependenciesEnabled'
+	| 'goalsEnabled'
+	| 'templatesEnabled'
+	| 'apiKeysEnabled'
+	| 'webhooksEnabled';
+
+export function requireFeature(event: RequestEvent, feature: FeatureFlag) {
+	const user = requireAuth(event);
+	const plan = user.plan as PlanName;
+	const limits = PLAN_LIMITS[plan];
+
+	if (!limits[feature]) {
+		throw error(402, {
+			message: `The ${feature.replace('Enabled', '').replace(/([A-Z])/g, ' $1').trim()} feature requires a plan upgrade`
+		});
+	}
+
+	return user;
+}
+
+export type QuantityLimit =
+	| 'maxCustomFieldsPerProject'
+	| 'maxAutomationRulesPerProject'
+	| 'maxRecurringTasksPerProject'
+	| 'maxWebhookEndpointsPerProject'
+	| 'maxApiKeys'
+	| 'maxGoals'
+	| 'maxTemplates'
+	| 'aiSuggestionsPerDay'
+	| 'aiChatMessagesPerDay';
+
+export function getQuantityLimit(plan: PlanName, limit: QuantityLimit): number {
+	return PLAN_LIMITS[plan][limit];
 }

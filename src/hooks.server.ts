@@ -17,7 +17,36 @@ const requestIdHandle: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
+const apiKeyAuthHandle: Handle = async ({ event, resolve }) => {
+	const path = event.url.pathname;
+	if (!path.startsWith('/api/v1')) {
+		return resolve(event);
+	}
+
+	const authHeader = event.request.headers.get('Authorization');
+	if (!authHeader?.startsWith('Bearer tmk_')) {
+		return resolve(event);
+	}
+
+	try {
+		const { validateApiKey } = await import('$lib/server/auth/api-keys.js');
+		const user = await validateApiKey(authHeader.slice(7));
+		if (user) {
+			event.locals.user = user;
+			event.locals.session = null;
+		}
+	} catch {
+		// Fall through to session auth
+	}
+
+	return resolve(event);
+};
+
 const authHandle: Handle = async ({ event, resolve }) => {
+	if (event.locals.user) {
+		return resolve(event);
+	}
+
 	const token = event.cookies.get(SESSION_COOKIE_NAME);
 
 	if (!token) {
@@ -108,4 +137,4 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle = sequence(requestIdHandle, authHandle, securityHeadersHandle, rateLimitHandle);
+export const handle = sequence(requestIdHandle, apiKeyAuthHandle, authHandle, securityHeadersHandle, rateLimitHandle);

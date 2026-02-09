@@ -94,6 +94,61 @@ export function attachSocketIO(httpServer: HTTPServer): SocketIOServer {
 			});
 		});
 
+		// ─── Future Feature Real-time Events ────────────────────────────
+
+		socket.on('task:dependency:created', (data: { projectId: string; taskId: string; dependsOnTaskId: string; type: string }) => {
+			socket.to(`project:${data.projectId}`).emit('task:dependency:created', {
+				taskId: data.taskId,
+				dependsOnTaskId: data.dependsOnTaskId,
+				type: data.type,
+				actorId: user.id
+			});
+		});
+
+		socket.on('task:dependency:removed', (data: { projectId: string; taskId: string; dependsOnTaskId: string }) => {
+			socket.to(`project:${data.projectId}`).emit('task:dependency:removed', {
+				taskId: data.taskId,
+				dependsOnTaskId: data.dependsOnTaskId,
+				actorId: user.id
+			});
+		});
+
+		socket.on('automation:triggered', (data: { projectId: string; ruleId: string; ruleName: string; taskId?: string }) => {
+			socket.to(`project:${data.projectId}`).emit('automation:triggered', {
+				ruleId: data.ruleId,
+				ruleName: data.ruleName,
+				taskId: data.taskId,
+				actorId: user.id,
+				timestamp: Date.now()
+			});
+		});
+
+		socket.on('custom-field:updated', (data: { projectId: string; taskId: string; fieldId: string; value: unknown }) => {
+			socket.to(`project:${data.projectId}`).emit('custom-field:updated', {
+				taskId: data.taskId,
+				fieldId: data.fieldId,
+				value: data.value,
+				actorId: user.id
+			});
+		});
+
+		socket.on('goal:progress', (data: { projectId: string; goalId: string; progress: number }) => {
+			socket.to(`project:${data.projectId}`).emit('goal:progress', {
+				goalId: data.goalId,
+				progress: data.progress,
+				actorId: user.id
+			});
+		});
+
+		socket.on('ai:suggestion', (data: { projectId: string; suggestionId: string; type: string; title: string }) => {
+			socket.to(`project:${data.projectId}`).emit('ai:suggestion', {
+				suggestionId: data.suggestionId,
+				type: data.type,
+				title: data.title,
+				timestamp: Date.now()
+			});
+		});
+
 		socket.on('disconnecting', () => {
 			for (const room of socket.rooms) {
 				if (room.startsWith('project:')) {
