@@ -30,6 +30,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			const customerId = session.customer as string;
 
 			if (userId) {
+				// Verify user exists before trusting client-provided metadata
+				const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+				if (!user) {
+					console.error(`Stripe webhook: user ${userId} from metadata not found`);
+					return json({ received: true });
+				}
+
 				await db
 					.update(users)
 					.set({

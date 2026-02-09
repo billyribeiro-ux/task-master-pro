@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real, uniqueIndex, index, primaryKey } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real, uniqueIndex, index, primaryKey, type AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
 
@@ -95,6 +95,15 @@ export const projects = sqliteTable(
 	]
 );
 
+// ─── Project Counters ────────────────────────────────────────────────────────
+
+export const projectCounters = sqliteTable('project_counters', {
+	projectId: text('project_id')
+		.primaryKey()
+		.references(() => projects.id, { onDelete: 'cascade' }),
+	taskCounter: integer('task_counter').notNull().default(0)
+});
+
 // ─── Project Members ─────────────────────────────────────────────────────────
 
 export const projectMembers = sqliteTable(
@@ -132,7 +141,10 @@ export const columns = sqliteTable(
 		color: text('color').default('#6366f1'),
 		wipLimit: integer('wip_limit')
 	},
-	(table) => [index('columns_project_id_idx').on(table.projectId)]
+	(table) => [
+		index('columns_project_id_idx').on(table.projectId),
+		index('columns_project_position_idx').on(table.projectId, table.position)
+	]
 );
 
 // ─── Tasks ───────────────────────────────────────────────────────────────────
@@ -150,7 +162,7 @@ export const tasks = sqliteTable(
 		columnId: text('column_id')
 			.notNull()
 			.references(() => columns.id, { onDelete: 'cascade' }),
-		parentTaskId: text('parent_task_id'),
+		parentTaskId: text('parent_task_id').references((): AnySQLiteColumn => tasks.id, { onDelete: 'set null' }),
 		title: text('title').notNull(),
 		description: text('description'),
 		priority: text('priority', { enum: ['none', 'low', 'medium', 'high', 'urgent'] })
@@ -183,7 +195,9 @@ export const tasks = sqliteTable(
 		index('tasks_assignee_id_idx').on(table.assigneeId),
 		index('tasks_reporter_id_idx').on(table.reporterId),
 		index('tasks_parent_task_id_idx').on(table.parentTaskId),
-		uniqueIndex('tasks_display_id_project_idx').on(table.displayId, table.projectId)
+		uniqueIndex('tasks_display_id_project_idx').on(table.displayId, table.projectId),
+		index('tasks_column_position_idx').on(table.columnId, table.position),
+		index('tasks_status_completed_idx').on(table.status, table.completedAt)
 	]
 );
 
@@ -268,7 +282,8 @@ export const timeEntries = sqliteTable(
 	},
 	(table) => [
 		index('time_entries_task_id_idx').on(table.taskId),
-		index('time_entries_user_id_idx').on(table.userId)
+		index('time_entries_user_id_idx').on(table.userId),
+		index('time_entries_user_started_idx').on(table.userId, table.startedAt)
 	]
 );
 
@@ -321,7 +336,8 @@ export const activityLog = sqliteTable(
 	(table) => [
 		index('activity_log_project_id_idx').on(table.projectId),
 		index('activity_log_task_id_idx').on(table.taskId),
-		index('activity_log_actor_id_idx').on(table.actorId)
+		index('activity_log_actor_id_idx').on(table.actorId),
+		index('activity_log_project_created_idx').on(table.projectId, table.createdAt)
 	]
 );
 
@@ -943,6 +959,7 @@ export type NewSession = typeof sessions.$inferInsert;
 export type OAuthAccount = typeof oauthAccounts.$inferSelect;
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
+export type ProjectCounter = typeof projectCounters.$inferSelect;
 export type ProjectMember = typeof projectMembers.$inferSelect;
 export type Column = typeof columns.$inferSelect;
 export type NewColumn = typeof columns.$inferInsert;

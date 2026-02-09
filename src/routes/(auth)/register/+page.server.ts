@@ -41,7 +41,7 @@ export const actions: Actions = {
 
 		if (existing.length > 0) {
 			return fail(400, {
-				error: 'An account with this email already exists',
+				error: 'Unable to create account. Please try again or use a different email.',
 				errors: null
 			});
 		}

@@ -1,0 +1,594 @@
+[
+  {
+    "category": "Health",
+    "test": "GET /api/health",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "status=ok, version=0.1.0, timestamp=2026-02-09T10:09:49.000Z",
+    "duration": 92
+  },
+  {
+    "category": "Auth",
+    "test": "Register User 1 (Alice)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Session cookie set, redirect to /dashboard",
+    "duration": 247
+  },
+  {
+    "category": "Auth",
+    "test": "Register User 2 (Bob)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Session cookie set, redirect to /dashboard",
+    "duration": 48
+  },
+  {
+    "category": "Auth",
+    "test": "Register with weak password (validation)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Correctly rejected, no session cookie set",
+    "duration": 5
+  },
+  {
+    "category": "Auth",
+    "test": "Register duplicate email (validation)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Correctly rejected duplicate email",
+    "duration": 5
+  },
+  {
+    "category": "Auth",
+    "test": "Login with wrong credentials",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Correctly rejected",
+    "duration": 29
+  },
+  {
+    "category": "Auth",
+    "test": "Logout User 1",
+    "status": "PASS",
+    "statusCode": 303,
+    "detail": "Redirected to /login, session cleared",
+    "duration": 37
+  },
+  {
+    "category": "Auth",
+    "test": "Old session rejected after logout",
+    "status": "PASS",
+    "statusCode": 401,
+    "detail": "401 Unauthorized as expected",
+    "duration": 28
+  },
+  {
+    "category": "Auth",
+    "test": "Re-register fresh User 1 session",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "status=200",
+    "duration": 55
+  },
+  {
+    "category": "Users",
+    "test": "GET /api/v1/users/me",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "id=angg1sr51n0nkwkxoe2udct0, name=Alice Tester Re, email=alice-relogin-1770631789415@test.com, role=user, plan=free",
+    "duration": 5
+  },
+  {
+    "category": "Users",
+    "test": "PATCH /api/v1/users/me (update name)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "name updated to Alice Wonderland",
+    "duration": 8
+  },
+  {
+    "category": "Users",
+    "test": "GET /api/v1/users/me (no auth)",
+    "status": "PASS",
+    "statusCode": 401,
+    "detail": "401 as expected",
+    "duration": 2
+  },
+  {
+    "category": "Users",
+    "test": "GET /api/v1/users/me (User 2)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "id=evq803cc818giyvmbq832fle, name=Bob Developer",
+    "duration": 3
+  },
+  {
+    "category": "Projects",
+    "test": "Create project (form action)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "projectId=lardhbva80py8h0rfrke2dfg, redirect=/projects/lardhbva80py8h0rfrke2dfg/board",
+    "duration": 84
+  },
+  {
+    "category": "Projects",
+    "test": "GET /projects (list page)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Project appears in list",
+    "duration": 24
+  },
+  {
+    "category": "Projects",
+    "test": "GET /projects/:id/board",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Board page renders with columns",
+    "duration": 61
+  },
+  {
+    "category": "Projects",
+    "test": "Update project settings",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Project name and visibility updated",
+    "duration": 31
+  },
+  {
+    "category": "Projects",
+    "test": "Invite User 2 to project",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "User bob-1770631789260@test.com invited as member",
+    "duration": 8
+  },
+  {
+    "category": "Columns",
+    "test": "Verify 5 default Kanban columns exist",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "All columns present: Backlog, To Do, In Progress, In Review, Done",
+    "duration": 7
+  },
+  {
+    "category": "Columns",
+    "test": "Extract column IDs from DB",
+    "status": "PASS",
+    "detail": "Found 5 columns: Backlog=zkk0das3hkk430xpgl2wep84, To Do=ixcxofyhtp81r2wlg0n7m090, In Progress=wvgatp3p1mhi3ac67ritxfqv, In Review=a18bhh0wdcz0ir687h5d7s0n, Done=s5o3w",
+    "duration": 0
+  },
+  {
+    "category": "Tasks",
+    "test": "POST /api/v1/tasks (create task 1)",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "id=puh9s4i6714o5vz82z9fopf3, displayId=TM-1, title=\"E2E Test Task — Bug Fix\", priority=high",
+    "duration": 44
+  },
+  {
+    "category": "Tasks",
+    "test": "POST /api/v1/tasks (create task 2)",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "id=c9t3n4p74ev1wv6xhhz5mktc, displayId=TM-2",
+    "duration": 16
+  },
+  {
+    "category": "Tasks",
+    "test": "POST /api/v1/tasks (create task 3 minimal)",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "id=rxh09fqwq72xetv7dvn37rhp, no description",
+    "duration": 14
+  },
+  {
+    "category": "Tasks",
+    "test": "GET /api/v1/tasks (list)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "3 tasks returned",
+    "duration": 4
+  },
+  {
+    "category": "Tasks",
+    "test": "GET /api/v1/tasks/:id (single)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "title=\"E2E Test Task — Bug Fix\", status=todo",
+    "duration": 22
+  },
+  {
+    "category": "Tasks",
+    "test": "PATCH /api/v1/tasks/:id (update)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "status=in_progress, priority=urgent, assigneeId=angg1sr51n0nkwkxoe2udct0",
+    "duration": 13
+  },
+  {
+    "category": "Tasks",
+    "test": "PATCH /api/v1/tasks/:id (mark done)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "completedAt=2026-02-09T10:09:50.570Z",
+    "duration": 10
+  },
+  {
+    "category": "Tasks",
+    "test": "PATCH /api/v1/tasks/:id (reopen from done)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "completedAt cleared, status=in_review",
+    "duration": 10
+  },
+  {
+    "category": "Tasks",
+    "test": "PATCH /api/v1/tasks/:id/move",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Moved to column ixcxofyhtp81r2wlg0n7m090",
+    "duration": 31
+  },
+  {
+    "category": "Tasks",
+    "test": "POST /api/v1/tasks (validation — no title)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 as expected",
+    "duration": 3
+  },
+  {
+    "category": "Tasks",
+    "test": "GET /api/v1/tasks (no auth)",
+    "status": "PASS",
+    "statusCode": 401,
+    "detail": "401 as expected",
+    "duration": 2
+  },
+  {
+    "category": "Tasks",
+    "test": "GET /api/v1/tasks (User 2, invited member)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "3 tasks visible to invited user",
+    "duration": 3
+  },
+  {
+    "category": "Labels",
+    "test": "POST /api/v1/labels (create \"bug\")",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "id=co0les6dozi3ubcb27lhb3m8, name=bug, color=#ef4444",
+    "duration": 30
+  },
+  {
+    "category": "Labels",
+    "test": "POST /api/v1/labels (create \"feature\")",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "Label created",
+    "duration": 8
+  },
+  {
+    "category": "Labels",
+    "test": "POST /api/v1/labels (create \"urgent\")",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "Label created",
+    "duration": 6
+  },
+  {
+    "category": "Labels",
+    "test": "GET /api/v1/labels (list)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "3 labels returned",
+    "duration": 20
+  },
+  {
+    "category": "Labels",
+    "test": "POST /api/v1/labels (invalid color)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 validation error",
+    "duration": 3
+  },
+  {
+    "category": "Comments",
+    "test": "POST /api/v1/comments (Alice)",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "id=u7db5xa7i9ggwjuq04nff4lm, authorId=angg1sr51n0nkwkxoe2udct0",
+    "duration": 30
+  },
+  {
+    "category": "Comments",
+    "test": "POST /api/v1/comments (Bob)",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "Cross-user comment created",
+    "duration": 9
+  },
+  {
+    "category": "Comments",
+    "test": "GET /api/v1/comments (list)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "2 comments returned",
+    "duration": 3
+  },
+  {
+    "category": "Comments",
+    "test": "POST /api/v1/comments (empty body)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 validation",
+    "duration": 3
+  },
+  {
+    "category": "Time",
+    "test": "POST /api/v1/time-entries (start timer)",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "id=kud6v14vj5oq36ii169xj2ze, startedAt=2026-02-09T10:09:50.764Z",
+    "duration": 25
+  },
+  {
+    "category": "Time",
+    "test": "POST /api/v1/time-entries (duplicate timer)",
+    "status": "PASS",
+    "statusCode": 409,
+    "detail": "409 — already running",
+    "duration": 6
+  },
+  {
+    "category": "Time",
+    "test": "PATCH /api/v1/time-entries (stop timer)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "durationSeconds=1, stoppedAt=2026-02-09T10:09:52.281Z",
+    "duration": 11
+  },
+  {
+    "category": "Time",
+    "test": "PATCH /api/v1/time-entries (already stopped)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 as expected",
+    "duration": 3
+  },
+  {
+    "category": "Time",
+    "test": "GET /api/v1/time-entries (list)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "1 entries returned",
+    "duration": 3
+  },
+  {
+    "category": "Time",
+    "test": "GET /api/v1/time-entries?taskId (filtered)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "1 entries for task",
+    "duration": 3
+  },
+  {
+    "category": "Notifications",
+    "test": "POST /api/v1/notifications/read-all",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "success=true",
+    "duration": 22
+  },
+  {
+    "category": "Notifications",
+    "test": "POST /api/v1/notifications/:id/read (no-op)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "success=true (no-op for nonexistent)",
+    "duration": 19
+  },
+  {
+    "category": "Notifications",
+    "test": "GET /notifications (page)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Page loaded successfully",
+    "duration": 26
+  },
+  {
+    "category": "Notifications",
+    "test": "POST /api/v1/notifications/read-all (no auth)",
+    "status": "PASS",
+    "statusCode": 401,
+    "detail": "401 as expected",
+    "duration": 2
+  },
+  {
+    "category": "Files",
+    "test": "POST /api/v1/files/presign",
+    "status": "PASS",
+    "statusCode": 201,
+    "detail": "uploadUrl received, attachment id=k08jfdiu4foixyw06e5ocp7o",
+    "duration": 909
+  },
+  {
+    "category": "Files",
+    "test": "POST /api/v1/files/presign (file too large)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 validation for 200MB file",
+    "duration": 3
+  },
+  {
+    "category": "Billing",
+    "test": "POST /api/v1/billing/checkout (Stripe placeholder)",
+    "status": "PASS",
+    "statusCode": 500,
+    "detail": "500 expected — Stripe key is placeholder (auth validated)",
+    "duration": 1327
+  },
+  {
+    "category": "Billing",
+    "test": "POST /api/v1/billing/portal (no subscription)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 — no billing account as expected",
+    "duration": 14
+  },
+  {
+    "category": "Billing",
+    "test": "POST /api/v1/billing/checkout (no auth)",
+    "status": "PASS",
+    "statusCode": 401,
+    "detail": "401 as expected",
+    "duration": 2
+  },
+  {
+    "category": "Webhooks",
+    "test": "POST /api/v1/webhooks/stripe (no signature)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 — missing stripe-signature",
+    "duration": 21
+  },
+  {
+    "category": "Webhooks",
+    "test": "POST /api/v1/webhooks/stripe (fake signature)",
+    "status": "PASS",
+    "statusCode": 400,
+    "detail": "400 — invalid signature",
+    "duration": 5
+  },
+  {
+    "category": "Pages",
+    "test": "GET /dashboard",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Dashboard rendered",
+    "duration": 1539
+  },
+  {
+    "category": "Pages",
+    "test": "GET /analytics",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Analytics page loaded",
+    "duration": 33
+  },
+  {
+    "category": "Pages",
+    "test": "GET /time-tracking",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Time tracking page loaded",
+    "duration": 40
+  },
+  {
+    "category": "Pages",
+    "test": "GET /settings/billing",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Billing page loaded",
+    "duration": 13
+  },
+  {
+    "category": "Pages",
+    "test": "GET /login (public)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Login form rendered",
+    "duration": 11
+  },
+  {
+    "category": "Pages",
+    "test": "GET /register (public)",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Register form rendered",
+    "duration": 6
+  },
+  {
+    "category": "Pages",
+    "test": "GET /dashboard (no auth, redirect)",
+    "status": "PASS",
+    "statusCode": 303,
+    "detail": "Redirected to login (303)",
+    "duration": 2
+  },
+  {
+    "category": "Pages",
+    "test": "GET /projects/:id/settings",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Settings page loaded",
+    "duration": 10
+  },
+  {
+    "category": "Security",
+    "test": "X-Frame-Options: DENY",
+    "status": "PASS",
+    "detail": "DENY",
+    "duration": 2
+  },
+  {
+    "category": "Security",
+    "test": "X-Content-Type-Options: nosniff",
+    "status": "PASS",
+    "detail": "nosniff",
+    "duration": 0
+  },
+  {
+    "category": "Security",
+    "test": "Referrer-Policy",
+    "status": "PASS",
+    "detail": "strict-origin-when-cross-origin",
+    "duration": 0
+  },
+  {
+    "category": "Security",
+    "test": "X-Request-Id header present",
+    "status": "PASS",
+    "detail": "requestId=aj4vpYQuo7GqCmey15sgE",
+    "duration": 0
+  },
+  {
+    "category": "Security",
+    "test": "Permissions-Policy restrictive",
+    "status": "PASS",
+    "detail": "camera=(), microphone=(), geolocation=()",
+    "duration": 0
+  },
+  {
+    "category": "Security",
+    "test": "Content-Security-Policy",
+    "status": "PASS",
+    "detail": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; con",
+    "duration": 0
+  },
+  {
+    "category": "Security",
+    "test": "Strict-Transport-Security (HSTS)",
+    "status": "PASS",
+    "detail": "max-age=31536000; includeSubDomains",
+    "duration": 0
+  },
+  {
+    "category": "Delete",
+    "test": "DELETE /api/v1/tasks/:id",
+    "status": "PASS",
+    "statusCode": 200,
+    "detail": "Task c9t3n4p74ev1wv6xhhz5mktc deleted",
+    "duration": 11
+  },
+  {
+    "category": "Delete",
+    "test": "GET deleted task (404)",
+    "status": "PASS",
+    "statusCode": 404,
+    "detail": "404 as expected",
+    "duration": 2
+  }
+]
