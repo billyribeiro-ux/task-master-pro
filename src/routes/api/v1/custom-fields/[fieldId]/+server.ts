@@ -1,7 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
-import { customFieldDefinitions, customFieldValues } from '$lib/server/db/schema.js';
+import { customFieldDefinitions } from '$lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
 import { requireProjectAccess } from '$lib/server/auth/guards.js';
 import { updateCustomFieldSchema } from '$lib/validation/custom-fields.js';

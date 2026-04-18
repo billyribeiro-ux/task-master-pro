@@ -66,11 +66,7 @@ export const PATCH: RequestHandler = async (event) => {
 	if (changes.estimateMinutes !== undefined) updateData.estimateMinutes = changes.estimateMinutes;
 	if (changes.columnId !== undefined) updateData.columnId = changes.columnId;
 
-	const [updated] = await db
-		.update(tasks)
-		.set(updateData)
-		.where(eq(tasks.id, taskId))
-		.returning();
+	const [updated] = await db.update(tasks).set(updateData).where(eq(tasks.id, taskId)).returning();
 
 	await db.insert(activityLog).values({
 		projectId: existing.projectId,

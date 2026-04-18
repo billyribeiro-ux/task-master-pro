@@ -29,16 +29,27 @@
 		onkeydown={handleKeydown}
 		tabindex="-1"
 	>
-		<div class="w-full max-w-lg rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800">
+		<div
+			class="w-full max-w-lg rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+		>
 			{#if title}
-				<div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+				<div
+					class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700"
+				>
 					<h2 class="text-lg font-semibold text-gray-900 dark:text-white">{title}</h2>
 					<button
 						onclick={onclose}
 						class="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
 						aria-label="Close"
 					>
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</button>

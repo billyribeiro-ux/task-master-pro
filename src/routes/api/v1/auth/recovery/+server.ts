@@ -46,12 +46,7 @@ export const POST: RequestHandler = async (event) => {
 	const remainingCodes = await db
 		.select()
 		.from(userRecoveryCodes)
-		.where(
-			and(
-				eq(userRecoveryCodes.userId, user.id),
-				isNull(userRecoveryCodes.usedAt)
-			)
-		);
+		.where(and(eq(userRecoveryCodes.userId, user.id), isNull(userRecoveryCodes.usedAt)));
 
 	return json({
 		message: 'Recovery code accepted',

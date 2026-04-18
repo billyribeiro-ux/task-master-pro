@@ -62,14 +62,11 @@ export const POST: RequestHandler = async (event) => {
 	}
 
 	// Save the user message
-	const [userMessage] = await db
-		.insert(aiConversationMessages)
-		.values({
-			conversationId: activeConversationId,
-			role: 'user',
-			content: message
-		})
-		.returning();
+	await db.insert(aiConversationMessages).values({
+		conversationId: activeConversationId,
+		role: 'user',
+		content: message
+	});
 
 	// Call the AI engine
 	let reply: string;

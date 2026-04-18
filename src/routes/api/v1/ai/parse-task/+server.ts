@@ -2,7 +2,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { tasks, columns, activityLog, labels, taskLabels, users } from '$lib/server/db/schema.js';
-import { eq, and, count } from 'drizzle-orm';
+import { eq, count } from 'drizzle-orm';
 import { requireProjectAccess } from '$lib/server/auth/guards.js';
 import { aiNaturalLanguageTaskSchema } from '$lib/validation/ai.js';
 import { parseNaturalLanguageTask } from '$lib/server/ai/engine.js';
@@ -106,10 +106,7 @@ export const POST: RequestHandler = async (event) => {
 
 	// Attach labels if any were parsed
 	if (parsed.labels.length > 0) {
-		const projectLabels = await db
-			.select()
-			.from(labels)
-			.where(eq(labels.projectId, projectId));
+		const projectLabels = await db.select().from(labels).where(eq(labels.projectId, projectId));
 
 		const matchedLabels = projectLabels.filter((l) =>
 			parsed.labels.some((pl) => pl.toLowerCase() === l.name.toLowerCase())

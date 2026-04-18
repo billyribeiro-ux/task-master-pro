@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
 	import { invalidateAll } from '$app/navigation';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { bp } from '$lib/stores/breakpoints.svelte.js';
 
 	let { data }: { data: PageData } = $props();
@@ -15,7 +16,7 @@
 	let isCreating = $state(false);
 
 	let tasksByColumn = $derived.by(() => {
-		const map = new Map<string, typeof data.tasks>();
+		const map = new SvelteMap<string, typeof data.tasks>();
 		for (const col of data.columns) {
 			map.set(col.id, []);
 		}
@@ -132,16 +133,29 @@
 
 <div class="flex h-full flex-col">
 	<!-- Filter bar -->
-	<div class="flex items-center gap-3 border-b border-gray-200 bg-white px-6 py-2 dark:border-gray-800 dark:bg-gray-900">
+	<div
+		class="flex items-center gap-3 border-b border-gray-200 bg-white px-6 py-2 dark:border-gray-800 dark:bg-gray-900"
+	>
 		<div class="relative">
-			<svg xmlns="http://www.w3.org/2000/svg" class="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-gray-400"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				stroke-width="2"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+				/>
 			</svg>
 			<input
 				type="text"
 				placeholder="Filter tasks..."
 				bind:value={filterQuery}
-				class="w-48 rounded-md border border-gray-200 bg-gray-50 py-1 pl-8 pr-3 text-xs text-gray-900 placeholder-gray-400 transition focus:border-brand-500 focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+				class="focus:border-brand-500 w-48 rounded-md border border-gray-200 bg-gray-50 py-1 pr-3 pl-8 text-xs text-gray-900 placeholder-gray-400 transition focus:bg-white focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
 			/>
 		</div>
 		<select
@@ -162,7 +176,9 @@
 		{#each data.columns as column (column.id)}
 			{@const colTasks = tasksByColumn.get(column.id) ?? []}
 			<div
-				class="flex {bp.phone ? 'w-[17rem]' : 'w-72'} shrink-0 flex-col rounded-xl bg-gray-100 dark:bg-gray-900"
+				class="flex {bp.phone
+					? 'w-68'
+					: 'w-72'} shrink-0 flex-col rounded-xl bg-gray-100 dark:bg-gray-900"
 				role="group"
 				aria-label="{column.name} column"
 				ondragover={(e) => handleDragOver(e, column.id, colTasks.length)}
@@ -173,17 +189,30 @@
 				<div class="flex items-center justify-between px-3 py-2.5">
 					<div class="flex items-center gap-2">
 						<div class="h-2.5 w-2.5 rounded-full" style="background-color: {column.color}"></div>
-						<span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{column.name}</span>
-						<span class="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+						<span class="text-xs font-semibold text-gray-700 dark:text-gray-300">{column.name}</span
+						>
+						<span
+							class="rounded-full bg-gray-200 px-1.5 py-0.5 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+						>
 							{colTasks.length}
 						</span>
 					</div>
 					<button
-						onclick={() => { quickAddColumnId = column.id; quickAddTitle = ''; }}
+						onclick={() => {
+							quickAddColumnId = column.id;
+							quickAddTitle = '';
+						}}
 						class="rounded p-0.5 text-gray-400 transition hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300"
 						aria-label="Add task to {column.name}"
 					>
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-4 w-4"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
 						</svg>
 					</button>
@@ -193,7 +222,10 @@
 				<div class="flex-1 space-y-2 overflow-y-auto px-2 pb-2">
 					{#each colTasks as task, index (task.id)}
 						<div
-							class="group cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:border-brand-300 hover:shadow-md active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 dark:hover:border-brand-700 {draggedTaskId === task.id ? 'opacity-50' : ''}"
+							class="group hover:border-brand-300 dark:hover:border-brand-700 cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 {draggedTaskId ===
+							task.id
+								? 'opacity-50'
+								: ''}"
 							draggable="true"
 							role="button"
 							tabindex="0"
@@ -203,7 +235,9 @@
 						>
 							<div class="mb-1.5 flex items-center gap-1.5">
 								<div class="h-2 w-2 rounded-full {priorityColors[task.priority]}"></div>
-								<span class="text-[10px] font-medium text-gray-400 dark:text-gray-500">{task.displayId}</span>
+								<span class="text-[10px] font-medium text-gray-400 dark:text-gray-500"
+									>{task.displayId}</span
+								>
 							</div>
 							<p class="text-sm font-medium text-gray-900 dark:text-white">{task.title}</p>
 
@@ -224,12 +258,21 @@
 								<div class="flex items-center gap-2">
 									{#if task.dueDate}
 										{@const isOverdue = new Date(task.dueDate) < new Date()}
-										<span class="text-[10px] {isOverdue ? 'text-red-500 font-medium' : 'text-gray-400 dark:text-gray-500'}">
-											{new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+										<span
+											class="text-[10px] {isOverdue
+												? 'font-medium text-red-500'
+												: 'text-gray-400 dark:text-gray-500'}"
+										>
+											{new Date(task.dueDate).toLocaleDateString('en-US', {
+												month: 'short',
+												day: 'numeric'
+											})}
 										</span>
 									{/if}
 									{#if task.storyPoints}
-										<span class="rounded bg-gray-100 px-1 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-700 dark:text-gray-400">
+										<span
+											class="rounded bg-gray-100 px-1 py-0.5 text-[10px] font-medium text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+										>
 											{task.storyPoints}pt
 										</span>
 									{/if}
@@ -237,9 +280,17 @@
 								{#if task.assigneeId && data.assignees[task.assigneeId]}
 									{@const assignee = data.assignees[task.assigneeId]}
 									{#if assignee.avatarUrl}
-										<img src={assignee.avatarUrl} alt={assignee.name} class="h-5 w-5 rounded-full" title={assignee.name} />
+										<img
+											src={assignee.avatarUrl}
+											alt={assignee.name}
+											class="h-5 w-5 rounded-full"
+											title={assignee.name}
+										/>
 									{:else}
-										<div class="flex h-5 w-5 items-center justify-center rounded-full bg-brand-100 text-[9px] font-semibold text-brand-700 dark:bg-brand-900 dark:text-brand-300" title={assignee.name}>
+										<div
+											class="bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300 flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-semibold"
+											title={assignee.name}
+										>
 											{assignee.name.charAt(0).toUpperCase()}
 										</div>
 									{/if}
@@ -249,18 +300,20 @@
 
 						<!-- Drop indicator -->
 						{#if dragOverColumnId === column.id && dragOverPosition === index}
-							<div class="h-0.5 rounded-full bg-brand-500"></div>
+							<div class="bg-brand-500 h-0.5 rounded-full"></div>
 						{/if}
 					{/each}
 
 					<!-- Drop indicator at end -->
 					{#if dragOverColumnId === column.id && dragOverPosition === colTasks.length}
-						<div class="h-0.5 rounded-full bg-brand-500"></div>
+						<div class="bg-brand-500 h-0.5 rounded-full"></div>
 					{/if}
 
 					<!-- Quick add form -->
 					{#if quickAddColumnId === column.id}
-						<div class="rounded-lg border border-brand-300 bg-white p-2 dark:border-brand-700 dark:bg-gray-800">
+						<div
+							class="border-brand-300 dark:border-brand-700 rounded-lg border bg-white p-2 dark:bg-gray-800"
+						>
 							<input
 								type="text"
 								placeholder="Task title..."
@@ -269,13 +322,13 @@
 									if (e.key === 'Enter') handleQuickAdd(column.id);
 									if (e.key === 'Escape') quickAddColumnId = null;
 								}}
-								class="mb-2 block w-full rounded border border-gray-200 bg-white px-2 py-1 text-sm text-gray-900 placeholder-gray-400 focus:border-brand-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+								class="focus:border-brand-500 mb-2 block w-full rounded border border-gray-200 bg-white px-2 py-1 text-sm text-gray-900 placeholder-gray-400 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 							/>
 							<div class="flex gap-1">
 								<button
 									onclick={() => handleQuickAdd(column.id)}
 									disabled={isCreating || !quickAddTitle.trim()}
-									class="rounded bg-brand-600 px-2 py-1 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+									class="bg-brand-600 hover:bg-brand-700 rounded px-2 py-1 text-xs font-medium text-white disabled:opacity-50"
 								>
 									{isCreating ? 'Adding...' : 'Add'}
 								</button>

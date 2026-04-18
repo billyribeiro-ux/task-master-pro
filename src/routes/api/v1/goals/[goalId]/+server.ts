@@ -19,24 +19,14 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	// Fetch child goals
-	const childGoals = await db
-		.select()
-		.from(goals)
-		.where(eq(goals.parentGoalId, goalId));
+	const childGoals = await db.select().from(goals).where(eq(goals.parentGoalId, goalId));
 
 	// Fetch linked tasks
-	const links = await db
-		.select()
-		.from(goalTaskLinks)
-		.where(eq(goalTaskLinks.goalId, goalId));
+	const links = await db.select().from(goalTaskLinks).where(eq(goalTaskLinks.goalId, goalId));
 
 	const linkedTasks = [];
 	for (const link of links) {
-		const [task] = await db
-			.select()
-			.from(tasks)
-			.where(eq(tasks.id, link.taskId))
-			.limit(1);
+		const [task] = await db.select().from(tasks).where(eq(tasks.id, link.taskId)).limit(1);
 		if (task) linkedTasks.push(task);
 	}
 
@@ -84,11 +74,7 @@ export const PATCH: RequestHandler = async (event) => {
 	if (changes.startDate !== undefined) updateData.startDate = changes.startDate;
 	if (changes.dueDate !== undefined) updateData.dueDate = changes.dueDate;
 
-	const [updated] = await db
-		.update(goals)
-		.set(updateData)
-		.where(eq(goals.id, goalId))
-		.returning();
+	const [updated] = await db.update(goals).set(updateData).where(eq(goals.id, goalId)).returning();
 
 	return json(updated);
 };

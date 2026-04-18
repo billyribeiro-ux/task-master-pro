@@ -9,11 +9,7 @@ export const load: LayoutServerLoad = async (event) => {
 	const { projectId } = event.params;
 	await requireProjectAccess(event, projectId);
 
-	const [project] = await db
-		.select()
-		.from(projects)
-		.where(eq(projects.id, projectId))
-		.limit(1);
+	const [project] = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
 
 	if (!project) {
 		throw error(404, 'Project not found');

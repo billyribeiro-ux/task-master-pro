@@ -18,11 +18,7 @@ export const POST: RequestHandler = async (event) => {
 	}
 
 	// Verify the user's password
-	const [dbUser] = await db
-		.select()
-		.from(users)
-		.where(eq(users.id, user.id))
-		.limit(1);
+	const [dbUser] = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
 
 	if (!dbUser || !dbUser.passwordHash) {
 		throw error(400, 'Password authentication is not set up for this account');
@@ -54,13 +50,11 @@ export const POST: RequestHandler = async (event) => {
 			.set({ secret, verified: false })
 			.where(eq(userTotpCredentials.userId, user.id));
 	} else {
-		await db
-			.insert(userTotpCredentials)
-			.values({
-				userId: user.id,
-				secret,
-				verified: false
-			});
+		await db.insert(userTotpCredentials).values({
+			userId: user.id,
+			secret,
+			verified: false
+		});
 	}
 
 	return json({

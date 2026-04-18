@@ -59,11 +59,7 @@ export const POST: RequestHandler = async (event) => {
 			}
 			case 'duplicate_detection': {
 				if (!taskId) throw error(400, 'taskId is required for duplicate_detection');
-				const [task] = await db
-					.select()
-					.from(tasks)
-					.where(eq(tasks.id, taskId))
-					.limit(1);
+				const [task] = await db.select().from(tasks).where(eq(tasks.id, taskId)).limit(1);
 				suggestion = await detectDuplicates(projectId, task.title, task.description ?? undefined);
 				break;
 			}

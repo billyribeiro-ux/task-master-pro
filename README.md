@@ -15,18 +15,18 @@ Production-grade project management application built with SvelteKit 2, Svelte 5
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | SvelteKit 2.50+ / Svelte 5 (runes) |
-| Styling | Tailwind CSS v4 (CSS-first) |
-| Database | SQLite via libSQL + Drizzle ORM |
-| Auth | Lucia pattern + Arctic OAuth |
-| Payments | Stripe |
-| Storage | S3 (MinIO for local dev) |
-| Real-time | Socket.IO |
-| Validation | Zod |
-| Testing | Vitest + Playwright |
-| CI/CD | GitHub Actions |
+| Layer      | Technology                         |
+| ---------- | ---------------------------------- |
+| Framework  | SvelteKit 2.50+ / Svelte 5 (runes) |
+| Styling    | Tailwind CSS v4 (CSS-first)        |
+| Database   | SQLite via libSQL + Drizzle ORM    |
+| Auth       | Lucia pattern + Arctic OAuth       |
+| Payments   | Stripe                             |
+| Storage    | S3 (MinIO for local dev)           |
+| Real-time  | Socket.IO                          |
+| Validation | Zod                                |
+| Testing    | Vitest + Playwright                |
+| CI/CD      | GitHub Actions                     |
 
 ## Getting Started
 
@@ -58,6 +58,7 @@ cp .env.example .env
 ```
 
 Required variables:
+
 - `DATABASE_URL` — SQLite connection string
 - `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` — GitHub OAuth
 - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — Google OAuth
@@ -76,20 +77,20 @@ Starts Redis, MinIO, and Stripe CLI for local development.
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start dev server |
-| `pnpm build` | Production build |
-| `pnpm preview` | Preview production build |
-| `pnpm check` | Type-check with svelte-check |
-| `pnpm lint` | Lint with ESLint + Prettier |
-| `pnpm format` | Format with Prettier |
-| `pnpm test:unit` | Run unit tests |
-| `pnpm test:e2e` | Run Playwright e2e tests |
-| `pnpm db:generate` | Generate migrations |
-| `pnpm db:migrate` | Run migrations |
-| `pnpm db:push` | Push schema to DB |
-| `pnpm db:studio` | Open Drizzle Studio |
+| Command            | Description                  |
+| ------------------ | ---------------------------- |
+| `pnpm dev`         | Start dev server             |
+| `pnpm build`       | Production build             |
+| `pnpm preview`     | Preview production build     |
+| `pnpm check`       | Type-check with svelte-check |
+| `pnpm lint`        | Lint with ESLint + Prettier  |
+| `pnpm format`      | Format with Prettier         |
+| `pnpm test:unit`   | Run unit tests               |
+| `pnpm test:e2e`    | Run Playwright e2e tests     |
+| `pnpm db:generate` | Generate migrations          |
+| `pnpm db:migrate`  | Run migrations               |
+| `pnpm db:push`     | Push schema to DB            |
+| `pnpm db:studio`   | Open Drizzle Studio          |
 
 ## Project Structure
 

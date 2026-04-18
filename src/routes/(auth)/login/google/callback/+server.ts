@@ -53,10 +53,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		.select()
 		.from(oauthAccounts)
 		.where(
-			and(
-				eq(oauthAccounts.providerId, 'google'),
-				eq(oauthAccounts.providerUserId, googleUser.sub)
-			)
+			and(eq(oauthAccounts.providerId, 'google'), eq(oauthAccounts.providerUserId, googleUser.sub))
 		)
 		.limit(1);
 

@@ -10,11 +10,18 @@ import { getPresignedUploadUrl } from '$lib/server/storage/s3.js';
 import { createId } from '@paralleldrive/cuid2';
 
 const ALLOWED_MIME_TYPES = new Set([
-	'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml',
+	'image/jpeg',
+	'image/png',
+	'image/gif',
+	'image/webp',
+	'image/svg+xml',
 	'application/pdf',
-	'text/plain', 'text/csv', 'text/markdown',
+	'text/plain',
+	'text/csv',
+	'text/markdown',
 	'application/json',
-	'application/zip', 'application/gzip',
+	'application/zip',
+	'application/gzip',
 	'application/msword',
 	'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 	'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -25,7 +32,11 @@ const presignSchema = z.object({
 	taskId: z.string().min(1),
 	fileName: z.string().min(1).max(255),
 	mimeType: z.string().min(1),
-	fileSize: z.number().int().min(1).max(100 * 1024 * 1024)
+	fileSize: z
+		.number()
+		.int()
+		.min(1)
+		.max(100 * 1024 * 1024)
 });
 
 export const POST: RequestHandler = async (event) => {

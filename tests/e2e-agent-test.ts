@@ -6,6 +6,7 @@
  *
  * Run: npx tsx tests/e2e-agent-test.ts
  */
+export {};
 
 const BASE = 'http://localhost:4173';
 const ORIGIN_HEADER = { Origin: BASE };
@@ -47,10 +48,19 @@ async function measure<T>(fn: () => Promise<T>): Promise<[T, number]> {
 	return [result, Math.round(performance.now() - start)];
 }
 
-function record(category: string, test: string, status: 'PASS' | 'FAIL' | 'SKIP', detail: string, duration: number, statusCode?: number) {
+function record(
+	category: string,
+	test: string,
+	status: 'PASS' | 'FAIL' | 'SKIP',
+	detail: string,
+	duration: number,
+	statusCode?: number
+) {
 	RESULTS.push({ category, test, status, statusCode, detail, duration });
 	const icon = status === 'PASS' ? '✅' : status === 'FAIL' ? '❌' : '⏭️';
-	console.log(`  ${icon} [${status}] ${test} (${duration}ms)${statusCode ? ` [HTTP ${statusCode}]` : ''}`);
+	console.log(
+		`  ${icon} [${status}] ${test} (${duration}ms)${statusCode ? ` [HTTP ${statusCode}]` : ''}`
+	);
 	if (status === 'FAIL') console.log(`      Detail: ${detail}`);
 }
 
@@ -84,7 +94,14 @@ async function testHealth() {
 	const [res, dur] = await measure(() => fetch(`${BASE}/api/health`));
 	const body = await res.json();
 	if (res.ok && body.status === 'ok') {
-		record('Health', 'GET /api/health', 'PASS', `status=${body.status}, version=${body.version}, timestamp=${body.timestamp}`, dur, res.status);
+		record(
+			'Health',
+			'GET /api/health',
+			'PASS',
+			`status=${body.status}, version=${body.version}, timestamp=${body.timestamp}`,
+			dur,
+			res.status
+		);
 	} else {
 		record('Health', 'GET /api/health', 'FAIL', JSON.stringify(body), dur, res.status);
 	}
@@ -117,9 +134,23 @@ async function testAuthRegister() {
 	const isRedirect = res1.status === 303 || (res1.status === 200 && body1.includes('"redirect"'));
 	if (isRedirect && cookies1.includes('session=')) {
 		sessionCookie = cookies1;
-		record('Auth', 'Register User 1 (Alice)', 'PASS', `Session cookie set, redirect to /dashboard`, dur1, res1.status);
+		record(
+			'Auth',
+			'Register User 1 (Alice)',
+			'PASS',
+			`Session cookie set, redirect to /dashboard`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Auth', 'Register User 1 (Alice)', 'FAIL', `status=${res1.status}, cookies=${cookies1}, body=${body1.substring(0, 200)}`, dur1, res1.status);
+		record(
+			'Auth',
+			'Register User 1 (Alice)',
+			'FAIL',
+			`status=${res1.status}, cookies=${cookies1}, body=${body1.substring(0, 200)}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// Register User 2
@@ -140,12 +171,27 @@ async function testAuthRegister() {
 
 	const cookies2 = extractCookies(res2.headers);
 	const body2raw = await res2.text();
-	const isRedirect2 = res2.status === 303 || (res2.status === 200 && body2raw.includes('"redirect"'));
+	const isRedirect2 =
+		res2.status === 303 || (res2.status === 200 && body2raw.includes('"redirect"'));
 	if (isRedirect2 && cookies2.includes('session=')) {
 		sessionCookie2 = cookies2;
-		record('Auth', 'Register User 2 (Bob)', 'PASS', `Session cookie set, redirect to /dashboard`, dur2, res2.status);
+		record(
+			'Auth',
+			'Register User 2 (Bob)',
+			'PASS',
+			`Session cookie set, redirect to /dashboard`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Auth', 'Register User 2 (Bob)', 'FAIL', `status=${res2.status}, body=${body2raw.substring(0, 200)}`, dur2, res2.status);
+		record(
+			'Auth',
+			'Register User 2 (Bob)',
+			'FAIL',
+			`status=${res2.status}, body=${body2raw.substring(0, 200)}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// Register with invalid data (no password)
@@ -169,9 +215,23 @@ async function testAuthRegister() {
 	const isFailure3 = res3.status === 400 || body3.includes('"failure"');
 	const noCookie3 = !extractCookies(res3.headers).includes('session=');
 	if (isFailure3 && noCookie3) {
-		record('Auth', 'Register with weak password (validation)', 'PASS', `Correctly rejected, no session cookie set`, dur3, res3.status);
+		record(
+			'Auth',
+			'Register with weak password (validation)',
+			'PASS',
+			`Correctly rejected, no session cookie set`,
+			dur3,
+			res3.status
+		);
 	} else {
-		record('Auth', 'Register with weak password (validation)', 'FAIL', `Unexpected: status=${res3.status}, body=${body3.substring(0, 200)}`, dur3, res3.status);
+		record(
+			'Auth',
+			'Register with weak password (validation)',
+			'FAIL',
+			`Unexpected: status=${res3.status}, body=${body3.substring(0, 200)}`,
+			dur3,
+			res3.status
+		);
 	}
 
 	// Register duplicate email
@@ -191,12 +251,30 @@ async function testAuthRegister() {
 	);
 
 	const body4 = await res4.text();
-	const isFailure4 = res4.status === 400 || body4.includes('"failure"') || body4.includes('already exists') || body4.includes('Unable to create account');
+	const isFailure4 =
+		res4.status === 400 ||
+		body4.includes('"failure"') ||
+		body4.includes('already exists') ||
+		body4.includes('Unable to create account');
 	const noCookie4 = !extractCookies(res4.headers).includes('session=');
 	if (isFailure4 && noCookie4) {
-		record('Auth', 'Register duplicate email (validation)', 'PASS', `Correctly rejected duplicate email`, dur4, res4.status);
+		record(
+			'Auth',
+			'Register duplicate email (validation)',
+			'PASS',
+			`Correctly rejected duplicate email`,
+			dur4,
+			res4.status
+		);
 	} else {
-		record('Auth', 'Register duplicate email (validation)', 'FAIL', `Unexpected: status=${res4.status}, body=${body4.substring(0, 200)}`, dur4, res4.status);
+		record(
+			'Auth',
+			'Register duplicate email (validation)',
+			'FAIL',
+			`Unexpected: status=${res4.status}, body=${body4.substring(0, 200)}`,
+			dur4,
+			res4.status
+		);
 	}
 }
 
@@ -220,11 +298,19 @@ async function testAuthLoginLogout() {
 	);
 
 	const loginBody = await res1.text();
-	const loginRejected = res1.status === 400 || loginBody.includes('"failure"') || loginBody.includes('Invalid');
+	const loginRejected =
+		res1.status === 400 || loginBody.includes('"failure"') || loginBody.includes('Invalid');
 	if (loginRejected) {
 		record('Auth', 'Login with wrong credentials', 'PASS', `Correctly rejected`, dur1, res1.status);
 	} else {
-		record('Auth', 'Login with wrong credentials', 'FAIL', `status=${res1.status}, body=${loginBody.substring(0, 200)}`, dur1, res1.status);
+		record(
+			'Auth',
+			'Login with wrong credentials',
+			'FAIL',
+			`status=${res1.status}, body=${loginBody.substring(0, 200)}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// Logout User 1
@@ -239,11 +325,25 @@ async function testAuthLoginLogout() {
 	const logoutCookies = extractCookies(resLogout.headers);
 	// Logout is a +server.ts endpoint (not form action), so it sends a real 303 redirect
 	if (resLogout.status === 303) {
-		record('Auth', 'Logout User 1', 'PASS', `Redirected to /login, session cleared`, durLogout, resLogout.status);
+		record(
+			'Auth',
+			'Logout User 1',
+			'PASS',
+			`Redirected to /login, session cleared`,
+			durLogout,
+			resLogout.status
+		);
 		// Update sessionCookie with the blank cookie to simulate logged out state
 		if (logoutCookies) sessionCookie = logoutCookies;
 	} else {
-		record('Auth', 'Logout User 1', 'FAIL', `status=${resLogout.status}`, durLogout, resLogout.status);
+		record(
+			'Auth',
+			'Logout User 1',
+			'FAIL',
+			`status=${resLogout.status}`,
+			durLogout,
+			resLogout.status
+		);
 	}
 
 	// Verify old session is invalid by calling an authenticated endpoint
@@ -251,9 +351,23 @@ async function testAuthLoginLogout() {
 		fetch(`${BASE}/api/v1/users/me`, { headers: { Cookie: sessionCookie } })
 	);
 	if (resCheck.status === 401) {
-		record('Auth', 'Old session rejected after logout', 'PASS', `401 Unauthorized as expected`, durCheck, resCheck.status);
+		record(
+			'Auth',
+			'Old session rejected after logout',
+			'PASS',
+			`401 Unauthorized as expected`,
+			durCheck,
+			resCheck.status
+		);
 	} else {
-		record('Auth', 'Old session rejected after logout', 'FAIL', `Expected 401, got ${resCheck.status}`, durCheck, resCheck.status);
+		record(
+			'Auth',
+			'Old session rejected after logout',
+			'FAIL',
+			`Expected 401, got ${resCheck.status}`,
+			durCheck,
+			resCheck.status
+		);
 	}
 
 	// Re-register to get fresh session for User 1
@@ -273,11 +387,20 @@ async function testAuthLoginLogout() {
 	);
 	const regCookies = extractCookies(resReg.headers);
 	const regBody = await resReg.text();
-	const regOk = (resReg.status === 303 || (resReg.status === 200 && regBody.includes('"redirect"'))) && regCookies.includes('session=');
+	const regOk =
+		(resReg.status === 303 || (resReg.status === 200 && regBody.includes('"redirect"'))) &&
+		regCookies.includes('session=');
 	if (regOk) {
 		sessionCookie = regCookies;
 	}
-	record('Auth', 'Re-register fresh User 1 session', regOk ? 'PASS' : 'FAIL', `status=${resReg.status}`, durReg, resReg.status);
+	record(
+		'Auth',
+		'Re-register fresh User 1 session',
+		regOk ? 'PASS' : 'FAIL',
+		`status=${resReg.status}`,
+		durReg,
+		resReg.status
+	);
 }
 
 async function testUsersMe() {
@@ -292,7 +415,14 @@ async function testUsersMe() {
 	const user = await res1.json();
 	if (res1.ok && user.id && user.email) {
 		userId = user.id;
-		record('Users', 'GET /api/v1/users/me', 'PASS', `id=${user.id}, name=${user.name}, email=${user.email}, role=${user.role}, plan=${user.plan}`, dur1, res1.status);
+		record(
+			'Users',
+			'GET /api/v1/users/me',
+			'PASS',
+			`id=${user.id}, name=${user.name}, email=${user.email}, role=${user.role}, plan=${user.plan}`,
+			dur1,
+			res1.status
+		);
 	} else {
 		record('Users', 'GET /api/v1/users/me', 'FAIL', JSON.stringify(user), dur1, res1.status);
 	}
@@ -307,9 +437,23 @@ async function testUsersMe() {
 	);
 	const updated = await res2.json();
 	if (res2.ok && updated.name === 'Alice Wonderland') {
-		record('Users', 'PATCH /api/v1/users/me (update name)', 'PASS', `name updated to ${updated.name}`, dur2, res2.status);
+		record(
+			'Users',
+			'PATCH /api/v1/users/me (update name)',
+			'PASS',
+			`name updated to ${updated.name}`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Users', 'PATCH /api/v1/users/me (update name)', 'FAIL', JSON.stringify(updated), dur2, res2.status);
+		record(
+			'Users',
+			'PATCH /api/v1/users/me (update name)',
+			'FAIL',
+			JSON.stringify(updated),
+			dur2,
+			res2.status
+		);
 	}
 
 	// GET /api/v1/users/me without auth
@@ -317,7 +461,14 @@ async function testUsersMe() {
 	if (res3.status === 401) {
 		record('Users', 'GET /api/v1/users/me (no auth)', 'PASS', `401 as expected`, dur3, res3.status);
 	} else {
-		record('Users', 'GET /api/v1/users/me (no auth)', 'FAIL', `Expected 401, got ${res3.status}`, dur3, res3.status);
+		record(
+			'Users',
+			'GET /api/v1/users/me (no auth)',
+			'FAIL',
+			`Expected 401, got ${res3.status}`,
+			dur3,
+			res3.status
+		);
 	}
 
 	// Get User 2 ID
@@ -327,7 +478,14 @@ async function testUsersMe() {
 	const u2 = await res4.json();
 	if (res4.ok) {
 		user2Id = u2.id;
-		record('Users', 'GET /api/v1/users/me (User 2)', 'PASS', `id=${u2.id}, name=${u2.name}`, dur4, res4.status);
+		record(
+			'Users',
+			'GET /api/v1/users/me (User 2)',
+			'PASS',
+			`id=${u2.id}, name=${u2.name}`,
+			dur4,
+			res4.status
+		);
 	} else {
 		record('Users', 'GET /api/v1/users/me (User 2)', 'FAIL', JSON.stringify(u2), dur4, res4.status);
 	}
@@ -368,9 +526,23 @@ async function testProjects() {
 	const projMatch = projLocation.match(/\/projects\/([^/]+)\/board/);
 	if (projMatch) {
 		projectId = projMatch[1];
-		record('Projects', 'Create project (form action)', 'PASS', `projectId=${projectId}, redirect=${projLocation}`, dur1, res1.status);
+		record(
+			'Projects',
+			'Create project (form action)',
+			'PASS',
+			`projectId=${projectId}, redirect=${projLocation}`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Projects', 'Create project (form action)', 'FAIL', `status=${res1.status}, location=${projLocation}, body=${projBody.substring(0, 300)}`, dur1, res1.status);
+		record(
+			'Projects',
+			'Create project (form action)',
+			'FAIL',
+			`status=${res1.status}, location=${projLocation}, body=${projBody.substring(0, 300)}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// Load projects list page
@@ -382,9 +554,23 @@ async function testProjects() {
 	if (res2.ok) {
 		const html = await res2.text();
 		const hasProject = html.includes('E2E Test Project Alpha');
-		record('Projects', 'GET /projects (list page)', hasProject ? 'PASS' : 'FAIL', hasProject ? 'Project appears in list' : 'Project NOT found in page', dur2, res2.status);
+		record(
+			'Projects',
+			'GET /projects (list page)',
+			hasProject ? 'PASS' : 'FAIL',
+			hasProject ? 'Project appears in list' : 'Project NOT found in page',
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Projects', 'GET /projects (list page)', 'FAIL', `status=${res2.status}`, dur2, res2.status);
+		record(
+			'Projects',
+			'GET /projects (list page)',
+			'FAIL',
+			`status=${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// Load project board page
@@ -396,10 +582,25 @@ async function testProjects() {
 		);
 		if (res3.ok) {
 			const html = await res3.text();
-			const hasColumns = html.includes('Backlog') || html.includes('To Do') || html.includes('In Progress');
-			record('Projects', 'GET /projects/:id/board', hasColumns ? 'PASS' : 'FAIL', hasColumns ? 'Board page renders with columns' : 'No columns found in HTML', dur3, res3.status);
+			const hasColumns =
+				html.includes('Backlog') || html.includes('To Do') || html.includes('In Progress');
+			record(
+				'Projects',
+				'GET /projects/:id/board',
+				hasColumns ? 'PASS' : 'FAIL',
+				hasColumns ? 'Board page renders with columns' : 'No columns found in HTML',
+				dur3,
+				res3.status
+			);
 		} else {
-			record('Projects', 'GET /projects/:id/board', 'FAIL', `status=${res3.status}`, dur3, res3.status);
+			record(
+				'Projects',
+				'GET /projects/:id/board',
+				'FAIL',
+				`status=${res3.status}`,
+				dur3,
+				res3.status
+			);
 		}
 	}
 
@@ -425,9 +626,23 @@ async function testProjects() {
 
 		const updateBody = await res4.text();
 		if (res4.status === 200) {
-			record('Projects', 'Update project settings', 'PASS', `Project name and visibility updated`, dur4, res4.status);
+			record(
+				'Projects',
+				'Update project settings',
+				'PASS',
+				`Project name and visibility updated`,
+				dur4,
+				res4.status
+			);
 		} else {
-			record('Projects', 'Update project settings', 'FAIL', `status=${res4.status}, body=${updateBody.substring(0, 200)}`, dur4, res4.status);
+			record(
+				'Projects',
+				'Update project settings',
+				'FAIL',
+				`status=${res4.status}, body=${updateBody.substring(0, 200)}`,
+				dur4,
+				res4.status
+			);
 		}
 	}
 
@@ -457,9 +672,23 @@ async function testProjects() {
 
 		const inviteBody = await res5.text();
 		if (res5.status === 200) {
-			record('Projects', 'Invite User 2 to project', 'PASS', `User ${u2.email} invited as member`, dur5, res5.status);
+			record(
+				'Projects',
+				'Invite User 2 to project',
+				'PASS',
+				`User ${u2.email} invited as member`,
+				dur5,
+				res5.status
+			);
 		} else {
-			record('Projects', 'Invite User 2 to project', 'FAIL', `status=${res5.status}, body=${inviteBody.substring(0, 200)}`, dur5, res5.status);
+			record(
+				'Projects',
+				'Invite User 2 to project',
+				'FAIL',
+				`status=${res5.status}, body=${inviteBody.substring(0, 200)}`,
+				dur5,
+				res5.status
+			);
 		}
 	}
 }
@@ -486,9 +715,23 @@ async function testColumns() {
 	const found = expectedColumns.filter((c) => html.includes(c));
 
 	if (found.length === expectedColumns.length) {
-		record('Columns', 'Verify 5 default Kanban columns exist', 'PASS', `All columns present: ${found.join(', ')}`, dur, res.status);
+		record(
+			'Columns',
+			'Verify 5 default Kanban columns exist',
+			'PASS',
+			`All columns present: ${found.join(', ')}`,
+			dur,
+			res.status
+		);
 	} else {
-		record('Columns', 'Verify 5 default Kanban columns exist', 'FAIL', `Only found: ${found.join(', ')} of ${expectedColumns.join(', ')}`, dur, res.status);
+		record(
+			'Columns',
+			'Verify 5 default Kanban columns exist',
+			'FAIL',
+			`Only found: ${found.join(', ')} of ${expectedColumns.join(', ')}`,
+			dur,
+			res.status
+		);
 	}
 
 	// Extract column IDs from the SQLite database directly (most reliable method)
@@ -501,7 +744,16 @@ async function testColumns() {
 		});
 		if (result.rows.length > 0) {
 			columnIds = result.rows.map((r: any) => r.id as string);
-			record('Columns', 'Extract column IDs from DB', 'PASS', `Found ${columnIds.length} columns: ${result.rows.map((r: any) => `${r.name}=${r.id}`).join(', ').substring(0, 150)}`, 0);
+			record(
+				'Columns',
+				'Extract column IDs from DB',
+				'PASS',
+				`Found ${columnIds.length} columns: ${result.rows
+					.map((r: any) => `${r.name}=${r.id}`)
+					.join(', ')
+					.substring(0, 150)}`,
+				0
+			);
 		} else {
 			record('Columns', 'Extract column IDs', 'FAIL', 'No columns found in DB', 0);
 		}
@@ -522,7 +774,13 @@ async function testTasks() {
 	}
 
 	if (columnIds.length === 0) {
-		record('Tasks', 'Resolve column IDs', 'FAIL', 'No column IDs available — cannot create tasks', 0);
+		record(
+			'Tasks',
+			'Resolve column IDs',
+			'FAIL',
+			'No column IDs available — cannot create tasks',
+			0
+		);
 		return;
 	}
 
@@ -548,9 +806,23 @@ async function testTasks() {
 	if (res1.status === 201 && task1.id) {
 		taskId = task1.id;
 		taskDisplayId = task1.displayId;
-		record('Tasks', 'POST /api/v1/tasks (create task 1)', 'PASS', `id=${task1.id}, displayId=${task1.displayId}, title="${task1.title}", priority=${task1.priority}`, dur1, res1.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (create task 1)',
+			'PASS',
+			`id=${task1.id}, displayId=${task1.displayId}, title="${task1.title}", priority=${task1.priority}`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Tasks', 'POST /api/v1/tasks (create task 1)', 'FAIL', JSON.stringify(task1).substring(0, 300), dur1, res1.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (create task 1)',
+			'FAIL',
+			JSON.stringify(task1).substring(0, 300),
+			dur1,
+			res1.status
+		);
 	}
 
 	// POST /api/v1/tasks — Create task 2
@@ -572,9 +844,23 @@ async function testTasks() {
 	const task2 = await res2.json();
 	if (res2.status === 201 && task2.id) {
 		taskId2 = task2.id;
-		record('Tasks', 'POST /api/v1/tasks (create task 2)', 'PASS', `id=${task2.id}, displayId=${task2.displayId}`, dur2, res2.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (create task 2)',
+			'PASS',
+			`id=${task2.id}, displayId=${task2.displayId}`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Tasks', 'POST /api/v1/tasks (create task 2)', 'FAIL', JSON.stringify(task2).substring(0, 300), dur2, res2.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (create task 2)',
+			'FAIL',
+			JSON.stringify(task2).substring(0, 300),
+			dur2,
+			res2.status
+		);
 	}
 
 	// POST /api/v1/tasks — Create task 3 (low priority, no description)
@@ -592,9 +878,23 @@ async function testTasks() {
 	);
 	const task3 = await res2b.json();
 	if (res2b.status === 201) {
-		record('Tasks', 'POST /api/v1/tasks (create task 3 minimal)', 'PASS', `id=${task3.id}, no description`, dur2b, res2b.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (create task 3 minimal)',
+			'PASS',
+			`id=${task3.id}, no description`,
+			dur2b,
+			res2b.status
+		);
 	} else {
-		record('Tasks', 'POST /api/v1/tasks (create task 3 minimal)', 'FAIL', JSON.stringify(task3).substring(0, 200), dur2b, res2b.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (create task 3 minimal)',
+			'FAIL',
+			JSON.stringify(task3).substring(0, 200),
+			dur2b,
+			res2b.status
+		);
 	}
 
 	// GET /api/v1/tasks?projectId=...
@@ -606,9 +906,23 @@ async function testTasks() {
 	const allTasksRes = await res3.json();
 	const allTasks = allTasksRes.data ?? allTasksRes;
 	if (res3.ok && Array.isArray(allTasks) && allTasks.length >= 2) {
-		record('Tasks', 'GET /api/v1/tasks (list)', 'PASS', `${allTasks.length} tasks returned${allTasksRes.nextCursor ? ', has nextCursor' : ''}`, dur3, res3.status);
+		record(
+			'Tasks',
+			'GET /api/v1/tasks (list)',
+			'PASS',
+			`${allTasks.length} tasks returned${allTasksRes.nextCursor ? ', has nextCursor' : ''}`,
+			dur3,
+			res3.status
+		);
 	} else {
-		record('Tasks', 'GET /api/v1/tasks (list)', 'FAIL', `Expected array with >=2 tasks, got ${JSON.stringify(allTasksRes).substring(0, 200)}`, dur3, res3.status);
+		record(
+			'Tasks',
+			'GET /api/v1/tasks (list)',
+			'FAIL',
+			`Expected array with >=2 tasks, got ${JSON.stringify(allTasksRes).substring(0, 200)}`,
+			dur3,
+			res3.status
+		);
 	}
 
 	// GET /api/v1/tasks/:taskId
@@ -620,9 +934,23 @@ async function testTasks() {
 		);
 		const single = await res4.json();
 		if (res4.ok && single.id === taskId) {
-			record('Tasks', 'GET /api/v1/tasks/:id (single)', 'PASS', `title="${single.title}", status=${single.status}`, dur4, res4.status);
+			record(
+				'Tasks',
+				'GET /api/v1/tasks/:id (single)',
+				'PASS',
+				`title="${single.title}", status=${single.status}`,
+				dur4,
+				res4.status
+			);
 		} else {
-			record('Tasks', 'GET /api/v1/tasks/:id (single)', 'FAIL', JSON.stringify(single).substring(0, 200), dur4, res4.status);
+			record(
+				'Tasks',
+				'GET /api/v1/tasks/:id (single)',
+				'FAIL',
+				JSON.stringify(single).substring(0, 200),
+				dur4,
+				res4.status
+			);
 		}
 	}
 
@@ -642,9 +970,23 @@ async function testTasks() {
 		);
 		const patched = await res5.json();
 		if (res5.ok && patched.status === 'in_progress') {
-			record('Tasks', 'PATCH /api/v1/tasks/:id (update)', 'PASS', `status=${patched.status}, priority=${patched.priority}, assigneeId=${patched.assigneeId}`, dur5, res5.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id (update)',
+				'PASS',
+				`status=${patched.status}, priority=${patched.priority}, assigneeId=${patched.assigneeId}`,
+				dur5,
+				res5.status
+			);
 		} else {
-			record('Tasks', 'PATCH /api/v1/tasks/:id (update)', 'FAIL', JSON.stringify(patched).substring(0, 200), dur5, res5.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id (update)',
+				'FAIL',
+				JSON.stringify(patched).substring(0, 200),
+				dur5,
+				res5.status
+			);
 		}
 	}
 
@@ -659,9 +1001,23 @@ async function testTasks() {
 		);
 		const doneTask = await res5b.json();
 		if (res5b.ok && doneTask.status === 'done' && doneTask.completedAt) {
-			record('Tasks', 'PATCH /api/v1/tasks/:id (mark done)', 'PASS', `completedAt=${doneTask.completedAt}`, dur5b, res5b.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id (mark done)',
+				'PASS',
+				`completedAt=${doneTask.completedAt}`,
+				dur5b,
+				res5b.status
+			);
 		} else {
-			record('Tasks', 'PATCH /api/v1/tasks/:id (mark done)', 'FAIL', JSON.stringify(doneTask).substring(0, 200), dur5b, res5b.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id (mark done)',
+				'FAIL',
+				JSON.stringify(doneTask).substring(0, 200),
+				dur5b,
+				res5b.status
+			);
 		}
 	}
 
@@ -676,9 +1032,23 @@ async function testTasks() {
 		);
 		const reopened = await res5c.json();
 		if (res5c.ok && reopened.status === 'in_review' && !reopened.completedAt) {
-			record('Tasks', 'PATCH /api/v1/tasks/:id (reopen from done)', 'PASS', `completedAt cleared, status=${reopened.status}`, dur5c, res5c.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id (reopen from done)',
+				'PASS',
+				`completedAt cleared, status=${reopened.status}`,
+				dur5c,
+				res5c.status
+			);
 		} else {
-			record('Tasks', 'PATCH /api/v1/tasks/:id (reopen from done)', 'FAIL', JSON.stringify(reopened).substring(0, 200), dur5c, res5c.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id (reopen from done)',
+				'FAIL',
+				JSON.stringify(reopened).substring(0, 200),
+				dur5c,
+				res5c.status
+			);
 		}
 	}
 
@@ -694,9 +1064,23 @@ async function testTasks() {
 		);
 		const moved = await res6.json();
 		if (res6.ok && moved.columnId === targetCol) {
-			record('Tasks', 'PATCH /api/v1/tasks/:id/move', 'PASS', `Moved to column ${targetCol}`, dur6, res6.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id/move',
+				'PASS',
+				`Moved to column ${targetCol}`,
+				dur6,
+				res6.status
+			);
 		} else {
-			record('Tasks', 'PATCH /api/v1/tasks/:id/move', 'FAIL', JSON.stringify(moved).substring(0, 200), dur6, res6.status);
+			record(
+				'Tasks',
+				'PATCH /api/v1/tasks/:id/move',
+				'FAIL',
+				JSON.stringify(moved).substring(0, 200),
+				dur6,
+				res6.status
+			);
 		}
 	} else {
 		record('Tasks', 'PATCH /api/v1/tasks/:id/move', 'SKIP', 'Not enough column IDs', 0);
@@ -711,19 +1095,38 @@ async function testTasks() {
 		})
 	);
 	if (res7.status === 400) {
-		record('Tasks', 'POST /api/v1/tasks (validation — no title)', 'PASS', `400 as expected`, dur7, res7.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (validation — no title)',
+			'PASS',
+			`400 as expected`,
+			dur7,
+			res7.status
+		);
 	} else {
-		record('Tasks', 'POST /api/v1/tasks (validation — no title)', 'FAIL', `Expected 400, got ${res7.status}`, dur7, res7.status);
+		record(
+			'Tasks',
+			'POST /api/v1/tasks (validation — no title)',
+			'FAIL',
+			`Expected 400, got ${res7.status}`,
+			dur7,
+			res7.status
+		);
 	}
 
 	// GET /api/v1/tasks without auth
-	const [res8, dur8] = await measure(() =>
-		fetch(`${BASE}/api/v1/tasks?projectId=${projectId}`)
-	);
+	const [res8, dur8] = await measure(() => fetch(`${BASE}/api/v1/tasks?projectId=${projectId}`));
 	if (res8.status === 401) {
 		record('Tasks', 'GET /api/v1/tasks (no auth)', 'PASS', `401 as expected`, dur8, res8.status);
 	} else {
-		record('Tasks', 'GET /api/v1/tasks (no auth)', 'FAIL', `Expected 401, got ${res8.status}`, dur8, res8.status);
+		record(
+			'Tasks',
+			'GET /api/v1/tasks (no auth)',
+			'FAIL',
+			`Expected 401, got ${res8.status}`,
+			dur8,
+			res8.status
+		);
 	}
 
 	// User 2 can access project tasks (was invited)
@@ -736,9 +1139,23 @@ async function testTasks() {
 		const u2TasksRes = await res9.json();
 		const u2Tasks = u2TasksRes.data ?? u2TasksRes;
 		if (res9.ok && Array.isArray(u2Tasks)) {
-			record('Tasks', 'GET /api/v1/tasks (User 2, invited member)', 'PASS', `${u2Tasks.length} tasks visible to invited user`, dur9, res9.status);
+			record(
+				'Tasks',
+				'GET /api/v1/tasks (User 2, invited member)',
+				'PASS',
+				`${u2Tasks.length} tasks visible to invited user`,
+				dur9,
+				res9.status
+			);
 		} else {
-			record('Tasks', 'GET /api/v1/tasks (User 2, invited member)', 'FAIL', `status=${res9.status}`, dur9, res9.status);
+			record(
+				'Tasks',
+				'GET /api/v1/tasks (User 2, invited member)',
+				'FAIL',
+				`status=${res9.status}`,
+				dur9,
+				res9.status
+			);
 		}
 	}
 }
@@ -764,9 +1181,23 @@ async function testLabels() {
 	const label1 = await res1.json();
 	if (res1.status === 201 && label1.id) {
 		labelId = label1.id;
-		record('Labels', 'POST /api/v1/labels (create "bug")', 'PASS', `id=${label1.id}, name=${label1.name}, color=${label1.color}`, dur1, res1.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (create "bug")',
+			'PASS',
+			`id=${label1.id}, name=${label1.name}, color=${label1.color}`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Labels', 'POST /api/v1/labels (create "bug")', 'FAIL', JSON.stringify(label1).substring(0, 200), dur1, res1.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (create "bug")',
+			'FAIL',
+			JSON.stringify(label1).substring(0, 200),
+			dur1,
+			res1.status
+		);
 	}
 
 	// Create more labels
@@ -778,9 +1209,23 @@ async function testLabels() {
 		})
 	);
 	if (res2.status === 201) {
-		record('Labels', 'POST /api/v1/labels (create "feature")', 'PASS', 'Label created', dur2, res2.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (create "feature")',
+			'PASS',
+			'Label created',
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Labels', 'POST /api/v1/labels (create "feature")', 'FAIL', `status=${res2.status}`, dur2, res2.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (create "feature")',
+			'FAIL',
+			`status=${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	const [res2b, dur2b] = await measure(() =>
@@ -791,9 +1236,23 @@ async function testLabels() {
 		})
 	);
 	if (res2b.status === 201) {
-		record('Labels', 'POST /api/v1/labels (create "urgent")', 'PASS', 'Label created', dur2b, res2b.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (create "urgent")',
+			'PASS',
+			'Label created',
+			dur2b,
+			res2b.status
+		);
 	} else {
-		record('Labels', 'POST /api/v1/labels (create "urgent")', 'FAIL', `status=${res2b.status}`, dur2b, res2b.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (create "urgent")',
+			'FAIL',
+			`status=${res2b.status}`,
+			dur2b,
+			res2b.status
+		);
 	}
 
 	// GET /api/v1/labels?projectId=...
@@ -804,9 +1263,23 @@ async function testLabels() {
 	);
 	const labels = await res3.json();
 	if (res3.ok && Array.isArray(labels) && labels.length >= 3) {
-		record('Labels', 'GET /api/v1/labels (list)', 'PASS', `${labels.length} labels returned`, dur3, res3.status);
+		record(
+			'Labels',
+			'GET /api/v1/labels (list)',
+			'PASS',
+			`${labels.length} labels returned`,
+			dur3,
+			res3.status
+		);
 	} else {
-		record('Labels', 'GET /api/v1/labels (list)', 'FAIL', JSON.stringify(labels).substring(0, 200), dur3, res3.status);
+		record(
+			'Labels',
+			'GET /api/v1/labels (list)',
+			'FAIL',
+			JSON.stringify(labels).substring(0, 200),
+			dur3,
+			res3.status
+		);
 	}
 
 	// Validation: invalid color
@@ -818,9 +1291,23 @@ async function testLabels() {
 		})
 	);
 	if (res4.status === 400) {
-		record('Labels', 'POST /api/v1/labels (invalid color)', 'PASS', `400 validation error`, dur4, res4.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (invalid color)',
+			'PASS',
+			`400 validation error`,
+			dur4,
+			res4.status
+		);
 	} else {
-		record('Labels', 'POST /api/v1/labels (invalid color)', 'FAIL', `Expected 400, got ${res4.status}`, dur4, res4.status);
+		record(
+			'Labels',
+			'POST /api/v1/labels (invalid color)',
+			'FAIL',
+			`Expected 400, got ${res4.status}`,
+			dur4,
+			res4.status
+		);
 	}
 }
 
@@ -845,9 +1332,23 @@ async function testComments() {
 	const comment1 = await res1.json();
 	if (res1.status === 201 && comment1.id) {
 		commentId = comment1.id;
-		record('Comments', 'POST /api/v1/comments (Alice)', 'PASS', `id=${comment1.id}, authorId=${comment1.authorId}`, dur1, res1.status);
+		record(
+			'Comments',
+			'POST /api/v1/comments (Alice)',
+			'PASS',
+			`id=${comment1.id}, authorId=${comment1.authorId}`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Comments', 'POST /api/v1/comments (Alice)', 'FAIL', JSON.stringify(comment1).substring(0, 200), dur1, res1.status);
+		record(
+			'Comments',
+			'POST /api/v1/comments (Alice)',
+			'FAIL',
+			JSON.stringify(comment1).substring(0, 200),
+			dur1,
+			res1.status
+		);
 	}
 
 	// Comment from User 2
@@ -859,9 +1360,23 @@ async function testComments() {
 		})
 	);
 	if (res2.status === 201) {
-		record('Comments', 'POST /api/v1/comments (Bob)', 'PASS', `Cross-user comment created`, dur2, res2.status);
+		record(
+			'Comments',
+			'POST /api/v1/comments (Bob)',
+			'PASS',
+			`Cross-user comment created`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Comments', 'POST /api/v1/comments (Bob)', 'FAIL', `status=${res2.status}`, dur2, res2.status);
+		record(
+			'Comments',
+			'POST /api/v1/comments (Bob)',
+			'FAIL',
+			`status=${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// GET /api/v1/comments?taskId=...
@@ -873,9 +1388,23 @@ async function testComments() {
 	const allCommentsRes = await res3.json();
 	const allComments = allCommentsRes.data ?? allCommentsRes;
 	if (res3.ok && Array.isArray(allComments) && allComments.length >= 2) {
-		record('Comments', 'GET /api/v1/comments (list)', 'PASS', `${allComments.length} comments returned${allCommentsRes.nextCursor ? ', has nextCursor' : ''}`, dur3, res3.status);
+		record(
+			'Comments',
+			'GET /api/v1/comments (list)',
+			'PASS',
+			`${allComments.length} comments returned${allCommentsRes.nextCursor ? ', has nextCursor' : ''}`,
+			dur3,
+			res3.status
+		);
 	} else {
-		record('Comments', 'GET /api/v1/comments (list)', 'FAIL', JSON.stringify(allCommentsRes).substring(0, 200), dur3, res3.status);
+		record(
+			'Comments',
+			'GET /api/v1/comments (list)',
+			'FAIL',
+			JSON.stringify(allCommentsRes).substring(0, 200),
+			dur3,
+			res3.status
+		);
 	}
 
 	// Validation: empty body
@@ -887,9 +1416,23 @@ async function testComments() {
 		})
 	);
 	if (res4.status === 400) {
-		record('Comments', 'POST /api/v1/comments (empty body)', 'PASS', `400 validation`, dur4, res4.status);
+		record(
+			'Comments',
+			'POST /api/v1/comments (empty body)',
+			'PASS',
+			`400 validation`,
+			dur4,
+			res4.status
+		);
 	} else {
-		record('Comments', 'POST /api/v1/comments (empty body)', 'FAIL', `Expected 400, got ${res4.status}`, dur4, res4.status);
+		record(
+			'Comments',
+			'POST /api/v1/comments (empty body)',
+			'FAIL',
+			`Expected 400, got ${res4.status}`,
+			dur4,
+			res4.status
+		);
 	}
 }
 
@@ -914,9 +1457,23 @@ async function testTimeEntries() {
 	const entry1 = await res1.json();
 	if (res1.status === 201 && entry1.id) {
 		timeEntryId = entry1.id;
-		record('Time', 'POST /api/v1/time-entries (start timer)', 'PASS', `id=${entry1.id}, startedAt=${entry1.startedAt}`, dur1, res1.status);
+		record(
+			'Time',
+			'POST /api/v1/time-entries (start timer)',
+			'PASS',
+			`id=${entry1.id}, startedAt=${entry1.startedAt}`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Time', 'POST /api/v1/time-entries (start timer)', 'FAIL', JSON.stringify(entry1).substring(0, 200), dur1, res1.status);
+		record(
+			'Time',
+			'POST /api/v1/time-entries (start timer)',
+			'FAIL',
+			JSON.stringify(entry1).substring(0, 200),
+			dur1,
+			res1.status
+		);
 	}
 
 	// POST again — should fail (already running)
@@ -928,9 +1485,23 @@ async function testTimeEntries() {
 		})
 	);
 	if (res2.status === 400 || res2.status === 409) {
-		record('Time', 'POST /api/v1/time-entries (duplicate timer)', 'PASS', `${res2.status} — already running`, dur2, res2.status);
+		record(
+			'Time',
+			'POST /api/v1/time-entries (duplicate timer)',
+			'PASS',
+			`${res2.status} — already running`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Time', 'POST /api/v1/time-entries (duplicate timer)', 'FAIL', `Expected 400/409, got ${res2.status}`, dur2, res2.status);
+		record(
+			'Time',
+			'POST /api/v1/time-entries (duplicate timer)',
+			'FAIL',
+			`Expected 400/409, got ${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// Wait a moment then PATCH — stop timer
@@ -945,9 +1516,23 @@ async function testTimeEntries() {
 	);
 	const stopped = await res3.json();
 	if (res3.ok && stopped.stoppedAt && stopped.durationSeconds > 0) {
-		record('Time', 'PATCH /api/v1/time-entries (stop timer)', 'PASS', `durationSeconds=${stopped.durationSeconds}, stoppedAt=${stopped.stoppedAt}`, dur3, res3.status);
+		record(
+			'Time',
+			'PATCH /api/v1/time-entries (stop timer)',
+			'PASS',
+			`durationSeconds=${stopped.durationSeconds}, stoppedAt=${stopped.stoppedAt}`,
+			dur3,
+			res3.status
+		);
 	} else {
-		record('Time', 'PATCH /api/v1/time-entries (stop timer)', 'FAIL', JSON.stringify(stopped).substring(0, 200), dur3, res3.status);
+		record(
+			'Time',
+			'PATCH /api/v1/time-entries (stop timer)',
+			'FAIL',
+			JSON.stringify(stopped).substring(0, 200),
+			dur3,
+			res3.status
+		);
 	}
 
 	// PATCH again — should fail (already stopped)
@@ -959,9 +1544,23 @@ async function testTimeEntries() {
 		})
 	);
 	if (res4.status === 400) {
-		record('Time', 'PATCH /api/v1/time-entries (already stopped)', 'PASS', `400 as expected`, dur4, res4.status);
+		record(
+			'Time',
+			'PATCH /api/v1/time-entries (already stopped)',
+			'PASS',
+			`400 as expected`,
+			dur4,
+			res4.status
+		);
 	} else {
-		record('Time', 'PATCH /api/v1/time-entries (already stopped)', 'FAIL', `Expected 400, got ${res4.status}`, dur4, res4.status);
+		record(
+			'Time',
+			'PATCH /api/v1/time-entries (already stopped)',
+			'FAIL',
+			`Expected 400, got ${res4.status}`,
+			dur4,
+			res4.status
+		);
 	}
 
 	// GET /api/v1/time-entries
@@ -973,9 +1572,23 @@ async function testTimeEntries() {
 	const entriesRes = await res5.json();
 	const entries = entriesRes.data ?? entriesRes;
 	if (res5.ok && Array.isArray(entries) && entries.length >= 1) {
-		record('Time', 'GET /api/v1/time-entries (list)', 'PASS', `${entries.length} entries returned`, dur5, res5.status);
+		record(
+			'Time',
+			'GET /api/v1/time-entries (list)',
+			'PASS',
+			`${entries.length} entries returned`,
+			dur5,
+			res5.status
+		);
 	} else {
-		record('Time', 'GET /api/v1/time-entries (list)', 'FAIL', JSON.stringify(entriesRes).substring(0, 200), dur5, res5.status);
+		record(
+			'Time',
+			'GET /api/v1/time-entries (list)',
+			'FAIL',
+			JSON.stringify(entriesRes).substring(0, 200),
+			dur5,
+			res5.status
+		);
 	}
 
 	// GET with taskId filter
@@ -987,9 +1600,23 @@ async function testTimeEntries() {
 	const filteredRes = await res6.json();
 	const filtered = filteredRes.data ?? filteredRes;
 	if (res6.ok && Array.isArray(filtered)) {
-		record('Time', 'GET /api/v1/time-entries?taskId (filtered)', 'PASS', `${filtered.length} entries for task`, dur6, res6.status);
+		record(
+			'Time',
+			'GET /api/v1/time-entries?taskId (filtered)',
+			'PASS',
+			`${filtered.length} entries for task`,
+			dur6,
+			res6.status
+		);
 	} else {
-		record('Time', 'GET /api/v1/time-entries?taskId (filtered)', 'FAIL', `status=${res6.status}`, dur6, res6.status);
+		record(
+			'Time',
+			'GET /api/v1/time-entries?taskId (filtered)',
+			'FAIL',
+			`status=${res6.status}`,
+			dur6,
+			res6.status
+		);
 	}
 }
 
@@ -1007,9 +1634,23 @@ async function testNotifications() {
 	);
 	const body1 = await res1.json();
 	if (res1.ok && body1.success) {
-		record('Notifications', 'POST /api/v1/notifications/read-all', 'PASS', `success=true`, dur1, res1.status);
+		record(
+			'Notifications',
+			'POST /api/v1/notifications/read-all',
+			'PASS',
+			`success=true`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Notifications', 'POST /api/v1/notifications/read-all', 'FAIL', JSON.stringify(body1), dur1, res1.status);
+		record(
+			'Notifications',
+			'POST /api/v1/notifications/read-all',
+			'FAIL',
+			JSON.stringify(body1),
+			dur1,
+			res1.status
+		);
 	}
 
 	// POST /api/v1/notifications/:id/read (with fake id — should still return 200)
@@ -1021,9 +1662,23 @@ async function testNotifications() {
 	);
 	const body2 = await res2.json();
 	if (res2.ok) {
-		record('Notifications', 'POST /api/v1/notifications/:id/read (no-op)', 'PASS', `success=${body2.success} (no-op for nonexistent)`, dur2, res2.status);
+		record(
+			'Notifications',
+			'POST /api/v1/notifications/:id/read (no-op)',
+			'PASS',
+			`success=${body2.success} (no-op for nonexistent)`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Notifications', 'POST /api/v1/notifications/:id/read (no-op)', 'FAIL', `status=${res2.status}`, dur2, res2.status);
+		record(
+			'Notifications',
+			'POST /api/v1/notifications/:id/read (no-op)',
+			'FAIL',
+			`status=${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// Load notifications page
@@ -1033,9 +1688,23 @@ async function testNotifications() {
 		})
 	);
 	if (res3.ok) {
-		record('Notifications', 'GET /notifications (page)', 'PASS', `Page loaded successfully`, dur3, res3.status);
+		record(
+			'Notifications',
+			'GET /notifications (page)',
+			'PASS',
+			`Page loaded successfully`,
+			dur3,
+			res3.status
+		);
 	} else {
-		record('Notifications', 'GET /notifications (page)', 'FAIL', `status=${res3.status}`, dur3, res3.status);
+		record(
+			'Notifications',
+			'GET /notifications (page)',
+			'FAIL',
+			`status=${res3.status}`,
+			dur3,
+			res3.status
+		);
 	}
 
 	// Without auth
@@ -1043,9 +1712,23 @@ async function testNotifications() {
 		fetch(`${BASE}/api/v1/notifications/read-all`, { method: 'POST' })
 	);
 	if (res4.status === 401) {
-		record('Notifications', 'POST /api/v1/notifications/read-all (no auth)', 'PASS', `401 as expected`, dur4, res4.status);
+		record(
+			'Notifications',
+			'POST /api/v1/notifications/read-all (no auth)',
+			'PASS',
+			`401 as expected`,
+			dur4,
+			res4.status
+		);
 	} else {
-		record('Notifications', 'POST /api/v1/notifications/read-all (no auth)', 'FAIL', `Expected 401, got ${res4.status}`, dur4, res4.status);
+		record(
+			'Notifications',
+			'POST /api/v1/notifications/read-all (no auth)',
+			'FAIL',
+			`Expected 401, got ${res4.status}`,
+			dur4,
+			res4.status
+		);
 	}
 }
 
@@ -1075,11 +1758,32 @@ async function testFiles() {
 
 	if (res1.status === 201) {
 		const body = await res1.json();
-		record('Files', 'POST /api/v1/files/presign', 'PASS', `uploadUrl received, attachment id=${body.attachment?.id}`, dur1, res1.status);
+		record(
+			'Files',
+			'POST /api/v1/files/presign',
+			'PASS',
+			`uploadUrl received, attachment id=${body.attachment?.id}`,
+			dur1,
+			res1.status
+		);
 	} else if (res1.status === 500) {
-		record('Files', 'POST /api/v1/files/presign (S3 unavailable)', 'PASS', `500 expected — S3/MinIO not running (endpoint validated auth + body parsing)`, dur1, res1.status);
+		record(
+			'Files',
+			'POST /api/v1/files/presign (S3 unavailable)',
+			'PASS',
+			`500 expected — S3/MinIO not running (endpoint validated auth + body parsing)`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Files', 'POST /api/v1/files/presign', 'FAIL', `Unexpected status ${res1.status}`, dur1, res1.status);
+		record(
+			'Files',
+			'POST /api/v1/files/presign',
+			'FAIL',
+			`Unexpected status ${res1.status}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// Validation: file too large
@@ -1096,9 +1800,23 @@ async function testFiles() {
 		})
 	);
 	if (res2.status === 400) {
-		record('Files', 'POST /api/v1/files/presign (file too large)', 'PASS', `400 validation for 200MB file`, dur2, res2.status);
+		record(
+			'Files',
+			'POST /api/v1/files/presign (file too large)',
+			'PASS',
+			`400 validation for 200MB file`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Files', 'POST /api/v1/files/presign (file too large)', 'FAIL', `Expected 400, got ${res2.status}`, dur2, res2.status);
+		record(
+			'Files',
+			'POST /api/v1/files/presign (file too large)',
+			'FAIL',
+			`Expected 400, got ${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 }
 
@@ -1117,11 +1835,32 @@ async function testBilling() {
 	);
 
 	if (res1.status === 303) {
-		record('Billing', 'POST /api/v1/billing/checkout', 'PASS', `Redirected to Stripe checkout`, dur1, res1.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/checkout',
+			'PASS',
+			`Redirected to Stripe checkout`,
+			dur1,
+			res1.status
+		);
 	} else if (res1.status === 500) {
-		record('Billing', 'POST /api/v1/billing/checkout (Stripe placeholder)', 'PASS', `500 expected — Stripe key is placeholder (auth validated)`, dur1, res1.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/checkout (Stripe placeholder)',
+			'PASS',
+			`500 expected — Stripe key is placeholder (auth validated)`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Billing', 'POST /api/v1/billing/checkout', 'FAIL', `status=${res1.status}`, dur1, res1.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/checkout',
+			'FAIL',
+			`status=${res1.status}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// POST /api/v1/billing/portal — should fail (no stripeCustomerId)
@@ -1134,11 +1873,32 @@ async function testBilling() {
 	);
 
 	if (res2.status === 400) {
-		record('Billing', 'POST /api/v1/billing/portal (no subscription)', 'PASS', `400 — no billing account as expected`, dur2, res2.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/portal (no subscription)',
+			'PASS',
+			`400 — no billing account as expected`,
+			dur2,
+			res2.status
+		);
 	} else if (res2.status === 500) {
-		record('Billing', 'POST /api/v1/billing/portal (Stripe placeholder)', 'PASS', `500 — Stripe API error with placeholder key`, dur2, res2.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/portal (Stripe placeholder)',
+			'PASS',
+			`500 — Stripe API error with placeholder key`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Billing', 'POST /api/v1/billing/portal', 'FAIL', `status=${res2.status}`, dur2, res2.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/portal',
+			'FAIL',
+			`status=${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// Without auth
@@ -1146,9 +1906,23 @@ async function testBilling() {
 		fetch(`${BASE}/api/v1/billing/checkout`, { method: 'POST', redirect: 'manual' })
 	);
 	if (res3.status === 401) {
-		record('Billing', 'POST /api/v1/billing/checkout (no auth)', 'PASS', `401 as expected`, dur3, res3.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/checkout (no auth)',
+			'PASS',
+			`401 as expected`,
+			dur3,
+			res3.status
+		);
 	} else {
-		record('Billing', 'POST /api/v1/billing/checkout (no auth)', 'FAIL', `Expected 401, got ${res3.status}`, dur3, res3.status);
+		record(
+			'Billing',
+			'POST /api/v1/billing/checkout (no auth)',
+			'FAIL',
+			`Expected 401, got ${res3.status}`,
+			dur3,
+			res3.status
+		);
 	}
 }
 
@@ -1166,9 +1940,23 @@ async function testWebhooks() {
 		})
 	);
 	if (res1.status === 400) {
-		record('Webhooks', 'POST /api/v1/webhooks/stripe (no signature)', 'PASS', `400 — missing stripe-signature`, dur1, res1.status);
+		record(
+			'Webhooks',
+			'POST /api/v1/webhooks/stripe (no signature)',
+			'PASS',
+			`400 — missing stripe-signature`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Webhooks', 'POST /api/v1/webhooks/stripe (no signature)', 'FAIL', `Expected 400, got ${res1.status}`, dur1, res1.status);
+		record(
+			'Webhooks',
+			'POST /api/v1/webhooks/stripe (no signature)',
+			'FAIL',
+			`Expected 400, got ${res1.status}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// POST with fake signature
@@ -1183,9 +1971,23 @@ async function testWebhooks() {
 		})
 	);
 	if (res2.status === 400) {
-		record('Webhooks', 'POST /api/v1/webhooks/stripe (fake signature)', 'PASS', `400 — invalid signature`, dur2, res2.status);
+		record(
+			'Webhooks',
+			'POST /api/v1/webhooks/stripe (fake signature)',
+			'PASS',
+			`400 — invalid signature`,
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Webhooks', 'POST /api/v1/webhooks/stripe (fake signature)', 'FAIL', `Expected 400, got ${res2.status}`, dur2, res2.status);
+		record(
+			'Webhooks',
+			'POST /api/v1/webhooks/stripe (fake signature)',
+			'FAIL',
+			`Expected 400, got ${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 }
 
@@ -1200,8 +2002,19 @@ async function testPageRoutes() {
 	);
 	if (res1.ok) {
 		const html = await res1.text();
-		const hasDashboard = html.includes('dashboard') || html.includes('Dashboard') || html.includes('project') || html.includes('Welcome');
-		record('Pages', 'GET /dashboard', hasDashboard ? 'PASS' : 'FAIL', hasDashboard ? 'Dashboard rendered' : 'Dashboard content missing', dur1, res1.status);
+		const hasDashboard =
+			html.includes('dashboard') ||
+			html.includes('Dashboard') ||
+			html.includes('project') ||
+			html.includes('Welcome');
+		record(
+			'Pages',
+			'GET /dashboard',
+			hasDashboard ? 'PASS' : 'FAIL',
+			hasDashboard ? 'Dashboard rendered' : 'Dashboard content missing',
+			dur1,
+			res1.status
+		);
 	} else {
 		record('Pages', 'GET /dashboard', 'FAIL', `status=${res1.status}`, dur1, res1.status);
 	}
@@ -1241,7 +2054,14 @@ async function testPageRoutes() {
 	if (res5.ok) {
 		const html = await res5.text();
 		const hasForm = html.includes('password') || html.includes('email');
-		record('Pages', 'GET /login (public)', hasForm ? 'PASS' : 'FAIL', hasForm ? 'Login form rendered' : 'Login form missing', dur5, res5.status);
+		record(
+			'Pages',
+			'GET /login (public)',
+			hasForm ? 'PASS' : 'FAIL',
+			hasForm ? 'Login form rendered' : 'Login form missing',
+			dur5,
+			res5.status
+		);
 	} else {
 		record('Pages', 'GET /login (public)', 'FAIL', `status=${res5.status}`, dur5, res5.status);
 	}
@@ -1251,19 +2071,38 @@ async function testPageRoutes() {
 	if (res6.ok) {
 		const html = await res6.text();
 		const hasForm = html.includes('password') || html.includes('confirmPassword');
-		record('Pages', 'GET /register (public)', hasForm ? 'PASS' : 'FAIL', hasForm ? 'Register form rendered' : 'Register form missing', dur6, res6.status);
+		record(
+			'Pages',
+			'GET /register (public)',
+			hasForm ? 'PASS' : 'FAIL',
+			hasForm ? 'Register form rendered' : 'Register form missing',
+			dur6,
+			res6.status
+		);
 	} else {
 		record('Pages', 'GET /register (public)', 'FAIL', `status=${res6.status}`, dur6, res6.status);
 	}
 
 	// Protected page without auth (should redirect)
-	const [res7, dur7] = await measure(() =>
-		fetch(`${BASE}/dashboard`, { redirect: 'manual' })
-	);
+	const [res7, dur7] = await measure(() => fetch(`${BASE}/dashboard`, { redirect: 'manual' }));
 	if (res7.status === 303 || res7.status === 302) {
-		record('Pages', 'GET /dashboard (no auth, redirect)', 'PASS', `Redirected to login (${res7.status})`, dur7, res7.status);
+		record(
+			'Pages',
+			'GET /dashboard (no auth, redirect)',
+			'PASS',
+			`Redirected to login (${res7.status})`,
+			dur7,
+			res7.status
+		);
 	} else {
-		record('Pages', 'GET /dashboard (no auth, redirect)', 'FAIL', `Expected redirect, got ${res7.status}`, dur7, res7.status);
+		record(
+			'Pages',
+			'GET /dashboard (no auth, redirect)',
+			'FAIL',
+			`Expected redirect, got ${res7.status}`,
+			dur7,
+			res7.status
+		);
 	}
 
 	// Project settings page
@@ -1274,9 +2113,23 @@ async function testPageRoutes() {
 			})
 		);
 		if (res8.ok) {
-			record('Pages', 'GET /projects/:id/settings', 'PASS', 'Settings page loaded', dur8, res8.status);
+			record(
+				'Pages',
+				'GET /projects/:id/settings',
+				'PASS',
+				'Settings page loaded',
+				dur8,
+				res8.status
+			);
 		} else {
-			record('Pages', 'GET /projects/:id/settings', 'FAIL', `status=${res8.status}`, dur8, res8.status);
+			record(
+				'Pages',
+				'GET /projects/:id/settings',
+				'FAIL',
+				`status=${res8.status}`,
+				dur8,
+				res8.status
+			);
 		}
 	}
 }
@@ -1321,7 +2174,13 @@ async function testSecurity() {
 	// Check Permissions-Policy
 	const permissionsPolicy = res1.headers.get('permissions-policy');
 	if (permissionsPolicy && permissionsPolicy.includes('camera=()')) {
-		record('Security', 'Permissions-Policy restrictive', 'PASS', permissionsPolicy.substring(0, 100), 0);
+		record(
+			'Security',
+			'Permissions-Policy restrictive',
+			'PASS',
+			permissionsPolicy.substring(0, 100),
+			0
+		);
 	} else {
 		record('Security', 'Permissions-Policy restrictive', 'FAIL', `Got: ${permissionsPolicy}`, 0);
 	}
@@ -1362,9 +2221,23 @@ async function testDeleteTask() {
 	);
 	const body = await res1.json();
 	if (res1.ok && body.success) {
-		record('Delete', 'DELETE /api/v1/tasks/:id', 'PASS', `Task ${taskId2} deleted`, dur1, res1.status);
+		record(
+			'Delete',
+			'DELETE /api/v1/tasks/:id',
+			'PASS',
+			`Task ${taskId2} deleted`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Delete', 'DELETE /api/v1/tasks/:id', 'FAIL', JSON.stringify(body).substring(0, 200), dur1, res1.status);
+		record(
+			'Delete',
+			'DELETE /api/v1/tasks/:id',
+			'FAIL',
+			JSON.stringify(body).substring(0, 200),
+			dur1,
+			res1.status
+		);
 	}
 
 	// Verify deleted — should be 404
@@ -1376,7 +2249,14 @@ async function testDeleteTask() {
 	if (res2.status === 404) {
 		record('Delete', 'GET deleted task (404)', 'PASS', `404 as expected`, dur2, res2.status);
 	} else {
-		record('Delete', 'GET deleted task (404)', 'FAIL', `Expected 404, got ${res2.status}`, dur2, res2.status);
+		record(
+			'Delete',
+			'GET deleted task (404)',
+			'FAIL',
+			`Expected 404, got ${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 }
 
@@ -1561,7 +2441,9 @@ async function main() {
 	const failed = RESULTS.filter((r) => r.status === 'FAIL').length;
 	const skipped = RESULTS.filter((r) => r.status === 'SKIP').length;
 
-	console.log(`\n  Total: ${RESULTS.length} | ✅ Passed: ${passed} | ❌ Failed: ${failed} | ⏭️ Skipped: ${skipped}`);
+	console.log(
+		`\n  Total: ${RESULTS.length} | ✅ Passed: ${passed} | ❌ Failed: ${failed} | ⏭️ Skipped: ${skipped}`
+	);
 	console.log(`  Duration: ${totalTime}ms`);
 	console.log(`  Pass Rate: ${((passed / (RESULTS.length - skipped)) * 100).toFixed(1)}%\n`);
 

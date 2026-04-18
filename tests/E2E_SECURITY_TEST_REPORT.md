@@ -12,17 +12,17 @@
 
 ## Summary by Category
 
-| Category | Passed | Failed | Skipped | Total |
-|----------|--------|--------|---------|-------|
-| Setup | 4 | 0 | 0 | 4 |
-| AuthBypass | 6 | 0 | 0 | 6 |
-| CrossProject | 6 | 0 | 0 | 6 |
-| Boundary | 12 | 0 | 0 | 12 |
-| XSS | 10 | 0 | 0 | 10 |
-| MIME | 7 | 0 | 0 | 7 |
-| Concurrent | 2 | 0 | 0 | 2 |
-| CascadeDelete | 10 | 0 | 0 | 10 |
-| RBAC | 12 | 0 | 0 | 12 |
+| Category      | Passed | Failed | Skipped | Total |
+| ------------- | ------ | ------ | ------- | ----- |
+| Setup         | 4      | 0      | 0       | 4     |
+| AuthBypass    | 6      | 0      | 0       | 6     |
+| CrossProject  | 6      | 0      | 0       | 6     |
+| Boundary      | 12     | 0      | 0       | 12    |
+| XSS           | 10     | 0      | 0       | 10    |
+| MIME          | 7      | 0      | 0       | 7     |
+| Concurrent    | 2      | 0      | 0       | 2     |
+| CascadeDelete | 10     | 0      | 0       | 10    |
+| RBAC          | 12     | 0      | 0       | 12    |
 
 ---
 
@@ -197,13 +197,13 @@
 
 ## Test Categories Covered
 
-| # | Category | Description |
-|---|----------|-------------|
-| 1 | Authorization Bypass | Access control bypass attempts |
-| 2 | Cross-Project Access | Isolation between user projects |
-| 3 | Boundary Values | Input validation edge cases |
-| 4 | XSS / Injection | Script injection and SQL injection |
-| 5 | MIME Allowlist | File type restriction enforcement |
-| 6 | Concurrent Operations | Race conditions and atomicity |
-| 7 | Cascade Delete | Foreign key cascade integrity |
-| 8 | Role-Based Access | Owner/member/viewer permissions |
+| #   | Category              | Description                        |
+| --- | --------------------- | ---------------------------------- |
+| 1   | Authorization Bypass  | Access control bypass attempts     |
+| 2   | Cross-Project Access  | Isolation between user projects    |
+| 3   | Boundary Values       | Input validation edge cases        |
+| 4   | XSS / Injection       | Script injection and SQL injection |
+| 5   | MIME Allowlist        | File type restriction enforcement  |
+| 6   | Concurrent Operations | Race conditions and atomicity      |
+| 7   | Cascade Delete        | Foreign key cascade integrity      |
+| 8   | Role-Based Access     | Owner/member/viewer permissions    |

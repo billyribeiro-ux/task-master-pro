@@ -6,7 +6,9 @@ export const createGoalSchema = z.object({
 	title: z.string().min(1).max(300),
 	description: z.string().max(5000).optional(),
 	type: z.enum(['objective', 'key_result', 'initiative']),
-	progressType: z.enum(['manual', 'task_count', 'task_story_points', 'key_result_average']).default('manual'),
+	progressType: z
+		.enum(['manual', 'task_count', 'task_story_points', 'key_result_average'])
+		.default('manual'),
 	progressTarget: z.number().min(0).default(100),
 	unit: z.string().max(20).default('%'),
 	startDate: z.string().optional(),

@@ -19,10 +19,17 @@
 </script>
 
 {#if src}
-	<img {src} alt={name} class="rounded-full object-cover {sizeClasses[size]} {className}" title={name} />
+	<img
+		{src}
+		alt={name}
+		class="rounded-full object-cover {sizeClasses[size]} {className}"
+		title={name}
+	/>
 {:else}
 	<div
-		class="flex items-center justify-center rounded-full bg-brand-100 font-semibold text-brand-700 dark:bg-brand-900 dark:text-brand-300 {sizeClasses[size]} {className}"
+		class="bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300 flex items-center justify-center rounded-full font-semibold {sizeClasses[
+			size
+		]} {className}"
 		title={name}
 	>
 		{initials}

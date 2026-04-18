@@ -1,4 +1,13 @@
-import { sqliteTable, text, integer, real, uniqueIndex, index, primaryKey, type AnySQLiteColumn } from 'drizzle-orm/sqlite-core';
+import {
+	sqliteTable,
+	text,
+	integer,
+	real,
+	uniqueIndex,
+	index,
+	primaryKey,
+	type AnySQLiteColumn
+} from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
 
@@ -162,7 +171,9 @@ export const tasks = sqliteTable(
 		columnId: text('column_id')
 			.notNull()
 			.references(() => columns.id, { onDelete: 'cascade' }),
-		parentTaskId: text('parent_task_id').references((): AnySQLiteColumn => tasks.id, { onDelete: 'set null' }),
+		parentTaskId: text('parent_task_id').references((): AnySQLiteColumn => tasks.id, {
+			onDelete: 'set null'
+		}),
 		title: text('title').notNull(),
 		description: text('description'),
 		priority: text('priority', { enum: ['none', 'low', 'medium', 'high', 'urgent'] })
@@ -590,11 +601,23 @@ export const customFieldDefinitions = sqliteTable(
 		name: text('name').notNull(),
 		slug: text('slug').notNull(),
 		fieldType: text('field_type', {
-			enum: ['text', 'number', 'date', 'select', 'multi_select', 'url', 'email', 'checkbox', 'currency']
+			enum: [
+				'text',
+				'number',
+				'date',
+				'select',
+				'multi_select',
+				'url',
+				'email',
+				'checkbox',
+				'currency'
+			]
 		}).notNull(),
 		description: text('description'),
 		isRequired: integer('is_required', { mode: 'boolean' }).notNull().default(false),
-		options: text('options', { mode: 'json' }).$type<{ label: string; value: string; color?: string }[]>(),
+		options: text('options', { mode: 'json' }).$type<
+			{ label: string; value: string; color?: string }[]
+		>(),
 		defaultValue: text('default_value'),
 		position: integer('position').notNull().default(0),
 		createdAt: text('created_at')
@@ -648,14 +671,20 @@ export const automationRules = sqliteTable(
 			.references(() => users.id),
 		name: text('name').notNull(),
 		description: text('description'),
-		trigger: text('trigger', { mode: 'json' }).$type<{
-			event: string;
-			conditions: { field: string; operator: string; value: unknown }[];
-		}>().notNull(),
-		actions: text('actions', { mode: 'json' }).$type<{
-			type: string;
-			params: Record<string, unknown>;
-		}[]>().notNull(),
+		trigger: text('trigger', { mode: 'json' })
+			.$type<{
+				event: string;
+				conditions: { field: string; operator: string; value: unknown }[];
+			}>()
+			.notNull(),
+		actions: text('actions', { mode: 'json' })
+			.$type<
+				{
+					type: string;
+					params: Record<string, unknown>;
+				}[]
+			>()
+			.notNull(),
 		isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
 		executionCount: integer('execution_count').notNull().default(0),
 		lastExecutedAt: text('last_executed_at'),
@@ -683,11 +712,13 @@ export const automationExecutionLog = sqliteTable(
 			.references(() => automationRules.id, { onDelete: 'cascade' }),
 		triggerEvent: text('trigger_event').notNull(),
 		triggerData: text('trigger_data', { mode: 'json' }).$type<Record<string, unknown>>(),
-		actionsExecuted: text('actions_executed', { mode: 'json' }).$type<{
-			type: string;
-			success: boolean;
-			error?: string;
-		}[]>(),
+		actionsExecuted: text('actions_executed', { mode: 'json' }).$type<
+			{
+				type: string;
+				success: boolean;
+				error?: string;
+			}[]
+		>(),
 		status: text('status', { enum: ['success', 'partial_failure', 'failure'] }).notNull(),
 		durationMs: integer('duration_ms'),
 		executedAt: text('executed_at')
@@ -793,11 +824,13 @@ export const aiConversationMessages = sqliteTable(
 			.references(() => aiConversations.id, { onDelete: 'cascade' }),
 		role: text('role', { enum: ['user', 'assistant', 'system'] }).notNull(),
 		content: text('content').notNull(),
-		toolCalls: text('tool_calls', { mode: 'json' }).$type<{
-			name: string;
-			arguments: Record<string, unknown>;
-			result?: unknown;
-		}[]>(),
+		toolCalls: text('tool_calls', { mode: 'json' }).$type<
+			{
+				name: string;
+				arguments: Record<string, unknown>;
+				result?: unknown;
+			}[]
+		>(),
 		tokenCount: integer('token_count'),
 		createdAt: text('created_at')
 			.notNull()
@@ -911,30 +944,35 @@ export const projectTemplates = sqliteTable(
 			.notNull()
 			.default('custom'),
 		isPublic: integer('is_public', { mode: 'boolean' }).notNull().default(false),
-		templateData: text('template_data', { mode: 'json' }).$type<{
-			columns: { name: string; position: number; color: string; wipLimit?: number }[];
-			taskTemplates: {
-				title: string;
-				description?: string;
-				priority: string;
-				columnIndex: number;
-				labels?: string[];
-				storyPoints?: number;
-				estimateMinutes?: number;
-			}[];
-			labels: { name: string; color: string }[];
-			customFields?: {
-				name: string;
-				slug: string;
-				fieldType: string;
-				options?: { label: string; value: string; color?: string }[];
-			}[];
-			automationRules?: {
-				name: string;
-				trigger: { event: string; conditions: { field: string; operator: string; value: unknown }[] };
-				actions: { type: string; params: Record<string, unknown> }[];
-			}[];
-		}>().notNull(),
+		templateData: text('template_data', { mode: 'json' })
+			.$type<{
+				columns: { name: string; position: number; color: string; wipLimit?: number }[];
+				taskTemplates: {
+					title: string;
+					description?: string;
+					priority: string;
+					columnIndex: number;
+					labels?: string[];
+					storyPoints?: number;
+					estimateMinutes?: number;
+				}[];
+				labels: { name: string; color: string }[];
+				customFields?: {
+					name: string;
+					slug: string;
+					fieldType: string;
+					options?: { label: string; value: string; color?: string }[];
+				}[];
+				automationRules?: {
+					name: string;
+					trigger: {
+						event: string;
+						conditions: { field: string; operator: string; value: unknown }[];
+					};
+					actions: { type: string; params: Record<string, unknown> }[];
+				}[];
+			}>()
+			.notNull(),
 		usageCount: integer('usage_count').notNull().default(0),
 		createdAt: text('created_at')
 			.notNull()

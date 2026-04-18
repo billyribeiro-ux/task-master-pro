@@ -17,13 +17,16 @@ const requestIdHandle: Handle = async ({ event, resolve }) => {
 	const response = await resolve(event);
 	response.headers.set('X-Request-Id', requestId);
 
-	logger.info({
-		requestId: event.locals.requestId,
-		method: event.request.method,
-		url: event.url.pathname,
-		status: response.status,
-		duration: Date.now() - start
-	}, 'request completed');
+	logger.info(
+		{
+			requestId: event.locals.requestId,
+			method: event.request.method,
+			url: event.url.pathname,
+			status: response.status,
+			duration: Date.now() - start
+		},
+		'request completed'
+	);
 
 	return response;
 };
@@ -103,10 +106,7 @@ const securityHeadersHandle: Handle = async ({ event, resolve }) => {
 		'content-security-policy',
 		"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ws: wss:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
 	);
-	response.headers.set(
-		'strict-transport-security',
-		'max-age=31536000; includeSubDomains'
-	);
+	response.headers.set('strict-transport-security', 'max-age=31536000; includeSubDomains');
 	response.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
 	response.headers.set('permissions-policy', 'camera=(), microphone=(), geolocation=()');
 
@@ -135,7 +135,8 @@ function cleanupRateLimitMap() {
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	const path = event.url.pathname;
-	const isAuthRoute = path.startsWith('/auth') || path.startsWith('/login') || path.startsWith('/register');
+	const isAuthRoute =
+		path.startsWith('/auth') || path.startsWith('/login') || path.startsWith('/register');
 	const isApiRoute = path.startsWith('/api');
 
 	if (!isAuthRoute && !isApiRoute) {
@@ -144,8 +145,8 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 
 	cleanupRateLimitMap();
 
-	const clientIp = event.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-		?? event.getClientAddress();
+	const clientIp =
+		event.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? event.getClientAddress();
 	const key = `${clientIp}:${isAuthRoute ? 'auth' : 'api'}`;
 	const now = Date.now();
 	const limit = isAuthRoute ? RATE_LIMIT_AUTH_MAX : RATE_LIMIT_MAX_REQUESTS;
@@ -172,4 +173,10 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle = sequence(requestIdHandle, apiKeyAuthHandle, authHandle, securityHeadersHandle, rateLimitHandle);
+export const handle = sequence(
+	requestIdHandle,
+	apiKeyAuthHandle,
+	authHandle,
+	securityHeadersHandle,
+	rateLimitHandle
+);

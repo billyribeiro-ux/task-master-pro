@@ -44,7 +44,14 @@ export const GET: RequestHandler = async (event) => {
 		conditions.push(
 			eq(
 				projectTemplates.category,
-				category as 'engineering' | 'marketing' | 'design' | 'operations' | 'sales' | 'hr' | 'custom'
+				category as
+					| 'engineering'
+					| 'marketing'
+					| 'design'
+					| 'operations'
+					| 'sales'
+					| 'hr'
+					| 'custom'
 			)
 		);
 	}

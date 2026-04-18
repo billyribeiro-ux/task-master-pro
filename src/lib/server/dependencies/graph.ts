@@ -88,12 +88,7 @@ export async function getBlockingChain(
 		const deps = await db
 			.select()
 			.from(taskDependencies)
-			.where(
-				and(
-					eq(taskDependencies.taskId, current),
-					eq(taskDependencies.type, 'blocks')
-				)
-			);
+			.where(and(eq(taskDependencies.taskId, current), eq(taskDependencies.type, 'blocks')));
 
 		for (const dep of deps) {
 			chain.push({
@@ -131,10 +126,7 @@ export async function getCriticalPath(projectId: string): Promise<{
 	totalEstimateMinutes: number;
 }> {
 	// Load all project tasks
-	const projectTasks = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.projectId, projectId));
+	const projectTasks = await db.select().from(tasks).where(eq(tasks.projectId, projectId));
 
 	const taskMap = new Map(projectTasks.map((t) => [t.id, t]));
 	const taskIds = new Set(projectTasks.map((t) => t.id));
@@ -241,13 +233,14 @@ export async function getCriticalPath(projectId: string): Promise<{
  * Find all tasks in a project that are currently blocked
  * (i.e., they depend on tasks that are not yet completed).
  */
-export async function getBlockedTasks(
-	projectId: string
-): Promise<{ taskId: string; title: string; blockedBy: { taskId: string; title: string; status: string }[] }[]> {
-	const projectTasks = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.projectId, projectId));
+export async function getBlockedTasks(projectId: string): Promise<
+	{
+		taskId: string;
+		title: string;
+		blockedBy: { taskId: string; title: string; status: string }[];
+	}[]
+> {
+	const projectTasks = await db.select().from(tasks).where(eq(tasks.projectId, projectId));
 
 	const taskMap = new Map(projectTasks.map((t) => [t.id, t]));
 	const taskIds = new Set(projectTasks.map((t) => t.id));

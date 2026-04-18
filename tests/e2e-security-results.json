@@ -1,533 +1,533 @@
 [
-  {
-    "category": "Setup",
-    "test": "Register User A",
-    "status": "PASS",
-    "detail": "Session acquired",
-    "duration": 98
-  },
-  {
-    "category": "Setup",
-    "test": "Register User B",
-    "status": "PASS",
-    "detail": "Session acquired",
-    "duration": 50
-  },
-  {
-    "category": "Setup",
-    "test": "Create Project A (User A)",
-    "status": "PASS",
-    "detail": "projectId=to0lwvp9vk10a1es2amkre0i",
-    "duration": 22
-  },
-  {
-    "category": "Setup",
-    "test": "Create Project B (User B)",
-    "status": "PASS",
-    "detail": "projectId=vaz7fdd6do0b1fms02d1ztq7",
-    "duration": 26
-  },
-  {
-    "category": "AuthBypass",
-    "test": "Access other user project tasks (should 403)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Correctly denied",
-    "duration": 3
-  },
-  {
-    "category": "AuthBypass",
-    "test": "Update task in foreign project (should 403)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Correctly denied",
-    "duration": 5
-  },
-  {
-    "category": "AuthBypass",
-    "test": "Delete task as viewer (should 403)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Viewer correctly denied delete",
-    "duration": 3
-  },
-  {
-    "category": "AuthBypass",
-    "test": "Access /api/v1/users/me with invalid session",
-    "status": "PASS",
-    "statusCode": 401,
-    "detail": "401 as expected",
-    "duration": 4
-  },
-  {
-    "category": "AuthBypass",
-    "test": "Access /api/v1/users/me with empty session",
-    "status": "PASS",
-    "statusCode": 401,
-    "detail": "401 as expected",
-    "duration": 2
-  },
-  {
-    "category": "AuthBypass",
-    "test": "Create task in nonexistent project",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Rejected with 403",
-    "duration": 3
-  },
-  {
-    "category": "CrossProject",
-    "test": "Create isolated Project B",
-    "status": "PASS",
-    "detail": "projectId=rzvnvmmxx59a05a58s5kvfv8",
-    "duration": 20
-  },
-  {
-    "category": "CrossProject",
-    "test": "User A lists tasks from isolated Project B (should 403)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Access denied",
-    "duration": 2
-  },
-  {
-    "category": "CrossProject",
-    "test": "User B creates task in Project A (should 403)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Access denied",
-    "duration": 2
-  },
-  {
-    "category": "CrossProject",
-    "test": "User B updates Project A settings (should fail)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Settings update denied",
-    "duration": 3
-  },
-  {
-    "category": "CrossProject",
-    "test": "User B invites to Project A (should fail)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Invitation denied",
-    "duration": 2
-  },
-  {
-    "category": "CrossProject",
-    "test": "User A creates label in isolated Project B (should 403)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Access denied",
-    "duration": 2
-  },
-  {
-    "category": "Boundary",
-    "test": "Create task with 500-char title (max allowed)",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Title stored: 500 chars",
-    "duration": 14
-  },
-  {
-    "category": "Boundary",
-    "test": "Create task with 501-char title (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 3
-  },
-  {
-    "category": "Boundary",
-    "test": "Create task with empty title (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 3
-  },
-  {
-    "category": "Boundary",
-    "test": "Create comment with 10000-char body (max)",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Body stored: 10000 chars",
-    "duration": 11
-  },
-  {
-    "category": "Boundary",
-    "test": "Create comment with 10001-char body (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "Boundary",
-    "test": "Create comment with empty body (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "Boundary",
-    "test": "Create label with empty name (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 3
-  },
-  {
-    "category": "Boundary",
-    "test": "Create label with 51-char name (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "Boundary",
-    "test": "Create task with invalid priority (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 3
-  },
-  {
-    "category": "Boundary",
-    "test": "Update task with invalid status (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 3
-  },
-  {
-    "category": "Boundary",
-    "test": "Create task with negative storyPoints (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "Boundary",
-    "test": "Create task with negative estimateMinutes (should fail)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "XSS",
-    "test": "Create task with <script> in title",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Stored as-is: \"<script>alert(1)</script>\" (not executed, safely stored)",
-    "duration": 14
-  },
-  {
-    "category": "XSS",
-    "test": "Retrieve XSS task via API (stored as-is)",
-    "status": "PASS",
-    "statusCode": 200,
-    "detail": "Title returned as plain text: \"<script>alert(1)</script>\"",
-    "duration": 3
-  },
-  {
-    "category": "XSS",
-    "test": "XSS payload in title: <img src=x onerror=alert(1)>...",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Stored safely, title=\"<img src=x onerror=alert(1)>\"",
-    "duration": 15
-  },
-  {
-    "category": "XSS",
-    "test": "XSS payload in title: \"><svg/onload=alert(1)>...",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Stored safely, title=\"\"><svg/onload=alert(1)>\"",
-    "duration": 13
-  },
-  {
-    "category": "XSS",
-    "test": "XSS payload in title: javascript:alert(1)...",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Stored safely, title=\"javascript:alert(1)\"",
-    "duration": 12
-  },
-  {
-    "category": "XSS",
-    "test": "XSS payload in title: <iframe src=\"javascript:alert(...",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Stored safely, title=\"<iframe src=\"javascript:alert(1)\"></iframe>\"",
-    "duration": 12
-  },
-  {
-    "category": "XSS",
-    "test": "Create comment with XSS payload in body",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Stored as-is (safe for API return, frontend must escape)",
-    "duration": 8
-  },
-  {
-    "category": "XSS",
-    "test": "Create project with SQL injection name",
-    "status": "PASS",
-    "statusCode": 200,
-    "detail": "Project created safely (parameterized queries), id=cb92974moj57uldh3i4o616f",
-    "duration": 19
-  },
-  {
-    "category": "XSS",
-    "test": "Verify users table intact after SQL injection",
-    "status": "PASS",
-    "detail": "users table has 22 rows",
-    "duration": 0
-  },
-  {
-    "category": "XSS",
-    "test": "SQL injection name stored literally",
-    "status": "PASS",
-    "detail": "name=\"'; DROP TABLE users; --\"",
-    "duration": 0
-  },
-  {
-    "category": "MIME",
-    "test": "Upload with application/x-executable (should 400)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "MIME",
-    "test": "Upload with text/html (should 400)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "MIME",
-    "test": "Upload with application/x-sh (should 400)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "MIME",
-    "test": "Upload with image/png (should work)",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Presigned URL generated, attachment id=iep4ohuai1yskv6densxk758",
-    "duration": 8
-  },
-  {
-    "category": "MIME",
-    "test": "Upload with application/pdf (should work or 500)",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Status 201 (MIME check passed)",
-    "duration": 8
-  },
-  {
-    "category": "MIME",
-    "test": "Upload with 100MB file (exactly at limit)",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "Status 201",
-    "duration": 8
-  },
-  {
-    "category": "MIME",
-    "test": "Upload with 100MB+1 file (over limit)",
-    "status": "PASS",
-    "statusCode": 400,
-    "detail": "Correctly rejected",
-    "duration": 2
-  },
-  {
-    "category": "Concurrent",
-    "test": "Create 5 tasks concurrently (unique displayIds)",
-    "status": "PASS",
-    "detail": "All unique: TM-10, TM-11, TM-12, TM-13, TM-14",
-    "duration": 64
-  },
-  {
-    "category": "Concurrent",
-    "test": "Start 2 timers concurrently on same task (one succeeds)",
-    "status": "PASS",
-    "detail": "1 succeeded (201), 1 conflicted (409)",
-    "duration": 13
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Setup: project with task, comment, time entry, label",
-    "status": "PASS",
-    "detail": "project=gyqcmge35av091nd8xoohtdb, task=nieguoyah453epnxmhgpbf1c",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Delete project via DB",
-    "status": "PASS",
-    "detail": "Deleted project gyqcmge35av091nd8xoohtdb",
-    "duration": 10
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Tasks deleted on project delete",
-    "status": "PASS",
-    "detail": "No orphaned tasks",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Comments deleted on task cascade",
-    "status": "PASS",
-    "detail": "No orphaned comments",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Time entries deleted on task cascade",
-    "status": "PASS",
-    "detail": "No orphaned time entries",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Columns deleted on project delete",
-    "status": "PASS",
-    "detail": "No orphaned columns",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Labels deleted on project delete",
-    "status": "PASS",
-    "detail": "No orphaned labels",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Project members deleted on project delete",
-    "status": "PASS",
-    "detail": "No orphaned members",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Activity log deleted on project delete",
-    "status": "PASS",
-    "detail": "No orphaned activity logs",
-    "duration": 0
-  },
-  {
-    "category": "CascadeDelete",
-    "test": "Project counters deleted on project delete",
-    "status": "PASS",
-    "detail": "No orphaned counters",
-    "duration": 0
-  },
-  {
-    "category": "RBAC",
-    "test": "Setup: owner, member, viewer for role project",
-    "status": "PASS",
-    "detail": "project=yuro6jzr0zmh1ed2xcws5qqs",
-    "duration": 0
-  },
-  {
-    "category": "RBAC",
-    "test": "Create 3 tasks as owner",
-    "status": "PASS",
-    "detail": "task1=kv36mm67jtowqj6arhc56p2i, task2=toc31icavxzssmgazq2i5ukm, task3=uyzf3umm0ifckzy8ly4j6d4v",
-    "duration": 0
-  },
-  {
-    "category": "RBAC",
-    "test": "Owner can delete tasks",
-    "status": "PASS",
-    "statusCode": 200,
-    "detail": "Task deleted successfully",
-    "duration": 9
-  },
-  {
-    "category": "RBAC",
-    "test": "Member can delete tasks",
-    "status": "PASS",
-    "statusCode": 200,
-    "detail": "Task deleted successfully",
-    "duration": 9
-  },
-  {
-    "category": "RBAC",
-    "test": "Viewer CANNOT delete tasks (should 403)",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Correctly denied",
-    "duration": 3
-  },
-  {
-    "category": "RBAC",
-    "test": "Viewer CAN read tasks",
-    "status": "PASS",
-    "statusCode": 200,
-    "detail": "1 tasks visible",
-    "duration": 3
-  },
-  {
-    "category": "RBAC",
-    "test": "Viewer CAN read single task",
-    "status": "PASS",
-    "statusCode": 200,
-    "detail": "task=uyzf3umm0ifckzy8ly4j6d4v",
-    "duration": 3
-  },
-  {
-    "category": "RBAC",
-    "test": "Viewer CAN create comments",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "comment=st6um8zyg00k72imrmmo4pym",
-    "duration": 10
-  },
-  {
-    "category": "RBAC",
-    "test": "Viewer CANNOT update project settings",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Settings update denied for viewer",
-    "duration": 3
-  },
-  {
-    "category": "RBAC",
-    "test": "Member CAN create tasks",
-    "status": "PASS",
-    "statusCode": 201,
-    "detail": "task=pujg3nz4ko7cnw1ei7wia0yh",
-    "duration": 14
-  },
-  {
-    "category": "RBAC",
-    "test": "Member CANNOT update project settings",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Settings update denied for member",
-    "duration": 2
-  },
-  {
-    "category": "RBAC",
-    "test": "Member CANNOT invite users",
-    "status": "PASS",
-    "statusCode": 403,
-    "detail": "Invitation denied for member role",
-    "duration": 2
-  }
+	{
+		"category": "Setup",
+		"test": "Register User A",
+		"status": "PASS",
+		"detail": "Session acquired",
+		"duration": 98
+	},
+	{
+		"category": "Setup",
+		"test": "Register User B",
+		"status": "PASS",
+		"detail": "Session acquired",
+		"duration": 50
+	},
+	{
+		"category": "Setup",
+		"test": "Create Project A (User A)",
+		"status": "PASS",
+		"detail": "projectId=to0lwvp9vk10a1es2amkre0i",
+		"duration": 22
+	},
+	{
+		"category": "Setup",
+		"test": "Create Project B (User B)",
+		"status": "PASS",
+		"detail": "projectId=vaz7fdd6do0b1fms02d1ztq7",
+		"duration": 26
+	},
+	{
+		"category": "AuthBypass",
+		"test": "Access other user project tasks (should 403)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Correctly denied",
+		"duration": 3
+	},
+	{
+		"category": "AuthBypass",
+		"test": "Update task in foreign project (should 403)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Correctly denied",
+		"duration": 5
+	},
+	{
+		"category": "AuthBypass",
+		"test": "Delete task as viewer (should 403)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Viewer correctly denied delete",
+		"duration": 3
+	},
+	{
+		"category": "AuthBypass",
+		"test": "Access /api/v1/users/me with invalid session",
+		"status": "PASS",
+		"statusCode": 401,
+		"detail": "401 as expected",
+		"duration": 4
+	},
+	{
+		"category": "AuthBypass",
+		"test": "Access /api/v1/users/me with empty session",
+		"status": "PASS",
+		"statusCode": 401,
+		"detail": "401 as expected",
+		"duration": 2
+	},
+	{
+		"category": "AuthBypass",
+		"test": "Create task in nonexistent project",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Rejected with 403",
+		"duration": 3
+	},
+	{
+		"category": "CrossProject",
+		"test": "Create isolated Project B",
+		"status": "PASS",
+		"detail": "projectId=rzvnvmmxx59a05a58s5kvfv8",
+		"duration": 20
+	},
+	{
+		"category": "CrossProject",
+		"test": "User A lists tasks from isolated Project B (should 403)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Access denied",
+		"duration": 2
+	},
+	{
+		"category": "CrossProject",
+		"test": "User B creates task in Project A (should 403)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Access denied",
+		"duration": 2
+	},
+	{
+		"category": "CrossProject",
+		"test": "User B updates Project A settings (should fail)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Settings update denied",
+		"duration": 3
+	},
+	{
+		"category": "CrossProject",
+		"test": "User B invites to Project A (should fail)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Invitation denied",
+		"duration": 2
+	},
+	{
+		"category": "CrossProject",
+		"test": "User A creates label in isolated Project B (should 403)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Access denied",
+		"duration": 2
+	},
+	{
+		"category": "Boundary",
+		"test": "Create task with 500-char title (max allowed)",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Title stored: 500 chars",
+		"duration": 14
+	},
+	{
+		"category": "Boundary",
+		"test": "Create task with 501-char title (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 3
+	},
+	{
+		"category": "Boundary",
+		"test": "Create task with empty title (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 3
+	},
+	{
+		"category": "Boundary",
+		"test": "Create comment with 10000-char body (max)",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Body stored: 10000 chars",
+		"duration": 11
+	},
+	{
+		"category": "Boundary",
+		"test": "Create comment with 10001-char body (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "Boundary",
+		"test": "Create comment with empty body (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "Boundary",
+		"test": "Create label with empty name (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 3
+	},
+	{
+		"category": "Boundary",
+		"test": "Create label with 51-char name (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "Boundary",
+		"test": "Create task with invalid priority (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 3
+	},
+	{
+		"category": "Boundary",
+		"test": "Update task with invalid status (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 3
+	},
+	{
+		"category": "Boundary",
+		"test": "Create task with negative storyPoints (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "Boundary",
+		"test": "Create task with negative estimateMinutes (should fail)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "XSS",
+		"test": "Create task with <script> in title",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Stored as-is: \"<script>alert(1)</script>\" (not executed, safely stored)",
+		"duration": 14
+	},
+	{
+		"category": "XSS",
+		"test": "Retrieve XSS task via API (stored as-is)",
+		"status": "PASS",
+		"statusCode": 200,
+		"detail": "Title returned as plain text: \"<script>alert(1)</script>\"",
+		"duration": 3
+	},
+	{
+		"category": "XSS",
+		"test": "XSS payload in title: <img src=x onerror=alert(1)>...",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Stored safely, title=\"<img src=x onerror=alert(1)>\"",
+		"duration": 15
+	},
+	{
+		"category": "XSS",
+		"test": "XSS payload in title: \"><svg/onload=alert(1)>...",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Stored safely, title=\"\"><svg/onload=alert(1)>\"",
+		"duration": 13
+	},
+	{
+		"category": "XSS",
+		"test": "XSS payload in title: javascript:alert(1)...",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Stored safely, title=\"javascript:alert(1)\"",
+		"duration": 12
+	},
+	{
+		"category": "XSS",
+		"test": "XSS payload in title: <iframe src=\"javascript:alert(...",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Stored safely, title=\"<iframe src=\"javascript:alert(1)\"></iframe>\"",
+		"duration": 12
+	},
+	{
+		"category": "XSS",
+		"test": "Create comment with XSS payload in body",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Stored as-is (safe for API return, frontend must escape)",
+		"duration": 8
+	},
+	{
+		"category": "XSS",
+		"test": "Create project with SQL injection name",
+		"status": "PASS",
+		"statusCode": 200,
+		"detail": "Project created safely (parameterized queries), id=cb92974moj57uldh3i4o616f",
+		"duration": 19
+	},
+	{
+		"category": "XSS",
+		"test": "Verify users table intact after SQL injection",
+		"status": "PASS",
+		"detail": "users table has 22 rows",
+		"duration": 0
+	},
+	{
+		"category": "XSS",
+		"test": "SQL injection name stored literally",
+		"status": "PASS",
+		"detail": "name=\"'; DROP TABLE users; --\"",
+		"duration": 0
+	},
+	{
+		"category": "MIME",
+		"test": "Upload with application/x-executable (should 400)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "MIME",
+		"test": "Upload with text/html (should 400)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "MIME",
+		"test": "Upload with application/x-sh (should 400)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "MIME",
+		"test": "Upload with image/png (should work)",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Presigned URL generated, attachment id=iep4ohuai1yskv6densxk758",
+		"duration": 8
+	},
+	{
+		"category": "MIME",
+		"test": "Upload with application/pdf (should work or 500)",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Status 201 (MIME check passed)",
+		"duration": 8
+	},
+	{
+		"category": "MIME",
+		"test": "Upload with 100MB file (exactly at limit)",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "Status 201",
+		"duration": 8
+	},
+	{
+		"category": "MIME",
+		"test": "Upload with 100MB+1 file (over limit)",
+		"status": "PASS",
+		"statusCode": 400,
+		"detail": "Correctly rejected",
+		"duration": 2
+	},
+	{
+		"category": "Concurrent",
+		"test": "Create 5 tasks concurrently (unique displayIds)",
+		"status": "PASS",
+		"detail": "All unique: TM-10, TM-11, TM-12, TM-13, TM-14",
+		"duration": 64
+	},
+	{
+		"category": "Concurrent",
+		"test": "Start 2 timers concurrently on same task (one succeeds)",
+		"status": "PASS",
+		"detail": "1 succeeded (201), 1 conflicted (409)",
+		"duration": 13
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Setup: project with task, comment, time entry, label",
+		"status": "PASS",
+		"detail": "project=gyqcmge35av091nd8xoohtdb, task=nieguoyah453epnxmhgpbf1c",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Delete project via DB",
+		"status": "PASS",
+		"detail": "Deleted project gyqcmge35av091nd8xoohtdb",
+		"duration": 10
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Tasks deleted on project delete",
+		"status": "PASS",
+		"detail": "No orphaned tasks",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Comments deleted on task cascade",
+		"status": "PASS",
+		"detail": "No orphaned comments",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Time entries deleted on task cascade",
+		"status": "PASS",
+		"detail": "No orphaned time entries",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Columns deleted on project delete",
+		"status": "PASS",
+		"detail": "No orphaned columns",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Labels deleted on project delete",
+		"status": "PASS",
+		"detail": "No orphaned labels",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Project members deleted on project delete",
+		"status": "PASS",
+		"detail": "No orphaned members",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Activity log deleted on project delete",
+		"status": "PASS",
+		"detail": "No orphaned activity logs",
+		"duration": 0
+	},
+	{
+		"category": "CascadeDelete",
+		"test": "Project counters deleted on project delete",
+		"status": "PASS",
+		"detail": "No orphaned counters",
+		"duration": 0
+	},
+	{
+		"category": "RBAC",
+		"test": "Setup: owner, member, viewer for role project",
+		"status": "PASS",
+		"detail": "project=yuro6jzr0zmh1ed2xcws5qqs",
+		"duration": 0
+	},
+	{
+		"category": "RBAC",
+		"test": "Create 3 tasks as owner",
+		"status": "PASS",
+		"detail": "task1=kv36mm67jtowqj6arhc56p2i, task2=toc31icavxzssmgazq2i5ukm, task3=uyzf3umm0ifckzy8ly4j6d4v",
+		"duration": 0
+	},
+	{
+		"category": "RBAC",
+		"test": "Owner can delete tasks",
+		"status": "PASS",
+		"statusCode": 200,
+		"detail": "Task deleted successfully",
+		"duration": 9
+	},
+	{
+		"category": "RBAC",
+		"test": "Member can delete tasks",
+		"status": "PASS",
+		"statusCode": 200,
+		"detail": "Task deleted successfully",
+		"duration": 9
+	},
+	{
+		"category": "RBAC",
+		"test": "Viewer CANNOT delete tasks (should 403)",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Correctly denied",
+		"duration": 3
+	},
+	{
+		"category": "RBAC",
+		"test": "Viewer CAN read tasks",
+		"status": "PASS",
+		"statusCode": 200,
+		"detail": "1 tasks visible",
+		"duration": 3
+	},
+	{
+		"category": "RBAC",
+		"test": "Viewer CAN read single task",
+		"status": "PASS",
+		"statusCode": 200,
+		"detail": "task=uyzf3umm0ifckzy8ly4j6d4v",
+		"duration": 3
+	},
+	{
+		"category": "RBAC",
+		"test": "Viewer CAN create comments",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "comment=st6um8zyg00k72imrmmo4pym",
+		"duration": 10
+	},
+	{
+		"category": "RBAC",
+		"test": "Viewer CANNOT update project settings",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Settings update denied for viewer",
+		"duration": 3
+	},
+	{
+		"category": "RBAC",
+		"test": "Member CAN create tasks",
+		"status": "PASS",
+		"statusCode": 201,
+		"detail": "task=pujg3nz4ko7cnw1ei7wia0yh",
+		"duration": 14
+	},
+	{
+		"category": "RBAC",
+		"test": "Member CANNOT update project settings",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Settings update denied for member",
+		"duration": 2
+	},
+	{
+		"category": "RBAC",
+		"test": "Member CANNOT invite users",
+		"status": "PASS",
+		"statusCode": 403,
+		"detail": "Invitation denied for member role",
+		"duration": 2
+	}
 ]

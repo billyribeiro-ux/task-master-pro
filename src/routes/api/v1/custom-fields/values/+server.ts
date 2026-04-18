@@ -18,11 +18,7 @@ export const POST: RequestHandler = async (event) => {
 	const data = result.data;
 
 	// Verify task exists and get projectId
-	const [task] = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.id, data.taskId))
-		.limit(1);
+	const [task] = await db.select().from(tasks).where(eq(tasks.id, data.taskId)).limit(1);
 
 	if (!task) throw error(404, 'Task not found');
 
@@ -47,10 +43,7 @@ export const POST: RequestHandler = async (event) => {
 		.select()
 		.from(customFieldValues)
 		.where(
-			and(
-				eq(customFieldValues.taskId, data.taskId),
-				eq(customFieldValues.fieldId, data.fieldId)
-			)
+			and(eq(customFieldValues.taskId, data.taskId), eq(customFieldValues.fieldId, data.fieldId))
 		)
 		.limit(1);
 
@@ -92,11 +85,7 @@ export const GET: RequestHandler = async (event) => {
 	if (!taskId) throw error(400, 'taskId is required');
 
 	// Verify task exists and check access
-	const [task] = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.id, taskId))
-		.limit(1);
+	const [task] = await db.select().from(tasks).where(eq(tasks.id, taskId)).limit(1);
 
 	if (!task) throw error(404, 'Task not found');
 

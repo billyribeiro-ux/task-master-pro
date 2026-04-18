@@ -2,7 +2,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { automationRules } from '$lib/server/db/schema.js';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { requireProjectAccess } from '$lib/server/auth/guards.js';
 import { createAutomationSchema } from '$lib/validation/automations.js';
 

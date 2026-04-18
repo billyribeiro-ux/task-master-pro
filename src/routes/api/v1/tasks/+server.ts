@@ -36,7 +36,10 @@ export const POST: RequestHandler = async (event) => {
 	// Check plan limits before creating task
 	const planCheck = await checkFeatureLimit(event.locals.user.id, 'tasks');
 	if (!planCheck.allowed) {
-		throw error(403, `Plan limit reached: maximum ${planCheck.limit} tasks allowed on your current plan`);
+		throw error(
+			403,
+			`Plan limit reached: maximum ${planCheck.limit} tasks allowed on your current plan`
+		);
 	}
 
 	const col = await db
@@ -51,7 +54,8 @@ export const POST: RequestHandler = async (event) => {
 
 	// Atomic counter increment for race-safe displayId generation
 	// Use upsert: insert counter if not exists, then increment atomically
-	await db.insert(projectCounters)
+	await db
+		.insert(projectCounters)
 		.values({ projectId: data.projectId, taskCounter: 0 })
 		.onConflictDoNothing();
 
@@ -69,9 +73,8 @@ export const POST: RequestHandler = async (event) => {
 		.where(eq(tasks.columnId, data.columnId))
 		.orderBy(tasks.position);
 
-	const lastPosition = existingTasks.length > 0
-		? existingTasks[existingTasks.length - 1].position
-		: null;
+	const lastPosition =
+		existingTasks.length > 0 ? existingTasks[existingTasks.length - 1].position : null;
 
 	const position = generateKeyBetween(lastPosition, null);
 

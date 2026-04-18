@@ -67,15 +67,19 @@ export const load: PageServerLoad = async ({ parent }) => {
 		.select({
 			projectId: tasks.projectId,
 			total: count(),
-			completed: sql<number>`sum(case when ${tasks.status} = 'done' then 1 else 0 end)`.as('completed')
+			completed: sql<number>`sum(case when ${tasks.status} = 'done' then 1 else 0 end)`.as(
+				'completed'
+			)
 		})
 		.from(tasks)
 		.where(inArray(tasks.projectId, projectIds))
 		.groupBy(tasks.projectId);
 
-	const statsMap = new Map(taskStats.map(s => [s.projectId, { total: s.total, completed: s.completed ?? 0 }]));
+	const statsMap = new Map(
+		taskStats.map((s) => [s.projectId, { total: s.total, completed: s.completed ?? 0 }])
+	);
 
-	const projectStats = userProjects.map(project => ({
+	const projectStats = userProjects.map((project) => ({
 		id: project.id,
 		name: project.name,
 		totalTasks: statsMap.get(project.id)?.total ?? 0,

@@ -26,10 +26,7 @@ export const totpDisableSchema = z.object({
 export type TotpDisableInput = z.infer<typeof totpDisableSchema>;
 
 export const recoveryCodeSchema = z.object({
-	code: z
-		.string()
-		.min(1, 'Recovery code is required')
-		.max(50)
+	code: z.string().min(1, 'Recovery code is required').max(50)
 });
 
 export type RecoveryCodeInput = z.infer<typeof recoveryCodeSchema>;

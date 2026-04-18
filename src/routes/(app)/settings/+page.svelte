@@ -1,16 +1,15 @@
 <script lang="ts">
 	import type { PageData } from './$types.js';
+	import { resolve } from '$app/paths';
 	import { PageShell } from '$lib/components/ui/index.js';
 
 	let { data }: { data: PageData } = $props();
 
-	let name = $state('');
-	let email = $state('');
-
-	$effect(() => {
-		name = data.user.name;
-		email = data.user.email;
-	});
+	// Form state pre-filled from props; initial capture is intentional so local edits aren't overwritten on re-render.
+	// svelte-ignore state_referenced_locally
+	let name = $state(data.user.name);
+	// svelte-ignore state_referenced_locally
+	let email = $state(data.user.email);
 	let isSaving = $state(false);
 	let saveMessage = $state<string | null>(null);
 
@@ -41,9 +40,11 @@
 </svelte:head>
 
 <PageShell title="Settings">
-
 	{#if saveMessage}
-		<div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400" role="alert">
+		<div
+			class="mb-4 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400"
+			role="alert"
+		>
 			{saveMessage}
 		</div>
 	{/if}
@@ -53,17 +54,21 @@
 
 		<div class="space-y-4">
 			<div>
-				<label for="name" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+				<label for="name" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+					>Name</label
+				>
 				<input
 					id="name"
 					type="text"
 					bind:value={name}
-					class="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+					class="focus:border-brand-500 focus:ring-brand-500/20 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition focus:ring-2 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
 				/>
 			</div>
 
 			<div>
-				<label for="email" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+				<label for="email" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+					>Email</label
+				>
 				<input
 					id="email"
 					type="email"
@@ -77,10 +82,15 @@
 			<div>
 				<span class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Plan</span>
 				<div class="flex items-center gap-2">
-					<span class="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-semibold text-brand-700 dark:bg-brand-900 dark:text-brand-300">
+					<span
+						class="bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-300 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+					>
 						{data.user.plan}
 					</span>
-					<a href="/settings/billing" class="text-xs font-medium text-brand-600 hover:text-brand-500">Manage billing</a>
+					<a
+						href={resolve('/settings/billing')}
+						class="text-brand-600 hover:text-brand-500 text-xs font-medium">Manage billing</a
+					>
 				</div>
 			</div>
 
@@ -88,7 +98,7 @@
 				<button
 					onclick={handleSave}
 					disabled={isSaving}
-					class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:opacity-50"
+					class="bg-brand-600 hover:bg-brand-700 rounded-lg px-4 py-2 text-sm font-semibold text-white transition disabled:opacity-50"
 				>
 					{isSaving ? 'Saving...' : 'Save Changes'}
 				</button>
@@ -96,7 +106,9 @@
 		</div>
 	</div>
 
-	<div class="mt-6 rounded-xl border border-red-200 bg-white p-6 dark:border-red-800 dark:bg-gray-900">
+	<div
+		class="mt-6 rounded-xl border border-red-200 bg-white p-6 dark:border-red-800 dark:bg-gray-900"
+	>
 		<h2 class="mb-2 text-lg font-semibold text-red-600 dark:text-red-400">Danger Zone</h2>
 		<p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
 			Once you delete your account, there is no going back. Please be certain.

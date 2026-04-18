@@ -28,9 +28,10 @@ function midpoint(a: string, b: string | undefined): string {
 	}
 
 	const aLastIndex = a.length > 0 ? BASE62.indexOf(a[a.length - 1]) : -1;
-	const midIndex = b === undefined
-		? Math.min(aLastIndex + Math.floor(BASE / 2), BASE - 1)
-		: Math.floor((aLastIndex + BASE) / 2);
+	const midIndex =
+		b === undefined
+			? Math.min(aLastIndex + Math.floor(BASE / 2), BASE - 1)
+			: Math.floor((aLastIndex + BASE) / 2);
 
 	result += BASE62[midIndex];
 	return result;
@@ -62,11 +63,7 @@ export function generateKeyBetween(a: string | null, b: string | null): string {
 	return midpoint(a, b);
 }
 
-export function generateNKeysBetween(
-	a: string | null,
-	b: string | null,
-	n: number
-): string[] {
+export function generateNKeysBetween(a: string | null, b: string | null, n: number): string[] {
 	if (n === 0) return [];
 	if (n === 1) return [generateKeyBetween(a, b)];
 

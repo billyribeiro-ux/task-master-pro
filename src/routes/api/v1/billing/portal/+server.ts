@@ -1,4 +1,4 @@
-import { json, error, redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { stripe } from '$lib/server/payments/stripe.js';
 import { ORIGIN } from '$env/static/private';

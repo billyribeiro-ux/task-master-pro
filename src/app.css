@@ -13,10 +13,11 @@
 	--color-brand-900: #312e81;
 	--color-brand-950: #1e1b4b;
 
-	--font-sans: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Inter', 'Helvetica Neue',
-		'Arial', 'Noto Sans', sans-serif;
-	--font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', 'JetBrains Mono', 'Consolas',
-		monospace;
+	--font-sans:
+		system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Inter', 'Helvetica Neue', 'Arial', 'Noto Sans',
+		sans-serif;
+	--font-mono:
+		ui-monospace, 'SFMono-Regular', 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
 
 	/* ─── Universal Responsive Breakpoints (Feb 2026) ───────────────────
 	 * Covers all major device classes across Apple, Android, Windows, etc.

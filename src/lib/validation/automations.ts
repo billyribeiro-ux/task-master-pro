@@ -2,7 +2,19 @@ import { z } from 'zod';
 
 const conditionSchema = z.object({
 	field: z.string().min(1),
-	operator: z.enum(['equals', 'not_equals', 'contains', 'gt', 'lt', 'gte', 'lte', 'in', 'not_in', 'is_empty', 'is_not_empty']),
+	operator: z.enum([
+		'equals',
+		'not_equals',
+		'contains',
+		'gt',
+		'lt',
+		'gte',
+		'lte',
+		'in',
+		'not_in',
+		'is_empty',
+		'is_not_empty'
+	]),
 	value: z.unknown()
 });
 

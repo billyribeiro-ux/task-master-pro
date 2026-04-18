@@ -107,10 +107,7 @@ async function getTaskWithContext(projectId: string, taskId: string) {
 		.orderBy(desc(comments.createdAt))
 		.limit(20);
 
-	const taskTimeEntries = await db
-		.select()
-		.from(timeEntries)
-		.where(eq(timeEntries.taskId, taskId));
+	const taskTimeEntries = await db.select().from(timeEntries).where(eq(timeEntries.taskId, taskId));
 
 	const taskLabelRows = await db
 		.select({ name: labels.name })
@@ -121,14 +118,9 @@ async function getTaskWithContext(projectId: string, taskId: string) {
 	const dependencies = await db
 		.select()
 		.from(taskDependencies)
-		.where(
-			or(eq(taskDependencies.taskId, taskId), eq(taskDependencies.dependsOnTaskId, taskId))
-		);
+		.where(or(eq(taskDependencies.taskId, taskId), eq(taskDependencies.dependsOnTaskId, taskId)));
 
-	const subtasks = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.parentTaskId, taskId));
+	const subtasks = await db.select().from(tasks).where(eq(tasks.parentTaskId, taskId));
 
 	return {
 		...task,
@@ -143,10 +135,7 @@ async function getTaskWithContext(projectId: string, taskId: string) {
 // ─── Helper: Fetch project context ───────────────────────────────────────────
 
 async function getProjectContext(projectId: string) {
-	const projectTasks = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.projectId, projectId));
+	const projectTasks = await db.select().from(tasks).where(eq(tasks.projectId, projectId));
 
 	const members = await db
 		.select({
@@ -159,10 +148,7 @@ async function getProjectContext(projectId: string) {
 		.innerJoin(users, eq(projectMembers.userId, users.id))
 		.where(eq(projectMembers.projectId, projectId));
 
-	const projectLabels = await db
-		.select()
-		.from(labels)
-		.where(eq(labels.projectId, projectId));
+	const projectLabels = await db.select().from(labels).where(eq(labels.projectId, projectId));
 
 	const projectColumns = await db
 		.select()
@@ -422,7 +408,13 @@ ${existingTaskList}`;
 	});
 
 	let parsed: {
-		duplicates: { taskId: string; displayId: string; title: string; similarity: number; reason: string }[];
+		duplicates: {
+			taskId: string;
+			displayId: string;
+			title: string;
+			similarity: number;
+			reason: string;
+		}[];
 		hasDuplicate: boolean;
 		reasoning: string;
 	};
@@ -590,9 +582,7 @@ export async function analyzeBlockers(projectId: string): Promise<AiSuggestionRe
 	// Tasks stuck in progress for too long (no updates)
 	const staleThreshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 	const staleTasks = projectCtx.tasks.filter(
-		(t) =>
-			t.status === 'in_progress' &&
-			t.updatedAt < staleThreshold
+		(t) => t.status === 'in_progress' && t.updatedAt < staleThreshold
 	);
 
 	const systemPrompt = `You are a project management AI analyst. Analyze the project for bottlenecks, blockers, and risks. Return JSON:

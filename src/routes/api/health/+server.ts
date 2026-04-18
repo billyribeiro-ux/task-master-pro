@@ -12,7 +12,7 @@ export const GET: RequestHandler = async () => {
 			timestamp: new Date().toISOString(),
 			version: '0.1.0'
 		});
-	} catch (err) {
+	} catch {
 		return json(
 			{
 				status: 'error',

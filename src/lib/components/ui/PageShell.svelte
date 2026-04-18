@@ -14,7 +14,11 @@
 </script>
 
 <div class="{bp.pagePadding} {fullWidth ? '' : 'mx-auto max-w-7xl'}">
-	<div class="mb-5 flex flex-col gap-3 {bp.tabletUp ? 'mb-6 flex-row items-center justify-between' : ''}">
+	<div
+		class="mb-5 flex flex-col gap-3 {bp.tabletUp
+			? 'mb-6 flex-row items-center justify-between'
+			: ''}"
+	>
 		<div>
 			<h1 class="{bp.headingSize} font-bold text-gray-900 dark:text-white">{title}</h1>
 			{#if description}

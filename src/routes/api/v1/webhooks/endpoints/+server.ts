@@ -2,7 +2,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { webhookEndpoints } from '$lib/server/db/schema.js';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { requireAuth, requireProjectAccess } from '$lib/server/auth/guards.js';
 import { createWebhookSchema } from '$lib/validation/webhooks.js';
 import { randomBytes } from 'crypto';
@@ -49,7 +49,7 @@ export const POST: RequestHandler = async (event) => {
 };
 
 export const GET: RequestHandler = async (event) => {
-	const user = requireAuth(event);
+	requireAuth(event);
 
 	const projectId = event.url.searchParams.get('projectId');
 	if (!projectId) {

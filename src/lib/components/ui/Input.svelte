@@ -19,14 +19,16 @@
 
 <div>
 	{#if label}
-		<label for={id} class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">{label}</label>
+		<label for={id} class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"
+			>{label}</label
+		>
 	{/if}
 	<input
 		{id}
 		bind:value
 		class="block w-full rounded-lg border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition focus:ring-2 focus:outline-none dark:text-white {error
 			? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700'
-			: 'border-gray-300 focus:border-brand-500 focus:ring-brand-500/20 dark:border-gray-700'} bg-white dark:bg-gray-800 {className}"
+			: 'focus:border-brand-500 focus:ring-brand-500/20 border-gray-300 dark:border-gray-700'} bg-white dark:bg-gray-800 {className}"
 		{...rest}
 	/>
 	{#if error}

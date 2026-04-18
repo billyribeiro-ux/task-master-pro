@@ -81,11 +81,17 @@ async function sendWebhook(
 			const responseBody = await response.text().catch(() => null);
 			const success = response.status >= 200 && response.status < 300;
 
-			await recordDelivery(endpoint.id, event, payload, {
-				status: response.status,
-				body: responseBody,
-				success
-			}, attempt);
+			await recordDelivery(
+				endpoint.id,
+				event,
+				payload,
+				{
+					status: response.status,
+					body: responseBody,
+					success
+				},
+				attempt
+			);
 
 			if (success) {
 				// Reset failure count on success
@@ -104,11 +110,17 @@ async function sendWebhook(
 		} catch (err) {
 			const errorMessage = err instanceof Error ? err.message : 'Unknown error';
 
-			await recordDelivery(endpoint.id, event, payload, {
-				status: null,
-				body: errorMessage,
-				success: false
-			}, attempt);
+			await recordDelivery(
+				endpoint.id,
+				event,
+				payload,
+				{
+					status: null,
+					body: errorMessage,
+					success: false
+				},
+				attempt
+			);
 
 			if (attempt < MAX_RETRY_ATTEMPTS) {
 				const delayMs = RETRY_BASE_DELAY_MS * Math.pow(2, attempt - 1);

@@ -23,11 +23,7 @@ export const DELETE: RequestHandler = async (event) => {
 	if (!dependency) throw error(404, 'Dependency not found');
 
 	// Verify the user has access to the project owning the task
-	const [task] = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.id, dependency.taskId))
-		.limit(1);
+	const [task] = await db.select().from(tasks).where(eq(tasks.id, dependency.taskId)).limit(1);
 
 	if (!task) throw error(404, 'Associated task not found');
 

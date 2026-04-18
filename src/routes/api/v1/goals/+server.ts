@@ -23,11 +23,7 @@ export const POST: RequestHandler = async (event) => {
 
 	// If parentGoalId is set, verify the parent exists
 	if (data.parentGoalId) {
-		const [parent] = await db
-			.select()
-			.from(goals)
-			.where(eq(goals.id, data.parentGoalId))
-			.limit(1);
+		const [parent] = await db.select().from(goals).where(eq(goals.id, data.parentGoalId)).limit(1);
 
 		if (!parent) throw error(404, 'Parent goal not found');
 	}

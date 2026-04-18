@@ -23,11 +23,7 @@ export const POST: RequestHandler = async (event) => {
 	const data = result.data;
 
 	// Verify both tasks exist and belong to the same project
-	const [task] = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.id, data.taskId))
-		.limit(1);
+	const [task] = await db.select().from(tasks).where(eq(tasks.id, data.taskId)).limit(1);
 
 	if (!task) throw error(404, 'Task not found');
 
@@ -70,10 +66,7 @@ export const POST: RequestHandler = async (event) => {
 		);
 
 		if (wouldCreateCycle) {
-			throw error(
-				422,
-				'Cannot create dependency: this would create a circular dependency chain'
-			);
+			throw error(422, 'Cannot create dependency: this would create a circular dependency chain');
 		}
 	}
 
@@ -113,11 +106,7 @@ export const GET: RequestHandler = async (event) => {
 	if (!taskId) throw error(400, 'taskId is required');
 
 	// Verify task exists and user has access
-	const [task] = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.id, taskId))
-		.limit(1);
+	const [task] = await db.select().from(tasks).where(eq(tasks.id, taskId)).limit(1);
 
 	if (!task) throw error(404, 'Task not found');
 

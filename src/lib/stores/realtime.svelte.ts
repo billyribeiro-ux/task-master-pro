@@ -1,5 +1,6 @@
 import { browser } from '$app/environment';
 import { io, type Socket } from 'socket.io-client';
+import { SvelteMap } from 'svelte/reactivity';
 
 interface PresenceUser {
 	userId: string;
@@ -11,10 +12,10 @@ class RealtimeState {
 	socket = $state<Socket | null>(null);
 	connected = $state(false);
 	currentProjectId = $state<string | null>(null);
-	presenceUsers = $state<Map<string, PresenceUser>>(new Map());
-	taskUpdates = $state<Array<{ taskId: string; changes: Record<string, unknown>; actorId: string }>>(
-		[]
-	);
+	presenceUsers = new SvelteMap<string, PresenceUser>();
+	taskUpdates = $state<
+		Array<{ taskId: string; changes: Record<string, unknown>; actorId: string }>
+	>([]);
 
 	connect() {
 		if (!browser || this.socket) return;
@@ -34,15 +35,11 @@ class RealtimeState {
 		});
 
 		this.socket.on('presence:joined', (data: PresenceUser) => {
-			const updated = new Map(this.presenceUsers);
-			updated.set(data.userId, data);
-			this.presenceUsers = updated;
+			this.presenceUsers.set(data.userId, data);
 		});
 
 		this.socket.on('presence:left', (data: { userId: string }) => {
-			const updated = new Map(this.presenceUsers);
-			updated.delete(data.userId);
-			this.presenceUsers = updated;
+			this.presenceUsers.delete(data.userId);
 		});
 
 		this.socket.on(
@@ -54,15 +51,14 @@ class RealtimeState {
 
 		this.socket.on(
 			'task:move',
-			(data: {
-				taskId: string;
-				columnId: string;
-				position: string;
-				actorId: string;
-			}) => {
+			(data: { taskId: string; columnId: string; position: string; actorId: string }) => {
 				this.taskUpdates = [
 					...this.taskUpdates.slice(-49),
-					{ taskId: data.taskId, changes: { columnId: data.columnId, position: data.position }, actorId: data.actorId }
+					{
+						taskId: data.taskId,
+						changes: { columnId: data.columnId, position: data.position },
+						actorId: data.actorId
+					}
 				];
 			}
 		);
@@ -73,7 +69,7 @@ class RealtimeState {
 			this.leaveProject();
 		}
 		this.currentProjectId = projectId;
-		this.presenceUsers = new Map();
+		this.presenceUsers.clear();
 		this.socket?.emit('join:project', projectId);
 	}
 
@@ -81,7 +77,7 @@ class RealtimeState {
 		if (this.currentProjectId) {
 			this.socket?.emit('leave:project', this.currentProjectId);
 			this.currentProjectId = null;
-			this.presenceUsers = new Map();
+			this.presenceUsers.clear();
 		}
 	}
 

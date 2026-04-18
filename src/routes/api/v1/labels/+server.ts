@@ -43,10 +43,7 @@ export const GET: RequestHandler = async (event) => {
 
 	await requireProjectAccess(event, projectId);
 
-	const projectLabels = await db
-		.select()
-		.from(labels)
-		.where(eq(labels.projectId, projectId));
+	const projectLabels = await db.select().from(labels).where(eq(labels.projectId, projectId));
 
 	return json(projectLabels);
 };

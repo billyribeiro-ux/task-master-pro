@@ -4,7 +4,7 @@ import { tasks, labels, taskLabels, users } from '$lib/server/db/schema.js';
 import { eq, inArray } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ parent }) => {
-	const { project, columns } = await parent();
+	const { project } = await parent();
 
 	const projectTasks = await db
 		.select({
@@ -30,13 +30,10 @@ export const load: PageServerLoad = async ({ parent }) => {
 
 	const taskIds = projectTasks.map((t) => t.id);
 
-	let taskLabelMap: Record<string, Array<{ id: string; name: string; color: string }>> = {};
+	const taskLabelMap: Record<string, Array<{ id: string; name: string; color: string }>> = {};
 
 	if (taskIds.length > 0) {
-		const projectLabels = await db
-			.select()
-			.from(labels)
-			.where(eq(labels.projectId, project.id));
+		const projectLabels = await db.select().from(labels).where(eq(labels.projectId, project.id));
 
 		const labelAssignments = await db
 			.select()
@@ -60,8 +57,10 @@ export const load: PageServerLoad = async ({ parent }) => {
 		}
 	}
 
-	const assigneeIds = [...new Set(projectTasks.map((t) => t.assigneeId).filter(Boolean))] as string[];
-	let assigneeMap: Record<string, { name: string; avatarUrl: string | null }> = {};
+	const assigneeIds = [
+		...new Set(projectTasks.map((t) => t.assigneeId).filter(Boolean))
+	] as string[];
+	const assigneeMap: Record<string, { name: string; avatarUrl: string | null }> = {};
 
 	if (assigneeIds.length > 0) {
 		const assignees = await db

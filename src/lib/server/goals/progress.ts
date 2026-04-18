@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db/index.js';
 import { goals, goalTaskLinks, tasks } from '$lib/server/db/schema.js';
-import { eq, and, count, sum } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 /**
  * Calculate goal progress based on its progressType.
@@ -13,11 +13,7 @@ import { eq, and, count, sum } from 'drizzle-orm';
  * Returns the computed progress value and updates the goal in the database.
  */
 export async function calculateGoalProgress(goalId: string): Promise<number> {
-	const [goal] = await db
-		.select()
-		.from(goals)
-		.where(eq(goals.id, goalId))
-		.limit(1);
+	const [goal] = await db.select().from(goals).where(eq(goals.id, goalId)).limit(1);
 
 	if (!goal) throw new Error(`Goal not found: ${goalId}`);
 
@@ -103,12 +99,7 @@ export async function calculateGoalProgress(goalId: string): Promise<number> {
 			const childGoals = await db
 				.select()
 				.from(goals)
-				.where(
-					and(
-						eq(goals.parentGoalId, goalId),
-						eq(goals.type, 'key_result')
-					)
-				);
+				.where(and(eq(goals.parentGoalId, goalId), eq(goals.type, 'key_result')));
 
 			if (childGoals.length === 0) {
 				progress = 0;
@@ -118,9 +109,7 @@ export async function calculateGoalProgress(goalId: string): Promise<number> {
 			let totalPercentage = 0;
 			for (const child of childGoals) {
 				const childPercent =
-					child.progressTarget > 0
-						? (child.progressCurrent / child.progressTarget) * 100
-						: 0;
+					child.progressTarget > 0 ? (child.progressCurrent / child.progressTarget) * 100 : 0;
 				totalPercentage += childPercent;
 			}
 
@@ -159,14 +148,8 @@ export async function calculateGoalProgress(goalId: string): Promise<number> {
  *
  * Returns the determined status and updates the goal in the database.
  */
-export async function updateGoalStatus(
-	goalId: string
-): Promise<string> {
-	const [goal] = await db
-		.select()
-		.from(goals)
-		.where(eq(goals.id, goalId))
-		.limit(1);
+export async function updateGoalStatus(goalId: string): Promise<string> {
+	const [goal] = await db.select().from(goals).where(eq(goals.id, goalId)).limit(1);
 
 	if (!goal) throw new Error(`Goal not found: ${goalId}`);
 

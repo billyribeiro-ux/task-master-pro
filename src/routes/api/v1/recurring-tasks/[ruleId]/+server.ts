@@ -76,12 +76,7 @@ export const PATCH: RequestHandler = async (event) => {
 		const [col] = await db
 			.select()
 			.from(columns)
-			.where(
-				and(
-					eq(columns.id, changes.columnId),
-					eq(columns.projectId, existing.projectId)
-				)
-			)
+			.where(and(eq(columns.id, changes.columnId), eq(columns.projectId, existing.projectId)))
 			.limit(1);
 
 		if (!col) {

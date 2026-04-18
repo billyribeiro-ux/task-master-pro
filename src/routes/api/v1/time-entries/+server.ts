@@ -35,11 +35,13 @@ export const POST: RequestHandler = async (event) => {
 		const running = await tx
 			.select()
 			.from(timeEntries)
-			.where(and(
-				eq(timeEntries.taskId, taskId),
-				eq(timeEntries.userId, event.locals.user!.id),
-				isNull(timeEntries.stoppedAt)
-			))
+			.where(
+				and(
+					eq(timeEntries.taskId, taskId),
+					eq(timeEntries.userId, event.locals.user!.id),
+					isNull(timeEntries.stoppedAt)
+				)
+			)
 			.limit(1);
 
 		if (running.length > 0) {
@@ -105,11 +107,7 @@ export const GET: RequestHandler = async (event) => {
 	const entries = await db
 		.select()
 		.from(timeEntries)
-		.where(
-			cursor
-				? and(baseConditions, lt(timeEntries.id, cursor))
-				: baseConditions
-		)
+		.where(cursor ? and(baseConditions, lt(timeEntries.id, cursor)) : baseConditions)
 		.orderBy(desc(timeEntries.startedAt))
 		.limit(limit + 1);
 

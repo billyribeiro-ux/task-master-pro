@@ -8,7 +8,12 @@ export const load: PageServerLoad = async ({ parent }) => {
 	const { user } = await parent();
 
 	const userProjects = await db
-		.select({ id: projects.id, name: projects.name, description: projects.description, slug: projects.slug })
+		.select({
+			id: projects.id,
+			name: projects.name,
+			description: projects.description,
+			slug: projects.slug
+		})
 		.from(projects)
 		.leftJoin(projectMembers, eq(projects.id, projectMembers.projectId))
 		.where(or(eq(projects.ownerId, user.id), eq(projectMembers.userId, user.id)))
@@ -52,12 +57,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 				totalSeconds: sql<number>`coalesce(sum(${timeEntries.durationSeconds}), 0)`
 			})
 			.from(timeEntries)
-			.where(
-				and(
-					eq(timeEntries.userId, user.id),
-					gte(timeEntries.startedAt, weekAgo)
-				)
-			);
+			.where(and(eq(timeEntries.userId, user.id), gte(timeEntries.startedAt, weekAgo)));
 		const totalSeconds = timeResult?.totalSeconds ?? 0;
 		hoursLoggedThisWeek = Math.round((totalSeconds / 3600) * 10) / 10;
 	}

@@ -12,24 +12,24 @@
 
 ## Summary by Category
 
-| Category | Passed | Failed | Skipped | Total |
-|----------|--------|--------|---------|-------|
-| Health | 1 | 0 | 0 | 1 |
-| Auth | 8 | 0 | 0 | 8 |
-| Users | 4 | 0 | 0 | 4 |
-| Projects | 5 | 0 | 0 | 5 |
-| Columns | 2 | 0 | 0 | 2 |
-| Tasks | 12 | 0 | 0 | 12 |
-| Labels | 5 | 0 | 0 | 5 |
-| Comments | 4 | 0 | 0 | 4 |
-| Time | 6 | 0 | 0 | 6 |
-| Notifications | 4 | 0 | 0 | 4 |
-| Files | 2 | 0 | 0 | 2 |
-| Billing | 3 | 0 | 0 | 3 |
-| Webhooks | 2 | 0 | 0 | 2 |
-| Pages | 8 | 0 | 0 | 8 |
-| Security | 7 | 0 | 0 | 7 |
-| Delete | 2 | 0 | 0 | 2 |
+| Category      | Passed | Failed | Skipped | Total |
+| ------------- | ------ | ------ | ------- | ----- |
+| Health        | 1      | 0      | 0       | 1     |
+| Auth          | 8      | 0      | 0       | 8     |
+| Users         | 4      | 0      | 0       | 4     |
+| Projects      | 5      | 0      | 0       | 5     |
+| Columns       | 2      | 0      | 0       | 2     |
+| Tasks         | 12     | 0      | 0       | 12    |
+| Labels        | 5      | 0      | 0       | 5     |
+| Comments      | 4      | 0      | 0       | 4     |
+| Time          | 6      | 0      | 0       | 6     |
+| Notifications | 4      | 0      | 0       | 4     |
+| Files         | 2      | 0      | 0       | 2     |
+| Billing       | 3      | 0      | 0       | 3     |
+| Webhooks      | 2      | 0      | 0       | 2     |
+| Pages         | 8      | 0      | 0       | 8     |
+| Security      | 7      | 0      | 0       | 7     |
+| Delete        | 2      | 0      | 0       | 2     |
 
 ---
 
@@ -239,84 +239,84 @@
 
 ### API Endpoints (REST)
 
-| Method | Endpoint | Tested | Notes |
-|--------|----------|--------|-------|
-| GET | /api/health | ✅ | Health check + DB connectivity |
-| GET | /api/v1/users/me | ✅ | User profile retrieval |
-| PATCH | /api/v1/users/me | ✅ | Profile name update |
-| GET | /api/v1/tasks | ✅ | List tasks by project |
-| POST | /api/v1/tasks | ✅ | Create task with all fields |
-| GET | /api/v1/tasks/:id | ✅ | Get single task |
-| PATCH | /api/v1/tasks/:id | ✅ | Update task (title, status, priority, assignee) |
-| DELETE | /api/v1/tasks/:id | ✅ | Delete task |
-| PATCH | /api/v1/tasks/:id/move | ✅ | Move task between columns |
-| GET | /api/v1/comments | ✅ | List comments |
-| POST | /api/v1/comments | ✅ | Create comment |
-| GET | /api/v1/labels | ✅ | List labels |
-| POST | /api/v1/labels | ✅ | Create label |
-| GET | /api/v1/time-entries | ✅ | List time entries |
-| POST | /api/v1/time-entries | ✅ | Start timer |
-| PATCH | /api/v1/time-entries | ✅ | Stop timer |
-| POST | /api/v1/notifications/:id/read | ✅ | Mark notification as read |
-| POST | /api/v1/notifications/read-all | ✅ | Mark all notifications read |
-| POST | /api/v1/files/presign | ✅ | File upload presigned URL |
-| POST | /api/v1/billing/checkout | ✅ | Stripe checkout session |
-| POST | /api/v1/billing/portal | ✅ | Stripe customer portal |
-| POST | /api/v1/webhooks/stripe | ✅ | Stripe webhook handler |
+| Method | Endpoint                       | Tested | Notes                                           |
+| ------ | ------------------------------ | ------ | ----------------------------------------------- |
+| GET    | /api/health                    | ✅     | Health check + DB connectivity                  |
+| GET    | /api/v1/users/me               | ✅     | User profile retrieval                          |
+| PATCH  | /api/v1/users/me               | ✅     | Profile name update                             |
+| GET    | /api/v1/tasks                  | ✅     | List tasks by project                           |
+| POST   | /api/v1/tasks                  | ✅     | Create task with all fields                     |
+| GET    | /api/v1/tasks/:id              | ✅     | Get single task                                 |
+| PATCH  | /api/v1/tasks/:id              | ✅     | Update task (title, status, priority, assignee) |
+| DELETE | /api/v1/tasks/:id              | ✅     | Delete task                                     |
+| PATCH  | /api/v1/tasks/:id/move         | ✅     | Move task between columns                       |
+| GET    | /api/v1/comments               | ✅     | List comments                                   |
+| POST   | /api/v1/comments               | ✅     | Create comment                                  |
+| GET    | /api/v1/labels                 | ✅     | List labels                                     |
+| POST   | /api/v1/labels                 | ✅     | Create label                                    |
+| GET    | /api/v1/time-entries           | ✅     | List time entries                               |
+| POST   | /api/v1/time-entries           | ✅     | Start timer                                     |
+| PATCH  | /api/v1/time-entries           | ✅     | Stop timer                                      |
+| POST   | /api/v1/notifications/:id/read | ✅     | Mark notification as read                       |
+| POST   | /api/v1/notifications/read-all | ✅     | Mark all notifications read                     |
+| POST   | /api/v1/files/presign          | ✅     | File upload presigned URL                       |
+| POST   | /api/v1/billing/checkout       | ✅     | Stripe checkout session                         |
+| POST   | /api/v1/billing/portal         | ✅     | Stripe customer portal                          |
+| POST   | /api/v1/webhooks/stripe        | ✅     | Stripe webhook handler                          |
 
 ### Form Actions (Server-Side)
 
-| Action | Route | Tested | Notes |
-|--------|-------|--------|-------|
-| Register | POST /register | ✅ | User creation with validation |
-| Login | POST /login | ✅ | Invalid credentials tested |
-| Logout | POST /logout | ✅ | Session invalidation |
-| Create Project | POST /projects?/create | ✅ | With default columns |
-| Update Project | POST /projects/:id/settings?/update | ✅ | Name, description, visibility |
-| Invite Member | POST /projects/:id/settings?/invite | ✅ | Cross-user access |
+| Action         | Route                               | Tested | Notes                         |
+| -------------- | ----------------------------------- | ------ | ----------------------------- |
+| Register       | POST /register                      | ✅     | User creation with validation |
+| Login          | POST /login                         | ✅     | Invalid credentials tested    |
+| Logout         | POST /logout                        | ✅     | Session invalidation          |
+| Create Project | POST /projects?/create              | ✅     | With default columns          |
+| Update Project | POST /projects/:id/settings?/update | ✅     | Name, description, visibility |
+| Invite Member  | POST /projects/:id/settings?/invite | ✅     | Cross-user access             |
 
 ### Page Routes (SSR)
 
-| Route | Auth | Tested | Notes |
-|-------|------|--------|-------|
-| /login | Public | ✅ | Login form rendered |
-| /register | Public | ✅ | Registration form rendered |
-| /dashboard | Required | ✅ | Stats, recent projects |
-| /projects | Required | ✅ | Project listing |
-| /projects/:id/board | Required | ✅ | Kanban board with columns |
-| /projects/:id/settings | Required | ✅ | Project settings |
-| /analytics | Required | ✅ | Task analytics |
-| /time-tracking | Required | ✅ | Time entries |
-| /notifications | Required | ✅ | Notification center |
-| /settings/billing | Required | ✅ | Billing page |
+| Route                  | Auth     | Tested | Notes                      |
+| ---------------------- | -------- | ------ | -------------------------- |
+| /login                 | Public   | ✅     | Login form rendered        |
+| /register              | Public   | ✅     | Registration form rendered |
+| /dashboard             | Required | ✅     | Stats, recent projects     |
+| /projects              | Required | ✅     | Project listing            |
+| /projects/:id/board    | Required | ✅     | Kanban board with columns  |
+| /projects/:id/settings | Required | ✅     | Project settings           |
+| /analytics             | Required | ✅     | Task analytics             |
+| /time-tracking         | Required | ✅     | Time entries               |
+| /notifications         | Required | ✅     | Notification center        |
+| /settings/billing      | Required | ✅     | Billing page               |
 
 ### Security Features Tested
 
-| Feature | Tested | Notes |
-|---------|--------|-------|
-| X-Frame-Options: DENY | ✅ | Clickjacking protection |
-| X-Content-Type-Options: nosniff | ✅ | MIME sniffing prevention |
-| Referrer-Policy | ✅ | strict-origin-when-cross-origin |
-| Permissions-Policy | ✅ | Restrictive camera/mic/geo |
-| X-Request-Id | ✅ | Request correlation IDs |
-| Session authentication | ✅ | 401 for unauthenticated API calls |
-| Session invalidation | ✅ | Logout clears session |
-| Input validation | ✅ | Zod schema validation on all endpoints |
-| Project access guards | ✅ | Member-only access enforced |
-| Password hashing | ✅ | Argon2 — registration successful |
-| Stripe webhook verification | ✅ | Missing/invalid signature rejected |
+| Feature                         | Tested | Notes                                  |
+| ------------------------------- | ------ | -------------------------------------- |
+| X-Frame-Options: DENY           | ✅     | Clickjacking protection                |
+| X-Content-Type-Options: nosniff | ✅     | MIME sniffing prevention               |
+| Referrer-Policy                 | ✅     | strict-origin-when-cross-origin        |
+| Permissions-Policy              | ✅     | Restrictive camera/mic/geo             |
+| X-Request-Id                    | ✅     | Request correlation IDs                |
+| Session authentication          | ✅     | 401 for unauthenticated API calls      |
+| Session invalidation            | ✅     | Logout clears session                  |
+| Input validation                | ✅     | Zod schema validation on all endpoints |
+| Project access guards           | ✅     | Member-only access enforced            |
+| Password hashing                | ✅     | Argon2 — registration successful       |
+| Stripe webhook verification     | ✅     | Missing/invalid signature rejected     |
 
 ### Validation Tests
 
-| Test | Expected | Result |
-|------|----------|--------|
-| Register with weak password | 400 | ✅ |
-| Register duplicate email | 400 | ✅ |
-| Login with wrong credentials | 400 | ✅ |
-| Create task without title | 400 | ✅ |
-| Create label with invalid color | 400 | ✅ |
-| Create comment with empty body | 400 | ✅ |
-| Start duplicate timer | 400 | ✅ |
-| Stop already-stopped timer | 400 | ✅ |
-| Upload file > 100MB | 400 | ✅ |
-| Stripe webhook without signature | 400 | ✅ |
+| Test                             | Expected | Result |
+| -------------------------------- | -------- | ------ |
+| Register with weak password      | 400      | ✅     |
+| Register duplicate email         | 400      | ✅     |
+| Login with wrong credentials     | 400      | ✅     |
+| Create task without title        | 400      | ✅     |
+| Create label with invalid color  | 400      | ✅     |
+| Create comment with empty body   | 400      | ✅     |
+| Start duplicate timer            | 400      | ✅     |
+| Stop already-stopped timer       | 400      | ✅     |
+| Upload file > 100MB              | 400      | ✅     |
+| Stripe webhook without signature | 400      | ✅     |

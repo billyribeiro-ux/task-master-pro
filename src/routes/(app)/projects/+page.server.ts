@@ -12,12 +12,16 @@ const createProjectSchema = z.object({
 });
 
 function slugify(text: string): string {
-	return text
-		.toLowerCase()
-		.replace(/[^\w\s-]/g, '')
-		.replace(/[\s_]+/g, '-')
-		.replace(/^-+|-+$/g, '')
-		.slice(0, 50) + '-' + Date.now().toString(36);
+	return (
+		text
+			.toLowerCase()
+			.replace(/[^\w\s-]/g, '')
+			.replace(/[\s_]+/g, '-')
+			.replace(/^-+|-+$/g, '')
+			.slice(0, 50) +
+		'-' +
+		Date.now().toString(36)
+	);
 }
 
 export const load: PageServerLoad = async ({ parent }) => {
@@ -59,7 +63,9 @@ export const actions: Actions = {
 
 		const canCreate = await checkProjectLimit(locals.user.id);
 		if (!canCreate) {
-			return fail(402, { error: 'Project limit reached. Upgrade your plan to create more projects.' });
+			return fail(402, {
+				error: 'Project limit reached. Upgrade your plan to create more projects.'
+			});
 		}
 
 		const slug = slugify(result.data.name);

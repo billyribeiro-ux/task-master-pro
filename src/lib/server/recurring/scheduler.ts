@@ -14,7 +14,7 @@ interface NextOccurrence {
  *
  * Supports: FREQ=DAILY|WEEKLY|MONTHLY|YEARLY with INTERVAL, BYDAY, BYMONTHDAY, BYMONTH
  */
-export function parseRRule(rrule: string, timezone: string = 'UTC'): NextOccurrence | null {
+export function parseRRule(rrule: string, _timezone: string = 'UTC'): NextOccurrence | null {
 	const parts = new Map<string, string>();
 	for (const part of rrule.split(';')) {
 		const [key, value] = part.split('=');
@@ -27,11 +27,10 @@ export function parseRRule(rrule: string, timezone: string = 'UTC'): NextOccurre
 	if (!freq) return null;
 
 	const interval = parseInt(parts.get('INTERVAL') ?? '1', 10);
-	const countLimit = parts.get('COUNT') ? parseInt(parts.get('COUNT')!, 10) : null;
 	const until = parts.get('UNTIL') ? new Date(parts.get('UNTIL')!) : null;
 
 	const now = new Date();
-	let next = new Date(now);
+	const next = new Date(now);
 
 	switch (freq) {
 		case 'DAILY':
@@ -41,9 +40,18 @@ export function parseRRule(rrule: string, timezone: string = 'UTC'): NextOccurre
 			const byDay = parts.get('BYDAY');
 			if (byDay) {
 				const dayMap: Record<string, number> = {
-					SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6
+					SU: 0,
+					MO: 1,
+					TU: 2,
+					WE: 3,
+					TH: 4,
+					FR: 5,
+					SA: 6
 				};
-				const targetDays = byDay.split(',').map((d) => dayMap[d.trim()]).filter((d) => d !== undefined);
+				const targetDays = byDay
+					.split(',')
+					.map((d) => dayMap[d.trim()])
+					.filter((d) => d !== undefined);
 				if (targetDays.length > 0) {
 					const currentDay = now.getDay();
 					// Find next matching day
@@ -106,11 +114,7 @@ export async function generateTaskFromRule(rule: RecurringTaskRule): Promise<{
 	displayId: string;
 } | null> {
 	// Verify the target column still exists
-	const [col] = await db
-		.select()
-		.from(columns)
-		.where(eq(columns.id, rule.columnId))
-		.limit(1);
+	const [col] = await db.select().from(columns).where(eq(columns.id, rule.columnId)).limit(1);
 
 	if (!col) return null;
 
@@ -130,9 +134,8 @@ export async function generateTaskFromRule(rule: RecurringTaskRule): Promise<{
 		.where(eq(tasks.columnId, rule.columnId))
 		.orderBy(tasks.position);
 
-	const lastPosition = existingTasks.length > 0
-		? existingTasks[existingTasks.length - 1].position
-		: null;
+	const lastPosition =
+		existingTasks.length > 0 ? existingTasks[existingTasks.length - 1].position : null;
 
 	const position = generateKeyBetween(lastPosition, null);
 
@@ -183,10 +186,7 @@ export async function processRecurringTasks(): Promise<{
 		.select()
 		.from(recurringTaskRules)
 		.where(
-			and(
-				eq(recurringTaskRules.isActive, true),
-				lte(recurringTaskRules.nextOccurrenceAt, now)
-			)
+			and(eq(recurringTaskRules.isActive, true), lte(recurringTaskRules.nextOccurrenceAt, now))
 		);
 
 	let generated = 0;

@@ -154,7 +154,12 @@ export async function checkFeatureLimit(
 			const [taskCount] = await db
 				.select({ total: count() })
 				.from(tasks)
-				.where(inArray(tasks.projectId, userProjectIds.map(p => p.id)));
+				.where(
+					inArray(
+						tasks.projectId,
+						userProjectIds.map((p) => p.id)
+					)
+				);
 
 			const current = taskCount?.total ?? 0;
 			return { allowed: current < limits.maxTasks, limit: limits.maxTasks, current };
@@ -172,10 +177,19 @@ export async function checkFeatureLimit(
 			const [memberCount] = await db
 				.select({ total: count() })
 				.from(projectMembers)
-				.where(inArray(projectMembers.projectId, userProjectIds.map(p => p.id)));
+				.where(
+					inArray(
+						projectMembers.projectId,
+						userProjectIds.map((p) => p.id)
+					)
+				);
 
 			const current = memberCount?.total ?? 0;
-			return { allowed: current < limits.maxMembersPerProject, limit: limits.maxMembersPerProject, current };
+			return {
+				allowed: current < limits.maxMembersPerProject,
+				limit: limits.maxMembersPerProject,
+				current
+			};
 		}
 		case 'fileUpload': {
 			const userProjectIds = await db
@@ -190,9 +204,20 @@ export async function checkFeatureLimit(
 			const [fileCount] = await db
 				.select({ total: count() })
 				.from(fileAttachments)
-				.where(inArray(fileAttachments.taskId,
-					db.select({ id: tasks.id }).from(tasks).where(inArray(tasks.projectId, userProjectIds.map(p => p.id)))
-				));
+				.where(
+					inArray(
+						fileAttachments.taskId,
+						db
+							.select({ id: tasks.id })
+							.from(tasks)
+							.where(
+								inArray(
+									tasks.projectId,
+									userProjectIds.map((p) => p.id)
+								)
+							)
+					)
+				);
 
 			const current = fileCount?.total ?? 0;
 			return { allowed: current < limits.maxFiles, limit: limits.maxFiles, current };
@@ -210,9 +235,20 @@ export async function checkFeatureLimit(
 			const [storageResult] = await db
 				.select({ total: count() })
 				.from(fileAttachments)
-				.where(inArray(fileAttachments.taskId,
-					db.select({ id: tasks.id }).from(tasks).where(inArray(tasks.projectId, userProjectIds.map(p => p.id)))
-				));
+				.where(
+					inArray(
+						fileAttachments.taskId,
+						db
+							.select({ id: tasks.id })
+							.from(tasks)
+							.where(
+								inArray(
+									tasks.projectId,
+									userProjectIds.map((p) => p.id)
+								)
+							)
+					)
+				);
 
 			const current = storageResult?.total ?? 0;
 			return { allowed: current < limits.maxStorageMB, limit: limits.maxStorageMB, current };
@@ -240,7 +276,10 @@ export function requireFeature(event: RequestEvent, feature: FeatureFlag) {
 
 	if (!limits[feature]) {
 		throw error(402, {
-			message: `The ${feature.replace('Enabled', '').replace(/([A-Z])/g, ' $1').trim()} feature requires a plan upgrade`
+			message: `The ${feature
+				.replace('Enabled', '')
+				.replace(/([A-Z])/g, ' $1')
+				.trim()} feature requires a plan upgrade`
 		});
 	}
 

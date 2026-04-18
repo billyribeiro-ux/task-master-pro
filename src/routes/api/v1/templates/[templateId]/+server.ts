@@ -2,7 +2,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { db } from '$lib/server/db/index.js';
 import { projectTemplates } from '$lib/server/db/schema.js';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { requireAuth } from '$lib/server/auth/guards.js';
 
 export const GET: RequestHandler = async (event) => {

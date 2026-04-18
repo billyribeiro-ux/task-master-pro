@@ -20,11 +20,7 @@ export const POST: RequestHandler = async (event) => {
 	const { password, code } = result.data;
 
 	// Verify the user's password
-	const [dbUser] = await db
-		.select()
-		.from(users)
-		.where(eq(users.id, user.id))
-		.limit(1);
+	const [dbUser] = await db.select().from(users).where(eq(users.id, user.id)).limit(1);
 
 	if (!dbUser || !dbUser.passwordHash) {
 		throw error(400, 'Password authentication is not set up for this account');
@@ -53,13 +49,9 @@ export const POST: RequestHandler = async (event) => {
 	}
 
 	// Delete TOTP credential and recovery codes
-	await db
-		.delete(userTotpCredentials)
-		.where(eq(userTotpCredentials.userId, user.id));
+	await db.delete(userTotpCredentials).where(eq(userTotpCredentials.userId, user.id));
 
-	await db
-		.delete(userRecoveryCodes)
-		.where(eq(userRecoveryCodes.userId, user.id));
+	await db.delete(userRecoveryCodes).where(eq(userRecoveryCodes.userId, user.id));
 
 	return json({
 		message: 'Two-factor authentication has been disabled'

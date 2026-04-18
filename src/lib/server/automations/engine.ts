@@ -72,20 +72,32 @@ function evaluateSingleCondition(condition: TriggerCondition, context: EventCont
 		}
 
 		case 'gt':
-			return typeof fieldValue === 'number' && typeof condition.value === 'number'
-				&& fieldValue > condition.value;
+			return (
+				typeof fieldValue === 'number' &&
+				typeof condition.value === 'number' &&
+				fieldValue > condition.value
+			);
 
 		case 'lt':
-			return typeof fieldValue === 'number' && typeof condition.value === 'number'
-				&& fieldValue < condition.value;
+			return (
+				typeof fieldValue === 'number' &&
+				typeof condition.value === 'number' &&
+				fieldValue < condition.value
+			);
 
 		case 'gte':
-			return typeof fieldValue === 'number' && typeof condition.value === 'number'
-				&& fieldValue >= condition.value;
+			return (
+				typeof fieldValue === 'number' &&
+				typeof condition.value === 'number' &&
+				fieldValue >= condition.value
+			);
 
 		case 'lte':
-			return typeof fieldValue === 'number' && typeof condition.value === 'number'
-				&& fieldValue <= condition.value;
+			return (
+				typeof fieldValue === 'number' &&
+				typeof condition.value === 'number' &&
+				fieldValue <= condition.value
+			);
 
 		case 'in': {
 			if (Array.isArray(condition.value)) {
@@ -199,7 +211,10 @@ async function executeSetPriority(
 
 	await db
 		.update(tasks)
-		.set({ priority: priority as 'none' | 'low' | 'medium' | 'high' | 'urgent', updatedAt: new Date().toISOString() })
+		.set({
+			priority: priority as 'none' | 'low' | 'medium' | 'high' | 'urgent',
+			updatedAt: new Date().toISOString()
+		})
 		.where(eq(tasks.id, context.taskId));
 }
 
@@ -301,11 +316,7 @@ async function executeCreateSubtask(
 	const { title } = params;
 	if (!context.taskId || typeof title !== 'string') return;
 
-	const [parentTask] = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.id, context.taskId))
-		.limit(1);
+	const [parentTask] = await db.select().from(tasks).where(eq(tasks.id, context.taskId)).limit(1);
 
 	if (!parentTask) return;
 
@@ -320,9 +331,10 @@ async function executeCreateSubtask(
 		parentTaskId: context.taskId,
 		title,
 		description: typeof params.description === 'string' ? params.description : null,
-		priority: typeof params.priority === 'string'
-			? (params.priority as 'none' | 'low' | 'medium' | 'high' | 'urgent')
-			: parentTask.priority,
+		priority:
+			typeof params.priority === 'string'
+				? (params.priority as 'none' | 'low' | 'medium' | 'high' | 'urgent')
+				: parentTask.priority,
 		status: 'todo',
 		assigneeId: typeof params.assigneeId === 'string' ? params.assigneeId : parentTask.assigneeId,
 		reporterId: context.userId ?? parentTask.reporterId,
@@ -358,7 +370,11 @@ export async function executeActions(
 	for (const action of actions) {
 		const executor = actionExecutors[action.type];
 		if (!executor) {
-			results.push({ type: action.type, success: false, error: `Unknown action type: ${action.type}` });
+			results.push({
+				type: action.type,
+				success: false,
+				error: `Unknown action type: ${action.type}`
+			});
 			continue;
 		}
 

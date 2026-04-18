@@ -27,11 +27,7 @@ export const POST: RequestHandler = async (event) => {
 	const data = result.data;
 
 	// Verify task exists
-	const [task] = await db
-		.select()
-		.from(tasks)
-		.where(eq(tasks.id, data.taskId))
-		.limit(1);
+	const [task] = await db.select().from(tasks).where(eq(tasks.id, data.taskId)).limit(1);
 
 	if (!task) throw error(404, 'Task not found');
 
@@ -39,12 +35,7 @@ export const POST: RequestHandler = async (event) => {
 	const [existingLink] = await db
 		.select()
 		.from(goalTaskLinks)
-		.where(
-			and(
-				eq(goalTaskLinks.goalId, goalId),
-				eq(goalTaskLinks.taskId, data.taskId)
-			)
-		)
+		.where(and(eq(goalTaskLinks.goalId, goalId), eq(goalTaskLinks.taskId, data.taskId)))
 		.limit(1);
 
 	if (existingLink) {
@@ -77,12 +68,7 @@ export const DELETE: RequestHandler = async (event) => {
 	const [existingLink] = await db
 		.select()
 		.from(goalTaskLinks)
-		.where(
-			and(
-				eq(goalTaskLinks.goalId, goalId),
-				eq(goalTaskLinks.taskId, taskId)
-			)
-		)
+		.where(and(eq(goalTaskLinks.goalId, goalId), eq(goalTaskLinks.taskId, taskId)))
 		.limit(1);
 
 	if (!existingLink) {
@@ -91,12 +77,7 @@ export const DELETE: RequestHandler = async (event) => {
 
 	await db
 		.delete(goalTaskLinks)
-		.where(
-			and(
-				eq(goalTaskLinks.goalId, goalId),
-				eq(goalTaskLinks.taskId, taskId)
-			)
-		);
+		.where(and(eq(goalTaskLinks.goalId, goalId), eq(goalTaskLinks.taskId, taskId)));
 
 	return json({ success: true });
 };
@@ -113,18 +94,11 @@ export const GET: RequestHandler = async (event) => {
 		await requireProjectAccess(event, goal.projectId);
 	}
 
-	const links = await db
-		.select()
-		.from(goalTaskLinks)
-		.where(eq(goalTaskLinks.goalId, goalId));
+	const links = await db.select().from(goalTaskLinks).where(eq(goalTaskLinks.goalId, goalId));
 
 	const linkedTasks = [];
 	for (const link of links) {
-		const [task] = await db
-			.select()
-			.from(tasks)
-			.where(eq(tasks.id, link.taskId))
-			.limit(1);
+		const [task] = await db.select().from(tasks).where(eq(tasks.id, link.taskId)).limit(1);
 		if (task) linkedTasks.push(task);
 	}
 

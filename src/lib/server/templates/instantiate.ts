@@ -139,7 +139,16 @@ export async function instantiateTemplate(
 				projectId: project.id,
 				name: field.name,
 				slug: field.slug,
-				fieldType: field.fieldType as 'text' | 'number' | 'date' | 'select' | 'multi_select' | 'url' | 'email' | 'checkbox' | 'currency',
+				fieldType: field.fieldType as
+					| 'text'
+					| 'number'
+					| 'date'
+					| 'select'
+					| 'multi_select'
+					| 'url'
+					| 'email'
+					| 'checkbox'
+					| 'currency',
 				options: field.options ?? null,
 				position: i
 			});

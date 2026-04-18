@@ -49,9 +49,7 @@ export const POST: RequestHandler = async (event) => {
 	const recoveryCodes = generateRecoveryCodes(8);
 
 	// Delete any old recovery codes and insert new ones
-	await db
-		.delete(userRecoveryCodes)
-		.where(eq(userRecoveryCodes.userId, user.id));
+	await db.delete(userRecoveryCodes).where(eq(userRecoveryCodes.userId, user.id));
 
 	const recoveryCodeValues = recoveryCodes.map((code) => ({
 		userId: user.id,
