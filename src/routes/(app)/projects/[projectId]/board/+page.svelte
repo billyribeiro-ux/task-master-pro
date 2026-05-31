@@ -222,7 +222,7 @@
 				<div class="flex-1 space-y-2 overflow-y-auto px-2 pb-2">
 					{#each colTasks as task, index (task.id)}
 						<div
-							class="group hover:border-brand-300 dark:hover:border-brand-700 cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow-md active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 {draggedTaskId ===
+							class="group hover:border-brand-300 dark:hover:border-brand-700 cursor-grab rounded-xl border border-gray-100 bg-white p-3 shadow-m3-1 transition-all hover:shadow-m3-lift active:cursor-grabbing dark:border-gray-800 dark:bg-gray-900 {draggedTaskId ===
 							task.id
 								? 'opacity-50'
 								: ''}"
