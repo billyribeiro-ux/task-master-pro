@@ -68,47 +68,54 @@ Notable major/minor moves:
   fractional-index ordering utility and the rate limiter (incl. fake-timer window
   reset). `pnpm test:unit` previously found 0 tests and crashed on missing `jsdom`.
 
-## 4. Verification (current state)
+## 4. Roadmap — now implemented
+
+All previously-listed gaps have been addressed:
+
+- **CSP hardened** — moved to SvelteKit's native nonce-based CSP (`kit.csp` in
+  `svelte.config.js`); `script-src` no longer allows `unsafe-inline`. The manual
+  header in `hooks.server.ts` was removed. (`style-src` keeps `unsafe-inline` for
+  inline `style=` attributes, which CSP nonces cannot cover.)
+- **Drizzle migrations** — generated `drizzle/0000_*.sql` for all 33 tables and
+  un-ignored `drizzle/` so migrations are version-controlled; deploy runs
+  `pnpm db:migrate`.
+- **Client IP hardened** — rate limiting now uses `event.getClientAddress()`
+  (honouring adapter-node `ADDRESS_HEADER`/`XFF_DEPTH`) instead of raw, spoofable
+  `x-forwarded-for`. Proxy env vars documented in `.env.example`.
+- **S3 production guard** — `createS3Client()` refuses to start in production if
+  the credentials are still the local `minioadmin` defaults.
+- **Observability** — `handleError` server hook logs with the request's
+  correlation id and surfaces a safe `requestId` to clients; `SIGTERM`/`SIGINT`
+  graceful shutdown closes Redis.
+- **Coverage** — `@vitest/coverage-v8` + `pnpm test:coverage`, uploaded as a CI
+  artifact in the unit job.
+- **Tests** — 19 unit tests (fractional-index, rate-limit, env validation) plus a
+  Playwright `tests/smoke.spec.ts` (public pages, auth redirect, security headers,
+  health). Added the missing `vitest.integration.config.ts`.
+- **Docker** — multi-stage `docker/Dockerfile` (Node 24, non-root, healthcheck) +
+  `Dockerfile.dev` + `docker-compose.yml` (app, Redis, MinIO, Stripe CLI).
+
+### Toolchain pinning (May 30, 2026)
+
+- **Node 24 (latest LTS)** enforced via `engines`, `.nvmrc`, CI, and all Docker
+  stages. **pnpm only** — `package-lock.json`/`yarn.lock` are git-ignored and
+  corepack reads the pinned `packageManager`.
+
+## 5. Verification (current state)
 
 ```
-pnpm check      → 0 errors, 0 warnings
-pnpm lint       → clean (Prettier + ESLint 10)
-pnpm build      → success (adapter-node, Vite 8)
-pnpm test:unit  → 14 passed (2 files)
+pnpm check         → 0 errors, 0 warnings
+pnpm lint          → clean (Prettier + ESLint 10)
+pnpm build         → success (adapter-node, Vite 8)
+pnpm test:unit     → 19 passed (3 files)
+pnpm test:coverage → reports generated (text/html/lcov)
 ```
 
-## 5. Remaining gaps & prioritized roadmap
+## 6. Future enhancements (optional)
 
-### High priority
-
-- **Content-Security-Policy uses `'unsafe-inline'` for scripts**
-  (`src/hooks.server.ts`). Move to SvelteKit's built-in nonce/hash CSP via
-  `kit.csp` in `svelte.config.js` to eliminate inline-script XSS surface.
-- **No Drizzle migrations** — there is no `drizzle/` directory; the app relies on
-  `db:push`. Generate versioned migrations (`pnpm db:generate`) and run
-  `db:migrate` in deploy so schema changes are reviewable and reversible.
-- **Test coverage is still thin.** Bootstrapped, but the 33-table data layer, auth
-  guards, payment guards, and API routes need integration tests
-  (`vitest.integration.config.ts` exists but has no specs). Add Playwright smoke
-  flows for login → board → task CRUD.
-
-### Medium priority
-
-- **`x-forwarded-for` trust**: rate limiting trusts the first XFF hop, which is
-  spoofable unless behind a known proxy. Pin to the real client via
-  `ADDRESS_HEADER`/`XFF_DEPTH` (adapter-node) and document the expected proxy.
-- **Centralize feature-flag env access** through `env.ts` so call sites stop using
-  ad-hoc `?? 'fallback'` defaults (esp. S3 default `minioadmin` credentials, which
-  should never silently apply in production).
-- **Observability**: request logging exists; add error reporting (Sentry or
-  OpenTelemetry traces) and surface `requestId` to clients on 5xx for support.
-- **Graceful Redis/Socket.IO shutdown** hooks for clean rolling deploys.
-
-### Lower priority / polish
-
-- Consider SvelteKit **remote functions** (already enabled experimentally) to
-  replace some hand-rolled `/api/v1` fetch calls with type-safe RPC.
-- Add `@vitest/coverage-v8` and a coverage gate in CI.
-- Add a `Dockerfile` + compose (Postgres/libSQL, Redis, MinIO) for reproducible
-  prod-like environments.
-- Accessibility pass on the Kanban drag-and-drop (keyboard reordering).
+- Migrate hand-rolled `/api/v1` fetches to SvelteKit **remote functions**
+  (already enabled experimentally) for end-to-end type safety.
+- External error tracking (Sentry/OpenTelemetry traces) on top of the structured
+  logs and `requestId` correlation now in place.
+- Accessibility: keyboard-driven reordering for the Kanban drag-and-drop.
+- Expand integration tests against an ephemeral libSQL + Redis in CI.
