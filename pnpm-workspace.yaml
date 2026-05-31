@@ -11,3 +11,6 @@ onlyBuiltDependencies:
 
 ignoredBuiltDependencies:
   - leveldown
+
+allowBuilds:
+  esbuild: set this to true or false

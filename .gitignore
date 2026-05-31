@@ -1,7 +1,6 @@
 node_modules
 /build
 /.svelte-kit
-/drizzle
 .env
 *.db
 *.db-journal
@@ -12,4 +11,6 @@ dist
 coverage
 playwright-report
 test-results
+# pnpm only — never commit npm/yarn lockfiles
 package-lock.json
+yarn.lock
