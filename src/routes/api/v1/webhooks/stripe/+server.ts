@@ -5,6 +5,7 @@ import { STRIPE_WEBHOOK_SECRET } from '$env/static/private';
 import { db } from '$lib/server/db/index.js';
 import { users } from '$lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
+import { logger } from '$lib/server/logger.js';
 import type Stripe from 'stripe';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -19,7 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		event = stripe.webhooks.constructEvent(body, signature, STRIPE_WEBHOOK_SECRET);
 	} catch (err) {
-		console.error('Stripe webhook signature verification failed:', err);
+		logger.error({ err }, 'Stripe webhook signature verification failed');
 		throw error(400, 'Invalid signature');
 	}
 
@@ -33,7 +34,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				// Verify user exists before trusting client-provided metadata
 				const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 				if (!user) {
-					console.error(`Stripe webhook: user ${userId} from metadata not found`);
+					logger.error({ userId }, 'Stripe webhook: user from metadata not found');
 					return json({ received: true });
 				}
 
@@ -77,7 +78,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			const invoice = event.data.object as Stripe.Invoice;
 			const customerId = invoice.customer as string;
 
-			console.warn(`Payment failed for customer ${customerId}`);
+			logger.warn({ customerId }, 'Stripe payment failed');
 			break;
 		}
 

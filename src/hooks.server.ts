@@ -8,6 +8,7 @@ import {
 	createBlankSessionCookie
 } from '$lib/server/auth/index.js';
 import { logger } from '$lib/server/logger.js';
+import { checkRateLimit } from '$lib/server/rate-limit.js';
 
 const requestIdHandle: Handle = async ({ event, resolve }) => {
 	const requestId = nanoid(21);
@@ -113,25 +114,9 @@ const securityHeadersHandle: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 60;
 const RATE_LIMIT_AUTH_MAX = 10;
-
-// Periodic cleanup of expired rate limit entries (every 60 seconds)
-let lastCleanup = Date.now();
-const CLEANUP_INTERVAL = 60_000;
-
-function cleanupRateLimitMap() {
-	const now = Date.now();
-	if (now - lastCleanup < CLEANUP_INTERVAL) return;
-	lastCleanup = now;
-	for (const [key, value] of rateLimitMap) {
-		if (now > value.resetAt) {
-			rateLimitMap.delete(key);
-		}
-	}
-}
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	const path = event.url.pathname;
@@ -143,34 +128,29 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	cleanupRateLimitMap();
-
 	const clientIp =
 		event.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? event.getClientAddress();
-	const key = `${clientIp}:${isAuthRoute ? 'auth' : 'api'}`;
-	const now = Date.now();
 	const limit = isAuthRoute ? RATE_LIMIT_AUTH_MAX : RATE_LIMIT_MAX_REQUESTS;
+	const key = `${clientIp}:${isAuthRoute ? 'auth' : 'api'}`;
 
-	const entry = rateLimitMap.get(key);
+	const result = await checkRateLimit(key, limit, RATE_LIMIT_WINDOW_MS);
 
-	if (!entry || now > entry.resetAt) {
-		rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-		return resolve(event);
-	}
-
-	if (entry.count >= limit) {
+	if (!result.allowed) {
 		logger.warn({ ip: clientIp, path: event.url.pathname }, 'rate limit exceeded');
 		return new Response(JSON.stringify({ error: 'Too many requests' }), {
 			status: 429,
 			headers: {
 				'Content-Type': 'application/json',
-				'Retry-After': String(Math.ceil((entry.resetAt - now) / 1000))
+				'Retry-After': String(Math.max(1, Math.ceil((result.resetAt - Date.now()) / 1000)))
 			}
 		});
 	}
 
-	entry.count++;
-	return resolve(event);
+	const response = await resolve(event);
+	response.headers.set('X-RateLimit-Limit', String(limit));
+	response.headers.set('X-RateLimit-Remaining', String(result.remaining));
+	response.headers.set('X-RateLimit-Reset', String(Math.ceil(result.resetAt / 1000)));
+	return response;
 };
 
 export const handle = sequence(

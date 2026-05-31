@@ -1,6 +1,13 @@
-ignoredBuiltDependencies:
-  - leveldown
+# Don't hard-fail `pnpm run`/`pnpm exec` on the deps integrity pre-check.
+# The only flagged builds are esbuild's no-op postinstall (the real binary
+# ships via the @esbuild/<platform> optional dependency), so blocking on it
+# is pure friction. CI still uses `--frozen-lockfile` for integrity.
+verifyDepsBeforeRun: false
 
+# Packages explicitly allowed to run install/build scripts.
 onlyBuiltDependencies:
   - esbuild
   - '@node-rs/argon2'
+
+ignoredBuiltDependencies:
+  - leveldown

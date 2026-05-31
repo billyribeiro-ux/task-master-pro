@@ -13,6 +13,9 @@ import {
 import { eq, and, desc, sql, or, sum } from 'drizzle-orm';
 import { env } from '$env/dynamic/private';
 
+// Default model for OpenAI-compatible providers; overridable via AI_MODEL.
+const AI_MODEL = env.AI_MODEL ?? 'gpt-4o-mini';
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface AiProviderResponse {
@@ -60,6 +63,7 @@ async function callAiProvider(
 			Authorization: `Bearer ${apiKey}`
 		},
 		body: JSON.stringify({
+			model: AI_MODEL,
 			messages: [
 				{ role: 'system', content: systemPrompt },
 				{ role: 'user', content: userPrompt }
@@ -913,6 +917,7 @@ Be concise, actionable, and helpful. Reference specific tasks by their display I
 			Authorization: `Bearer ${apiKey}`
 		},
 		body: JSON.stringify({
+			model: AI_MODEL,
 			messages,
 			temperature: 0.5,
 			max_tokens: 2048
