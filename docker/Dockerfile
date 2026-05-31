@@ -1,13 +1,14 @@
 # ─── Stage 1: Dependencies ────────────────────────────────────────────────────
-FROM node:22-alpine AS deps
-RUN corepack enable && corepack prepare pnpm@latest --activate
+FROM node:24-alpine AS deps
+# corepack reads the pinned pnpm version from package.json's packageManager field
+RUN corepack enable
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod=false
 
 # ─── Stage 2: Build ──────────────────────────────────────────────────────────
-FROM node:22-alpine AS build
-RUN corepack enable && corepack prepare pnpm@latest --activate
+FROM node:24-alpine AS build
+RUN corepack enable
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -15,7 +16,7 @@ RUN pnpm run build
 RUN pnpm prune --prod
 
 # ─── Stage 3: Runtime ────────────────────────────────────────────────────────
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 RUN addgroup -g 1001 -S nodejs && adduser -S sveltekit -u 1001
 WORKDIR /app
 
