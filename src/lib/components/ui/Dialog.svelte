@@ -22,7 +22,7 @@
 
 {#if open}
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+		class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm transition-all"
 		role="dialog"
 		aria-modal="true"
 		onclick={handleBackdropClick}
@@ -30,16 +30,16 @@
 		tabindex="-1"
 	>
 		<div
-			class="w-full max-w-lg rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-800"
+			class="w-full max-w-lg rounded-[28px] border border-gray-100 bg-white shadow-m3-3 dark:border-gray-800 dark:bg-gray-900 transition-transform transform scale-100"
 		>
 			{#if title}
 				<div
-					class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700"
+					class="flex items-center justify-between px-6 py-5"
 				>
-					<h2 class="text-lg font-semibold text-gray-900 dark:text-white">{title}</h2>
+					<h2 class="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>
 					<button
 						onclick={onclose}
-						class="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
+						class="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
 						aria-label="Close"
 					>
 						<svg
@@ -55,11 +55,11 @@
 					</button>
 				</div>
 			{/if}
-			<div class="px-6 py-4">
+			<div class="px-6 pb-6 pt-2">
 				{@render children()}
 			</div>
 			{#if footer}
-				<div class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4 dark:border-gray-700">
+				<div class="flex justify-end gap-3 px-6 pb-6">
 					{@render footer()}
 				</div>
 			{/if}

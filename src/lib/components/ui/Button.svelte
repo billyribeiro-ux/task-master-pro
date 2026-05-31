@@ -20,11 +20,11 @@
 	}: Props = $props();
 
 	const variantClasses = {
-		primary: 'bg-brand-600 text-white hover:bg-brand-700 focus-visible:ring-brand-600',
+		primary: 'bg-brand-600 text-white hover:bg-brand-700 shadow-m3-1 hover:shadow-m3-lift dark:hover:shadow-m3-lift-dark hover:-translate-y-0.5 active:translate-y-0 active:shadow-m3-1 focus-visible:ring-brand-600',
 		secondary:
-			'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700',
+			'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:shadow-m3-1 active:shadow-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700',
 		ghost: 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
-		danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600'
+		danger: 'bg-red-600 text-white hover:bg-red-700 shadow-m3-1 hover:shadow-m3-lift dark:hover:shadow-m3-lift-dark hover:-translate-y-0.5 active:translate-y-0 active:shadow-m3-1 focus-visible:ring-red-600'
 	};
 
 	const sizeClasses = {
@@ -35,7 +35,7 @@
 </script>
 
 <button
-	class="inline-flex items-center justify-center rounded-lg font-semibold transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 {variantClasses[
+	class="inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:transform-none {variantClasses[
 		variant
 	]} {sizeClasses[size]} {className}"
 	disabled={disabled || loading}

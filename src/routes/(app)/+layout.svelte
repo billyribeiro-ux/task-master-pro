@@ -42,14 +42,14 @@
 
 	<!-- Sidebar: off-canvas on xs/sm/md, persistent on lg+ -->
 	<aside
-		class="fixed inset-y-0 left-0 z-50 flex w-68 flex-col border-r border-gray-200 bg-white transition-transform duration-200 ease-out lg:static lg:z-auto dark:border-gray-800 dark:bg-gray-900 {mobileMenuOpen
+		class="fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-100 bg-white shadow-m3-1 transition-transform duration-300 ease-[cubic-bezier(0.2,0,0,1)] lg:static lg:z-auto dark:border-gray-800 dark:bg-gray-900 {mobileMenuOpen
 			? 'translate-x-0'
-			: '-translate-x-full lg:translate-x-0'} {sidebarOpen ? 'lg:w-68' : 'lg:w-16'}"
+			: '-translate-x-full lg:translate-x-0'} {sidebarOpen ? 'w-68' : 'w-16 lg:w-20'}"
 	>
 		<!-- Sidebar header — 48px height for comfortable touch -->
-		<div class="flex h-12 items-center gap-2.5 border-b border-gray-200 px-4 dark:border-gray-800">
+		<div class="flex h-16 items-center gap-3 px-4 py-2">
 			<div
-				class="bg-brand-600 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white"
+				class="bg-brand-600 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white shadow-m3-1"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -72,10 +72,10 @@
 		</div>
 
 		<!-- Navigation — min 44px touch targets per Apple HIG -->
-		<nav class="flex-1 space-y-0.5 overflow-y-auto p-2 md:p-3">
+		<nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
 			<a
 				href={resolve('/dashboard')}
-				class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+				class="flex min-h-11 items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -91,11 +91,11 @@
 						d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
 					/>
 				</svg>
-				{#if sidebarOpen}<span>Dashboard</span>{/if}
+				{#if sidebarOpen}<span class="tracking-wide">Dashboard</span>{/if}
 			</a>
 			<a
 				href={resolve('/projects')}
-				class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+				class="flex min-h-11 items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -111,11 +111,11 @@
 						d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
 					/>
 				</svg>
-				{#if sidebarOpen}<span>Projects</span>{/if}
+				{#if sidebarOpen}<span class="tracking-wide">Projects</span>{/if}
 			</a>
 			<a
 				href={resolve('/time-tracking')}
-				class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+				class="flex min-h-11 items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -131,11 +131,11 @@
 						d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 					/>
 				</svg>
-				{#if sidebarOpen}<span>Time Tracking</span>{/if}
+				{#if sidebarOpen}<span class="tracking-wide">Time Tracking</span>{/if}
 			</a>
 			<a
 				href={resolve('/analytics')}
-				class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+				class="flex min-h-11 items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -151,13 +151,13 @@
 						d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
 					/>
 				</svg>
-				{#if sidebarOpen}<span>Analytics</span>{/if}
+				{#if sidebarOpen}<span class="tracking-wide">Analytics</span>{/if}
 			</a>
 
 			{#if sidebarOpen}
 				<div class="pt-4">
 					<p
-						class="px-3 text-xs font-semibold tracking-wider text-gray-400 uppercase dark:text-gray-500"
+						class="px-4 text-xs font-semibold tracking-wider text-gray-400 uppercase dark:text-gray-500"
 					>
 						Settings
 					</p>
@@ -165,7 +165,7 @@
 			{/if}
 			<a
 				href={resolve('/settings/billing')}
-				class="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 active:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+				class="flex min-h-11 items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -181,15 +181,15 @@
 						d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
 					/>
 				</svg>
-				{#if sidebarOpen}<span>Billing</span>{/if}
+				{#if sidebarOpen}<span class="tracking-wide">Billing</span>{/if}
 			</a>
 		</nav>
 
 		<!-- Sidebar footer: collapse toggle (desktop only) -->
-		<div class="hidden border-t border-gray-200 p-2 lg:block dark:border-gray-800">
+		<div class="hidden border-t border-gray-100 p-3 lg:block dark:border-gray-800">
 			<button
 				onclick={() => (sidebarOpen = !sidebarOpen)}
-				class="flex min-h-11 w-full items-center justify-center rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+				class="flex min-h-11 w-full items-center justify-center rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:text-gray-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 				aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
 			>
 				<svg
@@ -210,12 +210,12 @@
 	<div class="flex flex-1 flex-col overflow-hidden">
 		<!-- Top bar — 48px on mobile, 48px on desktop -->
 		<header
-			class="flex h-12 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 md:px-4 lg:px-6 dark:border-gray-800 dark:bg-gray-900"
+			class="flex h-16 shrink-0 items-center justify-between border-b border-gray-100 bg-white px-3 shadow-sm md:px-4 lg:px-6 dark:border-gray-800 dark:bg-gray-900"
 		>
 			<div class="flex items-center gap-2 md:gap-3">
 				<!-- Mobile/tablet menu button — 44px touch target -->
 				<button
-					class="flex h-11 w-11 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 active:bg-gray-200 lg:hidden dark:text-gray-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+					class="flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 lg:hidden dark:text-gray-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 					onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
 					aria-label="Toggle menu"
 				>
@@ -298,7 +298,7 @@
 				<!-- Notifications — 44px touch target -->
 				<a
 					href={resolve('/notifications')}
-					class="relative flex h-11 w-11 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+					class="relative flex h-11 w-11 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:text-gray-400 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 					aria-label="Notifications"
 				>
 					<svg
@@ -328,7 +328,7 @@
 				<div class="relative">
 					<button
 						onclick={() => (userMenuOpen = !userMenuOpen)}
-						class="flex h-11 items-center gap-2 rounded-lg px-1.5 transition hover:bg-gray-100 active:bg-gray-200 dark:hover:bg-gray-800 dark:active:bg-gray-700"
+						class="flex h-11 items-center gap-2 rounded-full px-2 transition-colors hover:bg-gray-100/80 active:bg-gray-200/80 dark:hover:bg-gray-800 dark:active:bg-gray-700"
 						aria-label="User menu"
 					>
 						{#if data.user.avatarUrl}
@@ -347,7 +347,7 @@
 
 					{#if userMenuOpen}
 						<div
-							class="absolute top-full right-0 z-50 mt-1 w-56 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+							class="absolute top-full right-0 z-50 mt-2 w-56 rounded-[24px] border border-gray-100 bg-white py-2 shadow-m3-3 focus:outline-none dark:border-gray-800 dark:bg-gray-900"
 							role="menu"
 						>
 							<div class="border-b border-gray-100 px-4 py-2 dark:border-gray-700">

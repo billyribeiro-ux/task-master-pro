@@ -26,9 +26,9 @@
 	<input
 		{id}
 		bind:value
-		class="block w-full rounded-lg border px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition focus:ring-2 focus:outline-none dark:text-white {error
-			? 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700'
-			: 'focus:border-brand-500 focus:ring-brand-500/20 border-gray-300 dark:border-gray-700'} bg-white dark:bg-gray-800 {className}"
+		class="block w-full rounded-xl border-2 px-4 py-3 text-sm text-gray-900 placeholder-gray-500 transition-colors focus:outline-none dark:text-white {error
+			? 'border-red-500 focus:border-red-600 dark:border-red-500 dark:focus:border-red-400 bg-red-50/50 dark:bg-red-900/10'
+			: 'border-gray-300 focus:border-brand-600 dark:border-gray-700 dark:focus:border-brand-400 bg-transparent hover:border-gray-400 dark:hover:border-gray-500'} {className}"
 		{...rest}
 	/>
 	{#if error}

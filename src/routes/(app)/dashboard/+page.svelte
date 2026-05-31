@@ -24,7 +24,7 @@
 				: 'grid-cols-4'} {bp.gridGap}"
 	>
 		<div
-			class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900"
+			class="rounded-[24px] border border-gray-100 bg-white p-5 shadow-m3-1 transition-shadow hover:shadow-m3-lift dark:border-gray-800 dark:bg-gray-900"
 		>
 			<div class="flex items-center gap-3">
 				<div
@@ -53,7 +53,7 @@
 		</div>
 
 		<div
-			class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900"
+			class="rounded-[24px] border border-gray-100 bg-white p-5 shadow-m3-1 transition-shadow hover:shadow-m3-lift dark:border-gray-800 dark:bg-gray-900"
 		>
 			<div class="flex items-center gap-3">
 				<div
@@ -82,7 +82,7 @@
 		</div>
 
 		<div
-			class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900"
+			class="rounded-[24px] border border-gray-100 bg-white p-5 shadow-m3-1 transition-shadow hover:shadow-m3-lift dark:border-gray-800 dark:bg-gray-900"
 		>
 			<div class="flex items-center gap-3">
 				<div
@@ -111,7 +111,7 @@
 		</div>
 
 		<div
-			class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900"
+			class="rounded-[24px] border border-gray-100 bg-white p-5 shadow-m3-1 transition-shadow hover:shadow-m3-lift dark:border-gray-800 dark:bg-gray-900"
 		>
 			<div class="flex items-center gap-3">
 				<div
@@ -143,9 +143,9 @@
 	</div>
 
 	<!-- Recent projects -->
-	<div class="rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
+	<div class="rounded-[24px] border border-gray-100 bg-white shadow-m3-1 dark:border-gray-800 dark:bg-gray-900">
 		<div
-			class="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-800"
+			class="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800"
 		>
 			<h2 class="text-sm font-semibold text-gray-900 dark:text-white">Recent Projects</h2>
 			<a

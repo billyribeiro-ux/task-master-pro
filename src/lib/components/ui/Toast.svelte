@@ -8,13 +8,13 @@
 	let toasts = $state<ToastItem[]>([]);
 
 	const typeStyles = {
-		info: 'border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300',
+		info: 'bg-gray-900 text-gray-50 dark:bg-gray-100 dark:text-gray-900 border border-gray-800 dark:border-gray-200',
 		success:
-			'border-green-200 bg-green-50 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-300',
+			'bg-green-800 text-green-50 dark:bg-green-200 dark:text-green-900 border border-green-700 dark:border-green-300',
 		warning:
-			'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300',
+			'bg-amber-800 text-amber-50 dark:bg-amber-200 dark:text-amber-900 border border-amber-700 dark:border-amber-300',
 		error:
-			'border-red-200 bg-red-50 text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-300'
+			'bg-red-800 text-red-50 dark:bg-red-200 dark:text-red-900 border border-red-700 dark:border-red-300'
 	};
 
 	export function addToast(type: ToastItem['type'], message: string) {
@@ -30,10 +30,10 @@
 	}
 </script>
 
-<div class="fixed right-4 bottom-4 z-[100] flex flex-col gap-2">
+<div class="fixed right-4 bottom-4 z-100 flex flex-col gap-2">
 	{#each toasts as toast (toast.id)}
 		<div
-			class="flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg {typeStyles[toast.type]}"
+			class="flex items-center gap-3 rounded-xl shadow-m3-3 px-4 py-3 {typeStyles[toast.type]}"
 			role="alert"
 		>
 			<p class="text-sm font-medium">{toast.message}</p>
