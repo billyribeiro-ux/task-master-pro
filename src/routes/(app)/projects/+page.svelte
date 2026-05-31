@@ -86,7 +86,7 @@
 			{#each data.projects as project (project.id)}
 				<a
 					href={resolve('/(app)/projects/[projectId]/board', { projectId: project.id })}
-					class="group hover:border-brand-300 dark:hover:border-brand-700 rounded-xl border border-gray-200 bg-white p-5 transition hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
+					class="group hover:border-brand-300 dark:hover:border-brand-700 rounded-[24px] border border-gray-100 bg-white p-5 shadow-m3-1 transition-all hover:shadow-m3-lift hover:-translate-y-0.5 dark:border-gray-800 dark:bg-gray-900"
 				>
 					<div class="mb-3 flex items-center justify-between">
 						<div
