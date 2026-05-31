@@ -3,5 +3,8 @@ build
 dist
 drizzle
 node_modules
+coverage
+playwright-report
+test-results
 package-lock.json
 pnpm-lock.yaml

@@ -50,6 +50,9 @@ export default ts.config(
 			'.svelte-kit/',
 			'dist/',
 			'drizzle/',
+			'coverage/',
+			'playwright-report/',
+			'test-results/',
 			'tests/e2e-agent-test.ts',
 			'tests/e2e-security-tests.ts'
 		]
