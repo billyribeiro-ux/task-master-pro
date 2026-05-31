@@ -41,3 +41,16 @@ export function getRedis(): Redis | null {
 
 	return client;
 }
+
+/** Close the shared Redis connection during graceful shutdown. */
+export async function closeRedis(): Promise<void> {
+	if (!client) return;
+	try {
+		await client.quit();
+	} catch {
+		client.disconnect();
+	} finally {
+		client = null;
+		initialized = false;
+	}
+}

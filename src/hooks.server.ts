@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, HandleServerError } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { nanoid } from 'nanoid';
 import {
@@ -9,6 +9,11 @@ import {
 } from '$lib/server/auth/index.js';
 import { logger } from '$lib/server/logger.js';
 import { checkRateLimit } from '$lib/server/rate-limit.js';
+import { validateEnv } from '$lib/server/env.js';
+import { closeRedis } from '$lib/server/redis.js';
+
+// Fail fast on misconfiguration at server startup.
+validateEnv();
 
 const requestIdHandle: Handle = async ({ event, resolve }) => {
 	const requestId = nanoid(21);
@@ -101,12 +106,10 @@ const authHandle: Handle = async ({ event, resolve }) => {
 const securityHeadersHandle: Handle = async ({ event, resolve }) => {
 	const response = await resolve(event);
 
+	// Content-Security-Policy is emitted by SvelteKit (kit.csp in svelte.config.js)
+	// with per-response nonces, so it is intentionally not set here.
 	response.headers.set('X-Frame-Options', 'DENY');
 	response.headers.set('X-Content-Type-Options', 'nosniff');
-	response.headers.set(
-		'content-security-policy',
-		"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ws: wss:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
-	);
 	response.headers.set('strict-transport-security', 'max-age=31536000; includeSubDomains');
 	response.headers.set('referrer-policy', 'strict-origin-when-cross-origin');
 	response.headers.set('permissions-policy', 'camera=(), microphone=(), geolocation=()');
@@ -128,8 +131,10 @@ const rateLimitHandle: Handle = async ({ event, resolve }) => {
 		return resolve(event);
 	}
 
-	const clientIp =
-		event.request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? event.getClientAddress();
+	// getClientAddress() honours adapter-node's ADDRESS_HEADER + XFF_DEPTH config,
+	// so the client IP is only trusted from the configured proxy hop (not a raw,
+	// spoofable x-forwarded-for value).
+	const clientIp = event.getClientAddress();
 	const limit = isAuthRoute ? RATE_LIMIT_AUTH_MAX : RATE_LIMIT_MAX_REQUESTS;
 	const key = `${clientIp}:${isAuthRoute ? 'auth' : 'api'}`;
 
@@ -160,3 +165,34 @@ export const handle = sequence(
 	securityHeadersHandle,
 	rateLimitHandle
 );
+
+// Centralised server error reporting. Logs the full error with the request's
+// correlation id and returns a safe, user-facing shape that surfaces the
+// requestId so users can quote it to support without leaking internals.
+export const handleError: HandleServerError = ({ error, event, status, message }) => {
+	const requestId = event.locals.requestId ?? 'unknown';
+	logger.error(
+		{ err: error, requestId, status, path: event.url.pathname },
+		'unhandled server error'
+	);
+	return {
+		message: status >= 500 ? 'An unexpected error occurred. Please try again.' : message,
+		requestId
+	};
+};
+
+// Graceful shutdown: close external connections so rolling deploys don't drop
+// in-flight work or leak sockets.
+let shuttingDown = false;
+async function shutdown(signal: string) {
+	if (shuttingDown) return;
+	shuttingDown = true;
+	logger.info({ signal }, 'shutting down — closing connections');
+	await closeRedis();
+	process.exit(0);
+}
+for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+	process.once(signal, () => {
+		void shutdown(signal);
+	});
+}

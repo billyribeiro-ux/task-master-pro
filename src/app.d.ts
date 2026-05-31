@@ -8,6 +8,7 @@ declare global {
 		interface Error {
 			message: string;
 			code?: string;
+			requestId?: string;
 		}
 		interface PageData {
 			user: import('$lib/server/auth').SessionUser | null;

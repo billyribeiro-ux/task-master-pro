@@ -8,13 +8,23 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { env } from '$env/dynamic/private';
 
 function createS3Client(): S3Client {
+	const accessKeyId = env.S3_ACCESS_KEY ?? 'minioadmin';
+	const secretAccessKey = env.S3_SECRET_KEY ?? 'minioadmin';
+
+	// Never let the local MinIO defaults silently reach a production deployment.
+	if (
+		process.env.NODE_ENV === 'production' &&
+		(accessKeyId === 'minioadmin' || secretAccessKey === 'minioadmin')
+	) {
+		throw new Error(
+			'Refusing to start: S3_ACCESS_KEY/S3_SECRET_KEY are still the insecure local defaults in production'
+		);
+	}
+
 	return new S3Client({
 		endpoint: env.S3_ENDPOINT ?? 'http://localhost:9000',
 		region: 'us-east-1',
-		credentials: {
-			accessKeyId: env.S3_ACCESS_KEY ?? 'minioadmin',
-			secretAccessKey: env.S3_SECRET_KEY ?? 'minioadmin'
-		},
+		credentials: { accessKeyId, secretAccessKey },
 		forcePathStyle: true
 	});
 }
