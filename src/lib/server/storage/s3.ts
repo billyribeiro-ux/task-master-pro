@@ -46,7 +46,7 @@ export async function getPresignedUploadUrl(
 		return await getSignedUrl(getClient(), command, { expiresIn: 3600 });
 	} catch (err) {
 		const message = err instanceof Error ? err.message : 'Unknown S3 error';
-		throw new Error(`S3 operation failed: ${message}`);
+		throw new Error(`S3 operation failed: ${message}`, { cause: err });
 	}
 }
 
@@ -63,7 +63,7 @@ export async function getPresignedDownloadUrl(
 		return await getSignedUrl(getClient(), command, { expiresIn });
 	} catch (err) {
 		const message = err instanceof Error ? err.message : 'Unknown S3 error';
-		throw new Error(`S3 operation failed: ${message}`);
+		throw new Error(`S3 operation failed: ${message}`, { cause: err });
 	}
 }
 
@@ -77,6 +77,6 @@ export async function deleteObject(key: string): Promise<void> {
 		await getClient().send(command);
 	} catch (err) {
 		const message = err instanceof Error ? err.message : 'Unknown S3 error';
-		throw new Error(`S3 operation failed: ${message}`);
+		throw new Error(`S3 operation failed: ${message}`, { cause: err });
 	}
 }

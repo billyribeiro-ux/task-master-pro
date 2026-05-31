@@ -1,8 +1,6 @@
-allowBuilds:
-  esbuild: set this to true or false
-
 ignoredBuiltDependencies:
   - leveldown
 
 onlyBuiltDependencies:
   - esbuild
+  - '@node-rs/argon2'

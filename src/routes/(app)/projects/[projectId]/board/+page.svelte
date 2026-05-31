@@ -71,7 +71,7 @@
 		if (!taskId) return;
 
 		const colTasks = tasksByColumn.get(columnId) ?? [];
-		let newPosition = 'a0';
+		let newPosition: string;
 		if (colTasks.length === 0) {
 			newPosition = 'a0';
 		} else if (position === 0) {
